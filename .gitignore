@@ -8,7 +8,6 @@
 !.yarn/releases
 !.yarn/versions
 .pnpm-store
-package-lock.json
 
 # testing
 /coverage
@@ -45,3 +44,4 @@ dist
 
 .DS_Store
 Thumbs.db
+package-lock.json
