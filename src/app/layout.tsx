@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "../styles/globals.css";
+import AppSidebar from "@/components/layout/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import Header from "@/components/layout/Header";
+import { Web3Provider } from "@/lib/Web3Provider";
+// import "@rainbow-me/rainbowkit/styles.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,7 +29,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <div className="[--header-height:calc(--spacing(12))]">
+          <Web3Provider>
+            <SidebarProvider className="flex flex-col">
+              <Header />
+              <div className="flex flex-1">
+                <AppSidebar />
+                {children}
+              </div>
+            </SidebarProvider>
+          </Web3Provider>
+        </div>
+      </body>
     </html>
   );
 }
