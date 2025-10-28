@@ -1,17 +1,18 @@
+import Link from "next/link";
 import { ArrowLeftRight, LayoutDashboard, Settings, Store, User } from "lucide-react";
-import { GitHub } from "../icons/GitHub";
+
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+
+import { GitHub } from "../icons/GitHub";
 
 const side_bar_data = {
   navPrimary: [
@@ -38,31 +39,31 @@ function AppSidebar() {
             {side_bar_data.navPrimary.map((item) => (
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton asChild>
-                  <a href={item.link}>
+                  <Link href={item.link}>
                     <item.icon />
                     <span>{item.name}</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup className="mt-auto">
+        <SidebarFooter className="mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>
               {side_bar_data.navSecondary.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild>
-                    <a href={item.link}>
+                    <Link href={item.link}>
                       <item.icon />
                       <span>{item.name}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarFooter>
       </SidebarContent>
     </Sidebar>
   );

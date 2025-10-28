@@ -1,13 +1,20 @@
 "use client";
 
-import { WagmiProvider } from "wagmi";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { config } from "./wagmi";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
 
-const queryClient = new QueryClient();
+import { config } from "./wagmi";
 
-export function Web3Provider({ children }: { children: React.ReactNode }) {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 10000,
+    },
+  },
+});
+
+export default function Web3Provider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -16,6 +23,5 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
-    // <>{children}</>
   );
 }
