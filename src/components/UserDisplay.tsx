@@ -22,8 +22,6 @@ export default function UserDisplay({
   function getDisplayName(): string {
     if (ensName) return ensName;
 
-    if (!address) return "";
-
     if (shouldTruncateAddress) return truncateAddress(address as `0x${string}`);
 
     return address ?? "";

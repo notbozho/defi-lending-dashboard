@@ -1,8 +1,11 @@
 "use client";
 
+import { AaveProvider } from "@aave/react";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
+
+import { client as aaveClient } from "@/lib/aave";
 
 import { config } from "./wagmi";
 
@@ -19,7 +22,7 @@ export default function Web3Provider({ children }: { children: React.ReactNode }
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider coolMode modalSize={"compact"}>
-          {children}
+          <AaveProvider client={aaveClient}>{children}</AaveProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

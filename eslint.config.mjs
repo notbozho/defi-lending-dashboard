@@ -22,6 +22,7 @@ const eslintConfig = defineConfig([
       "no-console": "off",
 
       "react-hooks/purity": "off",
+      "react-hooks/incompatible-library": "off",
 
       "simple-import-sort/imports": ["error", {
         groups: [
