@@ -3,24 +3,16 @@
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 
-export type Market = {
-  asset: {
-    name: string;
-    symbol: string;
-    imageUrl?: string;
-  };
-  totalSupplied: number;
-  supplyApy: number;
-  totalBorrowed: number;
-  borrowApy: number;
-};
+import { FormattedNumber } from "@/components/FormattedNumber";
+import { MarketAsset } from "@/lib/aave";
 
-export const marketColumns: ColumnDef<Market>[] = [
+export const marketColumns: ColumnDef<MarketAsset>[] = [
   {
     accessorKey: "asset",
-    accessorFn: (row) => `${row.asset.name} ${row.asset.symbol}`,
+    header: "Asset",
+    accessorFn: (row) => `${row.name} ${row.symbol}`,
     cell: ({ row }) => {
-      const asset = row.original.asset;
+      const asset = row.original;
 
       return (
         <div className="flex items-center gap-3">
@@ -43,18 +35,41 @@ export const marketColumns: ColumnDef<Market>[] = [
   },
   {
     accessorKey: "totalSupplied",
+    accessorFn: (row) => row.totalSuppliedUsd.toNumber(),
     header: "Total Supplied",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-2">
+          <FormattedNumber value={row.original.totalSupplied} className="font-medium" compact />
+          <FormattedNumber value={row.original.totalSuppliedUsd} symbol="USD" compact />
+        </div>
+      );
+    },
   },
   {
     accessorKey: "supplyApy",
     header: "Supply APY",
+    cell: ({ row }) => {
+      return <FormattedNumber value={row.original.supplyApy} percent className="font-medium" />;
+    },
   },
   {
     accessorKey: "totalBorrowed",
     header: "Total Borrowed",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-2">
+          <FormattedNumber value={row.original.totalBorrowed} className="font-medium" compact />
+          <FormattedNumber value={row.original.totalBorrowedUsd} symbol="USD" compact />
+        </div>
+      );
+    },
   },
   {
     accessorKey: "borrowApy",
     header: "Borrow APY",
+    cell: ({ row }) => {
+      return <FormattedNumber value={row.original.borrowApy} percent className="font-medium" />;
+    },
   },
 ];

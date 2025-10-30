@@ -5,7 +5,7 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 
-import { client as aaveClient } from "@/lib/aave";
+import { client as aaveClient } from "@/lib/aave/client";
 
 import { config } from "./wagmi";
 

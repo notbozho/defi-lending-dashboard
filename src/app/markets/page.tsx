@@ -1,11 +1,12 @@
 "use client";
 
-import { chainId, useAaveMarkets } from "@aave/react";
+import { useEffect } from "react";
 import { useChainId } from "wagmi";
 
-import { DataTable } from "@/app/markets/DataTable";
 import { marketColumns } from "@/app/markets/MarketColumns";
+import { MarketsTable } from "@/app/markets/MarketsTable";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMarketAssets } from "@/hooks/useMarketAssets";
 
 /**
  * 
@@ -18,32 +19,27 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
   const cid = useChainId();
-  const { data, loading, error } = useAaveMarkets({
-    chainIds: [chainId(cid)],
-  });
 
+  const { assets, loading, error } = useMarketAssets(cid);
+
+  useEffect(() => {
+    console.log("Loaded assets:", assets);
+  }, [assets]);
   if (loading) {
     return <Skeleton className="h-9 w-32 rounded-md" />;
   }
 
-  if (error) {
+  if (error || !assets) {
     return <div>Error loading markets: {error}</div>;
   }
 
-  const markets = data
-    .flatMap((market) => market.supplyReserves)
-    .map((s) => ({
-      asset: s.underlyingToken,
-      totalSupplied: s.supplyInfo.total.raw,
-      supplyApy: s.supplyInfo.apy.raw,
-      totalBorrowed: s.borrowInfo?.total.usd,
-      borrowApy: s.borrowInfo?.apy.raw,
-    }));
-
   return (
-    <div className="bg-background flex flex-col items-center p-8">
-      <h1 className="mb-4 text-2xl font-bold">Markets</h1>
-      <DataTable columns={marketColumns} data={markets} />
+    <div className="bg-background flex min-h-screen w-full flex-col items-center p-8 px-6 py-8 md:px-12">
+      <div className="mx-auto w-full space-y-6">
+        <h1 className="mb-4 text-2xl font-bold">Markets</h1>
+
+        <MarketsTable columns={marketColumns} data={assets} />
+      </div>
     </div>
   );
 }
