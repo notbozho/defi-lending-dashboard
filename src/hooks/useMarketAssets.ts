@@ -13,5 +13,5 @@ export function useMarketAssets(cid: number) {
 
   const assets = transformMarketAssets(data[0].supplyReserves);
 
-  return { assets, loading, error };
+  return { assets, loading, error, market: data[0] };
 }

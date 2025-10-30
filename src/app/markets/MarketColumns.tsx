@@ -39,7 +39,7 @@ export const marketColumns: ColumnDef<MarketAsset>[] = [
     header: "Total Supplied",
     cell: ({ row }) => {
       return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-end gap-2">
           <FormattedNumber value={row.original.totalSupplied} className="font-medium" compact />
           <FormattedNumber value={row.original.totalSuppliedUsd} symbol="USD" compact />
         </div>
@@ -58,7 +58,7 @@ export const marketColumns: ColumnDef<MarketAsset>[] = [
     header: "Total Borrowed",
     cell: ({ row }) => {
       return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-end gap-2">
           <FormattedNumber value={row.original.totalBorrowed} className="font-medium" compact />
           <FormattedNumber value={row.original.totalBorrowedUsd} symbol="USD" compact />
         </div>

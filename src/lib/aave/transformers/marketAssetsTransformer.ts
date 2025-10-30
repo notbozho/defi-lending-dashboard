@@ -14,8 +14,8 @@ export function transformMarketAsset(raw: Reserve): MarketAsset {
     totalSuppliedUsd: valueToBigNumber(raw.size.usd),
     totalBorrowed: valueToBigNumber(raw.borrowInfo?.total.amount.value || 0),
     totalBorrowedUsd: valueToBigNumber(raw.borrowInfo?.total.usd || 0),
-    supplyApy: Number(raw.supplyInfo.apy.formatted),
-    borrowApy: Number(raw.borrowInfo?.apy.formatted),
+    supplyApy: Number(raw.supplyInfo.apy.value),
+    borrowApy: Number(raw.borrowInfo?.apy.value),
     isPaused: raw.isPaused,
     isFrozen: raw.isFrozen,
   };

@@ -99,6 +99,10 @@ export function FormattedNumber({
 }: FormattedNumberProps) {
   const number = percent ? valueToBigNumber(value).multipliedBy(100) : valueToBigNumber(value);
 
+  if (number.isNaN()) {
+    return <span className={cn(numberVariants({ tone, size }), className)}>-</span>;
+  }
+
   if (number.isZero()) {
     decimals = 0;
   }
