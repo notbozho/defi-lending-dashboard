@@ -1,36 +1,21 @@
 "use client";
 
-import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { FormattedNumber } from "@/components/FormattedNumber";
+import { TokenDisplay } from "@/components/shared/TokenDisplay";
+import { Skeleton } from "@/components/ui/skeleton";
 import { MarketAsset } from "@/lib/aave";
+import { useMarketStore } from "@/stores/market";
 
-export const marketColumns: ColumnDef<MarketAsset>[] = [
+export const marketAssetsColumns: ColumnDef<MarketAsset>[] = [
   {
     accessorKey: "asset",
     header: "Asset",
     accessorFn: (row) => `${row.name} ${row.symbol}`,
     cell: ({ row }) => {
       const asset = row.original;
-
-      return (
-        <div className="flex items-center gap-3">
-          {asset.imageUrl && (
-            <Image
-              src={`${asset.imageUrl}`}
-              alt={asset.name}
-              width={32}
-              height={32}
-              className="rounded-full object-cover"
-            />
-          )}
-          <div className="flex flex-col leading-tight">
-            <span className="text-sm font-medium">{asset.name}</span>
-            <span className="text-muted-foreground text-sm">{asset.symbol}</span>
-          </div>
-        </div>
-      );
+      return <TokenDisplay name={asset.name} symbol={asset.symbol} imageUrl={asset.imageUrl} />;
     },
   },
   {

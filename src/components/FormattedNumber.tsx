@@ -2,10 +2,11 @@ import { normalizeBN, valueToBigNumber } from "@aave/math-utils";
 import BigNumber from "bignumber.js";
 import { cva } from "class-variance-authority";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 type CompactNumberProps = {
-  value: string | number | BigNumber;
+  value: string | number | BigNumber | undefined;
   decimals?: number;
   roundDown?: boolean;
   compactThreshold?: number;
@@ -19,6 +20,9 @@ export const compactNumber = ({
   roundDown = false,
   compactThreshold = 0,
 }: CompactNumberProps) => {
+  if (!value) {
+    return { prefix: "-", postfix: "" };
+  }
   const bigNumberValue = valueToBigNumber(value);
 
   let numberLength = bigNumberValue.toFixed(0).length;
@@ -61,13 +65,14 @@ const numberVariants = cva("inline-flex items-center", {
   variants: {
     tone: {
       default: "",
-      mutedNumber: "[&_.number]:text-muted-foreground",
-      mutedSymbol: "[&_.symbol]:text-muted-foreground",
+      mutedNumber: "[&_.number]:text-muted-foreground [&_.symbol]:font-medium",
+      mutedSymbol: "[&_.symbol]:text-muted-foreground [&_.number]:font-medium",
     },
     size: {
       sm: "text-sm",
       md: "text-base",
       lg: "text-lg",
+      xl: "text-xl",
     },
   },
   defaultVariants: {
@@ -81,7 +86,8 @@ type FormattedNumberProps = CompactNumberProps & {
   compact?: boolean;
   percent?: boolean;
   tone?: "default" | "mutedNumber" | "mutedSymbol";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
+  loading?: boolean;
   className?: string;
 };
 
@@ -95,8 +101,24 @@ export function FormattedNumber({
   percent = false,
   tone = "default",
   size = "md",
+  loading,
   className,
 }: FormattedNumberProps) {
+  if (loading) {
+    const sizeMap = {
+      sm: "h-4 w-10",
+      md: "h-5 w-12",
+      lg: "h-6 w-16",
+      xl: "h-7 w-20",
+    };
+
+    return <Skeleton className={cn(sizeMap[size], "rounded-md align-middle", className)} />;
+  }
+
+  if (value === null || value === undefined) {
+    return <span className={cn(numberVariants({ tone, size }), className)}>-</span>;
+  }
+
   const number = percent ? valueToBigNumber(value).multipliedBy(100) : valueToBigNumber(value);
 
   if (number.isNaN()) {

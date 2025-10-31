@@ -10,6 +10,8 @@ export interface MarketAsset {
   totalBorrowedUsd: BigNumber;
   supplyApy: number;
   borrowApy: number;
+  utilizationRate: number;
   isPaused?: boolean;
   isFrozen?: boolean;
+  marketAddress: string;
 }
