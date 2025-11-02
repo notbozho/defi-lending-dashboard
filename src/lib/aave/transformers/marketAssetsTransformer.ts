@@ -20,6 +20,7 @@ export function transformMarketAsset(raw: Reserve): MarketAsset {
     isPaused: raw.isPaused,
     isFrozen: raw.isFrozen,
     marketAddress: raw.market.address,
+    oraclePrice: valueToBigNumber(raw.usdExchangeRate || 0),
   };
 }
 

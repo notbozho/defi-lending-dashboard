@@ -14,4 +14,5 @@ export interface MarketAsset {
   isPaused?: boolean;
   isFrozen?: boolean;
   marketAddress: string;
+  oraclePrice: BigNumber;
 }

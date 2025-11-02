@@ -8,9 +8,17 @@ interface MetricItemProps {
   symbol?: string;
   loading: boolean;
   decimals?: number;
+  compactThreshold?: number;
 }
 
-export default function MetricItem({ label, value, symbol, loading, decimals }: MetricItemProps) {
+export default function MetricItem({
+  label,
+  value,
+  symbol,
+  loading,
+  decimals,
+  compactThreshold,
+}: MetricItemProps) {
   return (
     <div className="flex flex-col items-start not-last:pr-6">
       <span className="text-muted-foreground text-sm">{label}</span>
@@ -20,6 +28,8 @@ export default function MetricItem({ label, value, symbol, loading, decimals }: 
         compact
         decimals={decimals}
         loading={loading}
+        compactThreshold={compactThreshold}
+        tone="mutedSymbol"
         className="text-base font-medium"
       />
     </div>

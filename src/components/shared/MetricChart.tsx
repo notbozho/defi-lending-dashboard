@@ -134,13 +134,7 @@ export function MetricChart<T extends MetricDataPoint>({
                 })
               }
             />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              unit={yAxisUnit}
-              domain={["auto", "auto"]}
-            />
+            <YAxis tickLine={false} axisLine={false} tickMargin={8} unit={yAxisUnit} />
             <ChartTooltip
               isAnimationActive={false}
               cursor={{ strokeDasharray: "4px 4px", stroke: color }}

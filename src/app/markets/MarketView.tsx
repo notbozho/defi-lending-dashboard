@@ -2,7 +2,6 @@ import Image from "next/image";
 
 import { MarketsAssetsTable } from "@/app/markets/MarketAssetsTable";
 import { MarketMetrics } from "@/app/markets/MarketMetrics";
-import { FormattedNumber } from "@/components/FormattedNumber";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMarketStore } from "@/stores/market";
 

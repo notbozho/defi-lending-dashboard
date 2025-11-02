@@ -16,7 +16,7 @@ export function useMarketAsset({ cid, marketAddress, assetAddress }: MarketAsset
   });
 
   if (loading || error || !data) {
-    return { data: [], loading, error };
+    return { asset: undefined, loading, error };
   }
 
   const asset = transformMarketAsset(data);
