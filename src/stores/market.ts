@@ -8,7 +8,6 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 import type { MarketAsset } from "@/lib/aave";
 
-// Types for clarity
 interface MarketData {
   assets: MarketAsset[];
   market: Market | null;

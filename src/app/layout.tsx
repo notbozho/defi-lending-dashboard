@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, Space_Mono } from "next/font/google";
 
 import AppSidebar from "@/components/layout/AppSidebar";
 import Header from "@/components/layout/Header";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import Web3Provider from "@/lib/Web3Provider";
+import Web3Provider from "@/lib/web3/Web3Provider";
 
 import "@/styles/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
   subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -30,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${spaceGrotesk.variable} ${spaceMono.variable} font-sans antialiased`}>
         <Web3Provider>
           <SidebarProvider className="flex flex-col">
             <div className="[--header-height:calc(--spacing(12))]">

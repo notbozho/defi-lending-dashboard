@@ -1,12 +1,18 @@
 "use client";
 
+import { useEffect } from "react";
 import { useChainId } from "wagmi";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { NETWORK_BY_CHAIN_ID, type NetworkConfig } from "@/config/networks";
 import { useMarketAsset } from "@/hooks/useMarketAssets";
+import { useReserveStore } from "@/stores/reserve";
 
-import AprChart from "./AprChart";
-import { AssetMetrics } from "./AssetMetrics";
+import ReserveActions from "./ReserveActions";
+import ReserveCharts from "./ReserveCharts";
+import ReserveHeader from "./ReserveHeader";
+import ReserveStats from "./ReserveStats";
+import { ReserveHeaderSkeleton, ReserveStatsSkeleton } from "./Skeletons";
 
 interface ReserveViewProps {
   marketAddress: string;
@@ -16,46 +22,45 @@ interface ReserveViewProps {
 export default function ReserveView({ marketAddress, assetAddress }: ReserveViewProps) {
   const chainId = useChainId();
 
-  const { asset, error, loading } = useMarketAsset({
+  const { asset, loading, error } = useMarketAsset({
     cid: chainId,
     marketAddress,
     assetAddress,
   });
 
+  const setReserveData = useReserveStore((s) => s.setReserveData);
+  const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[chainId];
+
+  useEffect(() => {
+    setReserveData({ asset, loading, error });
+  }, [asset, loading, error, setReserveData]);
+
+  if (error) return <div>Error loading reserve: {error}</div>;
+
   return (
-    <main className="bg-background min-h-screen w-full">
+    <main className="bg-background min-h-screen w-full py-6">
       <div className="container mx-auto space-y-6">
-        <h1 className="mb-2 text-2xl font-bold">reserve #{marketAddress}</h1>
-        <AssetMetrics
-          loading={loading}
-          reserveSize={asset?.totalSuppliedUsd ?? 0}
-          liquidity={asset?.totalSuppliedUsd.minus(asset?.totalBorrowedUsd) ?? 0}
-          oraclePrice={asset?.oraclePrice ?? 0}
-        />
+        <Card>
+          {loading ? (
+            <>
+              <ReserveHeaderSkeleton />
+              <ReserveStatsSkeleton />
+            </>
+          ) : (
+            <>
+              {asset && currentChain && (
+                <>
+                  <ReserveHeader asset={asset} chain={currentChain} />
+                  <ReserveStats asset={asset} />
+                </>
+              )}
+            </>
+          )}
+        </Card>
 
-        <div className="flex space-y-0 gap-x-6">
-          <Card className="order-2 max-h-[calc(100vh-48px)] w-[400px] self-start overflow-x-auto">
-            test
-          </Card>
-
-          <div className="order-1 grow space-y-6">
-            <Card>
-              <CardHeader>
-                <h2 className="text-lg font-medium">Supply Info</h2>
-              </CardHeader>
-              <CardContent>
-                <AprChart type="supply" marketAddress={marketAddress} assetAddress={assetAddress} />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <h2 className="text-lg font-medium">Borrow Info</h2>
-              </CardHeader>
-              <CardContent>
-                <AprChart type="borrow" marketAddress={marketAddress} assetAddress={assetAddress} />
-              </CardContent>
-            </Card>
-          </div>
+        <div className="flex gap-x-6">
+          <ReserveActions />
+          <ReserveCharts marketAddress={marketAddress} assetAddress={assetAddress} />
         </div>
       </div>
     </main>

@@ -2,6 +2,9 @@ export interface MarketAsset {
   id: string;
   name: string;
   symbol: string;
+  underlyingTokenAddress: `0x${string}`;
+  aTokenAddress: `0x${string}`;
+  vTokenAddress: `0x${string}`;
   imageUrl?: string;
   decimals: number;
   totalSupplied: BigNumber;
@@ -15,4 +18,5 @@ export interface MarketAsset {
   isFrozen?: boolean;
   marketAddress: string;
   oraclePrice: BigNumber;
+  oracleContractAddress: `0x${string}`;
 }

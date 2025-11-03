@@ -9,6 +9,7 @@ interface MetricItemProps {
   loading: boolean;
   decimals?: number;
   compactThreshold?: number;
+  children?: React.ReactNode;
 }
 
 export default function MetricItem({
@@ -18,20 +19,24 @@ export default function MetricItem({
   loading,
   decimals,
   compactThreshold,
+  children,
 }: MetricItemProps) {
   return (
-    <div className="flex flex-col items-start not-last:pr-6">
-      <span className="text-muted-foreground text-sm">{label}</span>
-      <FormattedNumber
-        value={value}
-        symbol={symbol}
-        compact
-        decimals={decimals}
-        loading={loading}
-        compactThreshold={compactThreshold}
-        tone="mutedSymbol"
-        className="text-base font-medium"
-      />
+    <div className="flex items-center gap-2">
+      <div className="flex flex-col items-start">
+        <span className="text-muted-foreground text-sm">{label}</span>
+        <FormattedNumber
+          value={value}
+          symbol={symbol}
+          compact
+          decimals={decimals}
+          loading={loading}
+          compactThreshold={compactThreshold}
+          tone="mutedSymbol"
+          className="text-base font-medium"
+        />
+      </div>
+      {children}
     </div>
   );
 }

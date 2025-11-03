@@ -1,9 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { AnimatePresence, motion } from "motion/react";
 
 import { cn } from "@/lib/utils";
+
+type TooltipSide = "top" | "bottom" | "left" | "right";
 
 function TooltipProvider({
   delayDuration = 0,
@@ -36,19 +40,57 @@ function TooltipContent({
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+  const [side, setSide] = useState<"top" | "bottom" | "left" | "right">("top");
+
   return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content
         data-slot="tooltip-content"
         sideOffset={sideOffset}
-        className={cn(
-          "bg-foreground text-background animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
-          className
-        )}
         {...props}
+        ref={(node) => {
+          if (node) setSide((node.getAttribute("data-side") as TooltipSide) || "top");
+        }}
+        className="z-50"
       >
-        {children}
-        <TooltipPrimitive.Arrow className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px]" />
+        <AnimatePresence mode="wait">
+          <motion.div
+            initial={{
+              scale: 0.75,
+              translateY: 2,
+              y: side === "top" ? 4 : side === "bottom" ? -4 : 0,
+            }}
+            animate={{ scale: 1, translateY: 0, y: 0 }}
+            exit={{
+              scale: 0.75,
+              translateY: 2,
+              y: side === "top" ? 4 : side === "bottom" ? -4 : 0,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+              mass: 0.4,
+            }}
+            style={{
+              transformOrigin:
+                side === "top"
+                  ? "bottom center"
+                  : side === "bottom"
+                    ? "top center"
+                    : side === "left"
+                      ? "center right"
+                      : "center left",
+            }}
+            className={cn(
+              "bg-foreground text-background z-50 origin-[--radix-tooltip-content-transform-origin] rounded-md px-3 py-1.5 text-left text-xs leading-snug shadow-sm",
+              className
+            )}
+          >
+            {children}
+            <TooltipPrimitive.Arrow className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px]" />
+          </motion.div>
+        </AnimatePresence>
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );

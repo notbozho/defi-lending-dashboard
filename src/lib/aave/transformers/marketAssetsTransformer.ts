@@ -8,6 +8,9 @@ export function transformMarketAsset(raw: Reserve): MarketAsset {
     id: raw.underlyingToken.address,
     name: raw.underlyingToken.name,
     symbol: raw.underlyingToken.symbol,
+    underlyingTokenAddress: raw.underlyingToken.address,
+    aTokenAddress: raw.aToken.address,
+    vTokenAddress: raw.vToken.address,
     imageUrl: raw.underlyingToken.imageUrl,
     decimals: raw.underlyingToken.decimals,
     totalSupplied: valueToBigNumber(raw.supplyInfo.total.value),
@@ -21,6 +24,7 @@ export function transformMarketAsset(raw: Reserve): MarketAsset {
     isFrozen: raw.isFrozen,
     marketAddress: raw.market.address,
     oraclePrice: valueToBigNumber(raw.usdExchangeRate || 0),
+    oracleContractAddress: raw.usdOracleAddress,
   };
 }
 

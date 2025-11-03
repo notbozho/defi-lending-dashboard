@@ -38,6 +38,7 @@ export interface MetricChartProps<T extends MetricDataPoint> {
   className?: string;
   yAxisUnit?: string;
   headerRight?: React.ReactNode;
+  currentValue?: number;
 }
 
 export function MetricChart<T extends MetricDataPoint>({
@@ -58,15 +59,11 @@ export function MetricChart<T extends MetricDataPoint>({
   className,
   yAxisUnit = "%",
   headerRight,
+  currentValue,
 }: MetricChartProps<T>) {
   const baseId = useUID();
   const gradientId = `gradient-${baseId}`;
   const hasData = Array.isArray(data) && data.length > 0;
-
-  const [hasAnimated, setHasAnimated] = React.useState(false);
-  React.useEffect(() => {
-    if (hasData && !hasAnimated) setHasAnimated(true);
-  }, [hasData, hasAnimated]);
 
   if (error) {
     return <div className="text-red-500">Error loading chart: {error.message}</div>;
@@ -78,10 +75,6 @@ export function MetricChart<T extends MetricDataPoint>({
 
   return (
     <div className={cn("relative w-full", className)}>
-      <div className="mb-3 flex items-center justify-end">
-        {headerRight && <div>{headerRight}</div>}
-      </div>
-
       {isLoading && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
           <FadeInOut variant="in">
@@ -106,21 +99,32 @@ export function MetricChart<T extends MetricDataPoint>({
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <div className="flex justify-between">
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Average:</span>
-            {valueFormatter(avg)}
+          <div className="flex justify-start pb-4">
+            <div className="flex items-center gap-2 border-r pr-4">
+              <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+              <p className="text-muted-foreground text-sm">{label}</p>
+            </div>
+
+            <div className="flex items-center gap-2 pr-2 pl-4 text-sm">
+              <span className="text-muted-foreground">Average:</span>
+              {valueFormatter(avg)}
+            </div>
+
+            <div className="flex items-center gap-2 pl-2 text-sm">
+              <span className="text-muted-foreground">Current:</span>
+              {valueFormatter(currentValue ?? 0)}
+            </div>
           </div>
-          <div className="mb-3 flex items-center gap-2">
-            <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} />
-            <p className="text-muted-foreground text-sm">{label}</p>
+          <div className="mb-3 flex items-center justify-end">
+            {headerRight && <div>{headerRight}</div>}
           </div>
         </div>
         <ChartContainer config={chartConfig} className="relative aspect-auto h-[250px] w-full">
           <AreaChart data={data ?? []} margin={{ left: -14, right: 4 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={color} stopOpacity={0.2} />
-                <stop offset="100%" stopColor={color} stopOpacity={0} />
+                <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+                <stop offset="100%" stopColor={color} stopOpacity={0.0} />
               </linearGradient>
             </defs>
 
@@ -130,7 +134,7 @@ export function MetricChart<T extends MetricDataPoint>({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              minTickGap={32}
+              minTickGap={64}
               tickFormatter={(value) =>
                 new Date(value).toLocaleDateString("en-US", {
                   month: "short",
@@ -140,7 +144,7 @@ export function MetricChart<T extends MetricDataPoint>({
             />
             <YAxis tickLine={false} axisLine={false} tickMargin={8} unit={yAxisUnit} />
             <ChartTooltip
-              isAnimationActive={false}
+              isAnimationActive={hasData}
               cursor={{ strokeDasharray: "4px 4px", stroke: color }}
               content={
                 <ChartTooltipContent
@@ -153,7 +157,7 @@ export function MetricChart<T extends MetricDataPoint>({
               }
             />
             <Area
-              isAnimationActive={!hasAnimated}
+              isAnimationActive={hasData}
               animationDuration={800}
               animationEasing="ease-in-out"
               dataKey={dataKey}

@@ -9,6 +9,7 @@ import { Toggle, ToggleGroup } from "@/components/shared/ToggleGroup";
 import type { ChartConfig } from "@/components/ui/chart";
 import { useAPRHistory } from "@/hooks/useAprHistory";
 import { TimeWindowMap } from "@/lib/aave/constants";
+import { useReserveStore } from "@/stores/reserve";
 
 type AprChartType = "supply" | "borrow";
 
@@ -20,8 +21,8 @@ type AprGraphProps = {
 };
 
 const chartColors: Record<AprChartType, string> = {
-  supply: "var(--chart-2)",
-  borrow: "var(--chart-3)",
+  supply: "var(--chart-1)",
+  borrow: "var(--chart-2)",
 };
 
 const chartLabels: Record<AprChartType, string> = {
@@ -40,6 +41,13 @@ export default function AprChart({ type, marketAddress, assetAddress, className 
     period: timeRange,
     borrow: type === "borrow",
   });
+
+  const asset = useReserveStore((s) => s.asset);
+
+  React.useEffect(() => {
+    console.log("asset");
+    console.log(asset);
+  }, [asset]);
 
   const color = chartColors[type];
   const label = chartLabels[type];
@@ -83,6 +91,7 @@ export default function AprChart({ type, marketAddress, assetAddress, className 
         color={color}
         yAxisUnit="%"
         headerRight={headerRight}
+        currentValue={(asset?.supplyApy ?? 0) * 100}
       />
     </div>
   );

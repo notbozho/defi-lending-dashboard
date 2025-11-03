@@ -4,7 +4,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEns } from "@/hooks/useEns";
-import { truncateAddress } from "@/utils/truncateAddress";
+import { truncateAddress } from "@/utils/truncate";
 
 type UserDisplayProps = {
   shouldTruncateAddress?: boolean;
