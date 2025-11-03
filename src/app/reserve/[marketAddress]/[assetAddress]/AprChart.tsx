@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import { useChainId } from "wagmi";
 
 import FadeInOut from "@/components/animations/FadeInOut";
@@ -32,7 +32,7 @@ const chartLabels: Record<AprChartType, string> = {
 
 export default function AprChart({ type, marketAddress, assetAddress, className }: AprGraphProps) {
   const cid = useChainId();
-  const [timeRange, setTimeRange] = React.useState<keyof typeof TimeWindowMap>("1W");
+  const [timeRange, setTimeRange] = useState<keyof typeof TimeWindowMap>("1W");
 
   const { history, error, loading } = useAPRHistory({
     cid,
@@ -43,11 +43,6 @@ export default function AprChart({ type, marketAddress, assetAddress, className 
   });
 
   const asset = useReserveStore((s) => s.asset);
-
-  React.useEffect(() => {
-    console.log("asset");
-    console.log(asset);
-  }, [asset]);
 
   const color = chartColors[type];
   const label = chartLabels[type];
