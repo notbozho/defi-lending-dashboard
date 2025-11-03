@@ -2,7 +2,7 @@
 
 import { useChainId } from "wagmi";
 
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useMarketAsset } from "@/hooks/useMarketAssets";
 
 import AprChart from "./AprChart";
@@ -39,8 +39,22 @@ export default function ReserveView({ marketAddress, assetAddress }: ReserveView
           </Card>
 
           <div className="order-1 grow space-y-6">
-            <AprChart type="supply" marketAddress={marketAddress} assetAddress={assetAddress} />
-            <AprChart type="borrow" marketAddress={marketAddress} assetAddress={assetAddress} />
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-medium">Supply Info</h2>
+              </CardHeader>
+              <CardContent>
+                <AprChart type="supply" marketAddress={marketAddress} assetAddress={assetAddress} />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-medium">Borrow Info</h2>
+              </CardHeader>
+              <CardContent>
+                <AprChart type="borrow" marketAddress={marketAddress} assetAddress={assetAddress} />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

@@ -74,8 +74,7 @@ export default function AprChart({ type, marketAddress, assetAddress, className 
   return (
     <div className={className}>
       <MetricChart
-        title={label}
-        description="Annual percentage rate over selected period"
+        label={label}
         chartConfig={chartConfig}
         data={history}
         dataKey={`apr`}

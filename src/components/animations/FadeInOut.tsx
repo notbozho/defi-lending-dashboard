@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 type FadeInOutProps = {
   variant: "in" | "out" | "both";
