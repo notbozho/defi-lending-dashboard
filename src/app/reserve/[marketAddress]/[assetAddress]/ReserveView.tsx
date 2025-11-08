@@ -1,39 +1,32 @@
 "use client";
 
-import { useEffect } from "react";
 import { useChainId } from "wagmi";
 
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components";
 import { NETWORK_BY_CHAIN_ID, type NetworkConfig } from "@/config/networks";
-import { useMarketAsset } from "@/hooks/useMarketAssets";
-import { useReserveStore } from "@/stores/reserve";
+import { useMarketReserve } from "@/hooks";
 
-import ReserveActions from "./ReserveActions";
-import ReserveCharts from "./ReserveCharts";
-import ReserveHeader from "./ReserveHeader";
-import ReserveStats from "./ReserveStats";
+import ReserveActions from "./components/ReserveActions";
+import ReserveCharts from "./components/ReserveCharts";
+import ReserveHeader from "./components/ReserveHeader";
+import ReserveStats from "./components/ReserveStats";
 import { ReserveHeaderSkeleton, ReserveStatsSkeleton } from "./Skeletons";
 
-interface ReserveViewProps {
+type ReserveViewProps = {
   marketAddress: string;
   assetAddress: string;
-}
+};
 
 export default function ReserveView({ marketAddress, assetAddress }: ReserveViewProps) {
   const chainId = useChainId();
 
-  const { asset, loading, error } = useMarketAsset({
+  const { asset, loading, error } = useMarketReserve({
     cid: chainId,
     marketAddress,
-    assetAddress,
+    underlyingToken: assetAddress,
   });
 
-  const setReserveData = useReserveStore((s) => s.setReserveData);
   const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[chainId];
-
-  useEffect(() => {
-    setReserveData({ asset, loading, error });
-  }, [asset, loading, error, setReserveData]);
 
   if (error) return <div>Error loading reserve: {error}</div>;
 
@@ -59,7 +52,7 @@ export default function ReserveView({ marketAddress, assetAddress }: ReserveView
         </Card>
 
         <div className="flex gap-x-6">
-          <ReserveActions />
+          <ReserveActions loading={loading} />
           <ReserveCharts marketAddress={marketAddress} assetAddress={assetAddress} />
         </div>
       </div>

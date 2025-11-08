@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 // -----------------------------
 const toggleVariants = cva(
   "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out " +
-    "hover:bg-muted/40 hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 " +
+    "hover:bg-muted/40 hover:text-muted-foreground disabled:pointer-events-none cursor-pointer disabled:opacity-50 " +
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
     "whitespace-nowrap relative z-10",
   {
@@ -38,7 +38,7 @@ const toggleVariants = cva(
 
 type ToggleGroupProps = {
   value: string;
-  onValueChange: (val: string) => void;
+  onValueChange: (_val: string) => void;
   children: React.ReactNode;
   variant?: VariantProps<typeof toggleVariants>["variant"];
   size?: VariantProps<typeof toggleVariants>["size"];
@@ -59,7 +59,6 @@ export function ToggleGroup({
   className,
 }: ToggleGroupProps) {
   const groupId = React.useId();
-  const items = React.Children.toArray(children).filter(Boolean);
 
   return (
     <div
@@ -93,7 +92,6 @@ export function ToggleGroup({
 }
 
 export function Toggle({
-  value,
   active,
   variant = "default",
   size = "default",

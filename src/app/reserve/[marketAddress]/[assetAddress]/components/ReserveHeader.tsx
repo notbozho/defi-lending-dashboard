@@ -6,14 +6,14 @@ import { SquareArrowOutUpRight } from "lucide-react";
 import { IconTooltip } from "@/components/shared/IconTooltip";
 import { CardHeader } from "@/components/ui/card";
 import type { NetworkConfig } from "@/config/networks";
-import type { MarketAsset } from "@/lib/aave";
+import type { MarketReserve } from "@/lib/aave";
 
-interface Props {
-  asset: MarketAsset;
+type ReserveHeaderProps = {
+  asset: MarketReserve;
   chain: NetworkConfig;
-}
+};
 
-export default function ReserveHeader({ asset, chain }: Props) {
+export default function ReserveHeader({ asset, chain }: ReserveHeaderProps) {
   return (
     <CardHeader>
       <div className="flex items-center gap-4">

@@ -3,16 +3,14 @@
 import * as React from "react";
 import { useUID } from "react-uid";
 import { motion } from "motion/react";
-import { Area, AreaChart, CartesianGrid, Legend, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
+import { AnimatedNumber } from "@/components";
 import FadeInOut from "@/components/animations/FadeInOut";
 import TextBlur from "@/components/animations/TextBlur";
-import { FormattedNumber } from "@/components/FormattedNumber";
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -92,35 +90,36 @@ export function MetricChart<T extends MetricDataPoint>({
         </div>
       )}
 
+      <div className="flex justify-between">
+        <div className="flex justify-start pb-4">
+          <div className="flex items-center gap-2 border-r pr-4">
+            <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+            <p className="text-muted-foreground text-sm">{label}</p>
+          </div>
+
+          <div className="flex items-center gap-2 pr-2 pl-4 text-sm">
+            <span className="text-muted-foreground">Average:</span>
+            <AnimatedNumber value={avg} mode="formatted" symbol="%" decimals={2} />
+          </div>
+
+          <div className="flex items-center gap-2 pl-2 text-sm">
+            <span className="text-muted-foreground">Current:</span>
+            <AnimatedNumber value={currentValue ?? 0} mode="formatted" symbol="%" decimals={2} />
+          </div>
+        </div>
+        <div className="mb-3 flex items-center justify-end">
+          {headerRight && <div>{headerRight}</div>}
+        </div>
+      </div>
+
       <motion.div
         key={hasData ? "chart" : "empty"}
         initial={{ opacity: 0 }}
         animate={{ opacity: hasData ? 1 : 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <div className="flex justify-between">
-          <div className="flex justify-start pb-4">
-            <div className="flex items-center gap-2 border-r pr-4">
-              <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} />
-              <p className="text-muted-foreground text-sm">{label}</p>
-            </div>
-
-            <div className="flex items-center gap-2 pr-2 pl-4 text-sm">
-              <span className="text-muted-foreground">Average:</span>
-              {valueFormatter(avg)}
-            </div>
-
-            <div className="flex items-center gap-2 pl-2 text-sm">
-              <span className="text-muted-foreground">Current:</span>
-              {valueFormatter(currentValue ?? 0)}
-            </div>
-          </div>
-          <div className="mb-3 flex items-center justify-end">
-            {headerRight && <div>{headerRight}</div>}
-          </div>
-        </div>
         <ChartContainer config={chartConfig} className="relative aspect-auto h-[250px] w-full">
-          <AreaChart data={data ?? []} margin={{ left: -14, right: 4 }}>
+          <AreaChart data={data ?? []} margin={{ left: -14, top: 20, right: 4 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.4} />
@@ -144,7 +143,8 @@ export function MetricChart<T extends MetricDataPoint>({
             />
             <YAxis tickLine={false} axisLine={false} tickMargin={8} unit={yAxisUnit} />
             <ChartTooltip
-              isAnimationActive={hasData}
+              isAnimationActive={false}
+              position={{ y: 40 }}
               cursor={{ strokeDasharray: "4px 4px", stroke: color }}
               content={
                 <ChartTooltipContent

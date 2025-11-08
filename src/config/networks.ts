@@ -1,5 +1,5 @@
 import { Chain } from "viem";
-import { arbitrum, base, mainnet, optimism, polygon, sepolia } from "viem/chains";
+import { arbitrum, mainnet, sepolia } from "viem/chains";
 
 import { linkBuilder } from "@/utils/explorer";
 

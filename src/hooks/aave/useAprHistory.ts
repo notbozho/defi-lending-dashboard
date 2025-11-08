@@ -28,7 +28,7 @@ export function useAPRHistory({
     borrow,
   });
 
-  const loading = isLoading && !history;
+  const loading = isLoading || !history;
 
   return {
     history,

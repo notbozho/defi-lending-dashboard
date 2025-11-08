@@ -1,6 +1,6 @@
 import { BigDecimal } from "@aave/react";
 
-import { FormattedNumber } from "@/components/FormattedNumber";
+import { FormattedNumber } from "@/components/shared/FormattedNumber";
 
 interface MetricItemProps {
   label: string;
@@ -29,6 +29,7 @@ export default function MetricItem({
           value={value}
           symbol={symbol}
           compact
+          animated={true}
           decimals={decimals}
           loading={loading}
           compactThreshold={compactThreshold}

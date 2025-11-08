@@ -69,4 +69,4 @@ function AppSidebar() {
   );
 }
 
-export default AppSidebar;
+export { AppSidebar };

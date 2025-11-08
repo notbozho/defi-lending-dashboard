@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
 
-import AppSidebar from "@/components/layout/AppSidebar";
-import Header from "@/components/layout/Header";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar, Header } from "@/components/layout";
+import { SidebarProvider } from "@/components/ui";
 import Web3Provider from "@/lib/web3/Web3Provider";
 
 import "@/styles/globals.css";

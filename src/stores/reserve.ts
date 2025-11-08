@@ -3,14 +3,14 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import type { MarketAsset } from "@/lib/aave";
+import type { MarketReserve } from "@/lib/aave";
 
 interface ReserveStore {
-  asset: MarketAsset | null;
+  asset: MarketReserve | null;
   loading: boolean;
   error: string | null;
   setReserveData: (_payload: {
-    asset?: MarketAsset | null;
+    asset?: MarketReserve | null;
     loading?: boolean;
     error?: string | null;
   }) => void;

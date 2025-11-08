@@ -1,16 +1,16 @@
 "use client";
 
-import { FormattedNumber } from "@/components/FormattedNumber";
+import { FormattedNumber } from "@/components/shared/FormattedNumber";
 import { IconTooltip } from "@/components/shared/IconTooltip";
 import { CardContent } from "@/components/ui/card";
-import type { MarketAsset } from "@/lib/aave";
+import type { MarketReserve } from "@/lib/aave";
 
-interface Props {
-  asset: MarketAsset;
-}
+type ReserveStatsProps = {
+  asset: MarketReserve;
+};
 
-export default function ReserveStats({ asset }: Props) {
-  const availableUsd = asset.totalSuppliedUsd?.minus(asset.totalBorrowedUsd) ?? 0;
+export default function ReserveStats({ asset }: ReserveStatsProps) {
+  const availableUsd = asset.totalSuppliedUsd - asset.totalBorrowedUsd;
   const available = asset.totalSupplied?.minus(asset.totalBorrowed) ?? 0;
 
   return (

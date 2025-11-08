@@ -4,12 +4,12 @@ import { useEffect } from "react";
 import { useChainId } from "wagmi";
 
 import { MarketView } from "@/app/markets/MarketView";
-import { useMarketAssets } from "@/hooks/useMarketAssets";
-import { useMarketStore } from "@/stores/market";
+import { useMarketReserves } from "@/hooks";
+import { useMarketStore } from "@/stores/useMarketStore";
 
 export default function Page() {
   const cid = useChainId();
-  const { assets, loading, error, market } = useMarketAssets(cid);
+  const { assets, loading, error, market } = useMarketReserves(cid);
   const setMarketData = useMarketStore((s) => s.setMarketData);
 
   useEffect(() => {

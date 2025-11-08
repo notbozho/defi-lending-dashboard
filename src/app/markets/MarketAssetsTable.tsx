@@ -10,7 +10,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Search } from "lucide-react";
-import { motion } from "motion/react";
 
 import { marketAssetsColumns } from "@/app/markets/MarketAssetsColumns";
 import FadeInOut from "@/components/animations/FadeInOut";
@@ -29,16 +28,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MarketAsset } from "@/lib/aave";
+import { MarketReserve } from "@/lib/aave";
 import { cn } from "@/lib/utils";
-import { useMarketStore } from "@/stores/market";
+import { useMarketStore } from "@/stores/useMarketStore";
 
 export function MarketsAssetsTable() {
   const sorting = useMarketStore((state) => state.sorting);
   const setSorting = useMarketStore((state) => state.setSorting);
   const columnFilters = useMarketStore((state) => state.columnFilters);
   const setColumnFilters = useMarketStore((state) => state.setColumnFilters);
-  const data = useMarketStore((state) => state.assets);
+  const data = useMarketStore((state) => state.reserves);
   const loading = useMarketStore((state) => state.loading);
 
   const router = useRouter();
@@ -142,9 +141,7 @@ export function MarketsAssetsTable() {
                 <TableRow
                   key={row.id}
                   onClick={() =>
-                    router.push(
-                      `/reserve/${row.original.marketAddress}/${(row.original as MarketAsset).id}`
-                    )
+                    router.push(`/reserve/${row.original.marketAddress}/${row.original.address}`)
                   }
                   data-state={row.getIsSelected() && "selected"}
                 >
@@ -160,7 +157,7 @@ export function MarketsAssetsTable() {
                       onClick={(e) => {
                         e.stopPropagation();
                         router.push(
-                          `/reserve/${row.original.marketAddress}/${(row.original as MarketAsset).id}`
+                          `/reserve/${row.original.marketAddress}/${row.original.address}`
                         );
                       }}
                     >

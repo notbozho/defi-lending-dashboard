@@ -6,10 +6,10 @@ import type { ColumnFiltersState, OnChangeFn, SortingState } from "@tanstack/rea
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import type { MarketAsset } from "@/lib/aave";
+import type { MarketReserve } from "@/lib/aave";
 
 interface MarketData {
-  assets: MarketAsset[];
+  reserves: MarketReserve[];
   market: Market | null;
   totalBorrows: number;
   loading: boolean;
@@ -26,7 +26,7 @@ interface MarketStore extends MarketData, MarketTableState {
   setColumnFilters: OnChangeFn<ColumnFiltersState>;
 
   setMarketData: (payload: {
-    assets?: MarketAsset[];
+    assets?: MarketReserve[];
     market?: Market | null;
     loading?: boolean;
     error?: string | null;
@@ -36,7 +36,7 @@ interface MarketStore extends MarketData, MarketTableState {
 export const useMarketStore = create<MarketStore>()(
   persist(
     (set) => ({
-      assets: [],
+      reserves: [],
       market: null,
       totalBorrows: 0,
       loading: false,
@@ -65,7 +65,7 @@ export const useMarketStore = create<MarketStore>()(
             }, 0);
           }
           return {
-            assets: assets ?? state.assets,
+            reserves: assets ?? state.reserves,
             market: market ?? state.market,
             loading: loading ?? state.loading,
             error: error ?? state.error,

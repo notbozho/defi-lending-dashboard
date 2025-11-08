@@ -7,7 +7,7 @@ import FadeInOut from "@/components/animations/FadeInOut";
 import { MetricChart } from "@/components/shared/MetricChart";
 import { Toggle, ToggleGroup } from "@/components/shared/ToggleGroup";
 import type { ChartConfig } from "@/components/ui/chart";
-import { useAPRHistory } from "@/hooks/useAprHistory";
+import { useAPRHistory } from "@/hooks";
 import { TimeWindowMap } from "@/lib/aave/constants";
 import { useReserveStore } from "@/stores/reserve";
 

@@ -1,7 +1,6 @@
 "use client";
 
-import { CardContent, CardHeader } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { CardContent, CardHeader, Skeleton } from "@/components";
 
 export function ReserveHeaderSkeleton() {
   return (

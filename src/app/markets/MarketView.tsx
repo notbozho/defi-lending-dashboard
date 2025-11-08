@@ -3,10 +3,10 @@ import Image from "next/image";
 import { MarketsAssetsTable } from "@/app/markets/MarketAssetsTable";
 import { MarketMetrics } from "@/app/markets/MarketMetrics";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMarketStore } from "@/stores/market";
+import { useMarketStore } from "@/stores/useMarketStore";
 
 export function MarketView() {
-  const { assets, market, totalBorrows, loading } = useMarketStore();
+  const { reserves: assets, market, totalBorrows, loading } = useMarketStore();
 
   const isLoading = loading || !assets.length || !market;
 

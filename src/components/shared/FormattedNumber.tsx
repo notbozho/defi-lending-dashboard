@@ -1,8 +1,10 @@
 import { normalizeBN, valueToBigNumber } from "@aave/math-utils";
 import BigNumber from "bignumber.js";
 import { cva } from "class-variance-authority";
+import { Copy } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 type CompactNumberProps = {
@@ -81,10 +83,11 @@ const numberVariants = cva("inline-flex items-center", {
   },
 });
 
-type FormattedNumberProps = CompactNumberProps & {
+export type FormattedNumberProps = CompactNumberProps & {
   symbol?: string;
   compact?: boolean;
   percent?: boolean;
+  tooltip?: boolean;
   tone?: "default" | "mutedNumber" | "mutedSymbol";
   size?: "sm" | "md" | "lg" | "xl";
   loading?: boolean;
@@ -96,6 +99,7 @@ export function FormattedNumber({
   decimals = 2,
   roundDown = false,
   compact = false,
+  tooltip = false,
   compactThreshold,
   symbol,
   percent = false,
@@ -152,7 +156,7 @@ export function FormattedNumber({
     />
   );
 
-  return (
+  const formattedSpan = (
     <span className={cn(numberVariants({ tone, size }), className)}>
       {isSmallerThanMin && <span className="symbol text-muted-foreground mr-0.5">&lt;</span>}
 
@@ -164,5 +168,28 @@ export function FormattedNumber({
 
       {symbol?.toLowerCase() !== "usd" && symbol && <span className="symbol ml-0.5">{symbol}</span>}
     </span>
+  );
+
+  if (!tooltip || !forceCompact) return formattedSpan;
+
+  const fullValue = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 0,
+  }).format(number.toNumber());
+
+  return (
+    <Tooltip delayDuration={200}>
+      <TooltipTrigger asChild>{formattedSpan}</TooltipTrigger>
+      <TooltipContent className="flex items-center gap-1">
+        <span>{fullValue}</span>
+        <Copy
+          // onClick={handleCopy}
+          size={14}
+          className={cn(
+            "text-muted-foreground hover:text-foreground cursor-pointer transition"
+            // copied && "text-primary"
+          )}
+        />
+      </TooltipContent>
+    </Tooltip>
   );
 }

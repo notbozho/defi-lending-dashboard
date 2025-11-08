@@ -2,13 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { FormattedNumber } from "@/components/FormattedNumber";
+import { FormattedNumber } from "@/components/shared/FormattedNumber";
 import { TokenDisplay } from "@/components/shared/TokenDisplay";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MarketAsset } from "@/lib/aave";
-import { useMarketStore } from "@/stores/market";
+import { MarketReserve } from "@/lib/aave";
+import { useMarketStore } from "@/stores/useMarketStore";
 
-export const marketAssetsColumns: ColumnDef<MarketAsset>[] = [
+export const marketAssetsColumns: ColumnDef<MarketReserve>[] = [
   {
     accessorKey: "asset",
     header: "Asset",
