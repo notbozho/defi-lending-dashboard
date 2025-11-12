@@ -18,7 +18,7 @@ export const marketAssetsColumns: ColumnDef<MarketReserve>[] = [
   },
   {
     accessorKey: "totalSupplied",
-    accessorFn: (row) => row.totalSuppliedUsd.toNumber(),
+    accessorFn: (row) => row.totalSuppliedUsd,
     header: "Total Supplied",
     cell: ({ row }) => {
       return (
