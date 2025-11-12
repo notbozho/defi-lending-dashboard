@@ -7,7 +7,7 @@ export default function Page({
 }: {
   params: Promise<{ marketAddress: string; assetAddress: string }>;
 }) {
-  const { marketAddress, assetAddress } = use(params);
+  const { assetAddress } = use(params);
 
-  return <ReserveView marketAddress={marketAddress} assetAddress={assetAddress} />;
+  return <ReserveView assetAddress={assetAddress} />;
 }

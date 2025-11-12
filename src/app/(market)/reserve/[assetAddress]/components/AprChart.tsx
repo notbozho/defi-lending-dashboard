@@ -7,9 +7,9 @@ import FadeInOut from "@/components/animations/FadeInOut";
 import { MetricChart } from "@/components/shared/MetricChart";
 import { Toggle, ToggleGroup } from "@/components/shared/ToggleGroup";
 import type { ChartConfig } from "@/components/ui/chart";
+import { useMarketContext } from "@/context/MarketContext";
 import { useAPRHistory } from "@/hooks";
 import { TimeWindowMap } from "@/lib/aave/constants";
-import { useReserveStore } from "@/stores/reserve";
 
 type AprChartType = "supply" | "borrow";
 
@@ -17,6 +17,7 @@ type AprGraphProps = {
   type: AprChartType;
   marketAddress: string;
   assetAddress: string;
+  currentApr: number;
   className?: string;
 };
 
@@ -30,11 +31,23 @@ const chartLabels: Record<AprChartType, string> = {
   borrow: "Borrow APR",
 };
 
-export default function AprChart({ type, marketAddress, assetAddress, className }: AprGraphProps) {
+export default function AprChart({
+  type,
+  marketAddress,
+  assetAddress,
+  currentApr,
+  className,
+}: AprGraphProps) {
   const cid = useChainId();
   const [timeRange, setTimeRange] = useState<keyof typeof TimeWindowMap>("1W");
 
-  const { history, error, loading } = useAPRHistory({
+  const { isLoading: marketLoading } = useMarketContext();
+
+  const {
+    history,
+    error,
+    loading: aprLoading,
+  } = useAPRHistory({
     cid,
     marketAddress,
     assetAddress,
@@ -42,7 +55,7 @@ export default function AprChart({ type, marketAddress, assetAddress, className 
     borrow: type === "borrow",
   });
 
-  const asset = useReserveStore((s) => s.asset);
+  const loading = marketLoading || aprLoading;
 
   const color = chartColors[type];
   const label = chartLabels[type];
@@ -86,7 +99,7 @@ export default function AprChart({ type, marketAddress, assetAddress, className 
         color={color}
         yAxisUnit="%"
         headerRight={headerRight}
-        currentValue={(asset?.supplyApy ?? 0) * 100}
+        currentValue={(currentApr ?? 0) * 100}
       />
     </div>
   );

@@ -4,9 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { FormattedNumber } from "@/components/shared/FormattedNumber";
 import { TokenDisplay } from "@/components/shared/TokenDisplay";
-import { Skeleton } from "@/components/ui/skeleton";
 import { MarketReserve } from "@/lib/aave";
-import { useMarketStore } from "@/stores/useMarketStore";
 
 export const marketAssetsColumns: ColumnDef<MarketReserve>[] = [
   {

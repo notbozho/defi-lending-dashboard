@@ -1,20 +1,18 @@
 "use client";
 
-import { InterestRateChart } from "@/app/reserve/[marketAddress]/[assetAddress]/components/InterestRateChart";
+import { InterestRateChart } from "@/app/(market)/reserve/[assetAddress]/components/InterestRateChart";
 import { IconTooltip } from "@/components/shared/IconTooltip";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useReserveStore } from "@/stores/reserve";
+import { MarketReserve } from "@/lib/aave";
 
 import AprChart from "./AprChart";
 
 type ReserveChartsProps = {
-  marketAddress: string;
-  assetAddress: string;
+  reserve: MarketReserve;
+  loading: boolean;
 };
 
-export default function ReserveCharts({ marketAddress, assetAddress }: ReserveChartsProps) {
-  const asset = useReserveStore((s) => s.asset);
-
+export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) {
   return (
     <div className="grow space-y-6">
       <Card>
@@ -25,7 +23,12 @@ export default function ReserveCharts({ marketAddress, assetAddress }: ReserveCh
           </div>
         </CardHeader>
         <CardContent>
-          <AprChart type="supply" marketAddress={marketAddress} assetAddress={assetAddress} />
+          <AprChart
+            type="supply"
+            marketAddress={reserve?.marketAddress}
+            assetAddress={reserve?.underlyingAddress}
+            currentApr={reserve?.supplyApy || 0}
+          />
         </CardContent>
       </Card>
 
@@ -37,7 +40,12 @@ export default function ReserveCharts({ marketAddress, assetAddress }: ReserveCh
           </div>
         </CardHeader>
         <CardContent>
-          <AprChart type="borrow" marketAddress={marketAddress} assetAddress={assetAddress} />
+          <AprChart
+            type="borrow"
+            marketAddress={reserve?.marketAddress}
+            assetAddress={reserve?.underlyingAddress}
+            currentApr={reserve?.borrowApy || 0}
+          />
         </CardContent>
       </Card>
 
@@ -47,14 +55,14 @@ export default function ReserveCharts({ marketAddress, assetAddress }: ReserveCh
         </CardHeader>
         <CardContent>
           <InterestRateChart
-            baseVariableBorrowRate={asset?.baseVariableBorrowRate || ""}
-            optimalUsageRatio={asset?.optimalUsageRatio || ""}
-            totalLiquidityUSD={asset?.totalSuppliedUsd || ""}
-            variableRateSlope1={asset?.variableRateSlope1 || ""}
-            variableRateSlope2={asset?.variableRateSlope2 || ""}
-            utilizationRate={asset?.utilizationRate || ""}
-            totalDebtUSD={asset?.totalBorrowedUsd || ""}
-            loading={!asset}
+            baseVariableBorrowRate={reserve?.baseVariableBorrowRate || ""}
+            optimalUsageRatio={reserve?.optimalUsageRatio || ""}
+            totalLiquidityUSD={reserve?.totalSuppliedUsd || 0}
+            variableRateSlope1={reserve?.variableRateSlope1 || ""}
+            variableRateSlope2={reserve?.variableRateSlope2 || ""}
+            utilizationRate={reserve?.utilizationRate || ""}
+            totalDebtUSD={reserve?.totalBorrowedUsd || 0}
+            loading={loading}
           />
         </CardContent>
       </Card>

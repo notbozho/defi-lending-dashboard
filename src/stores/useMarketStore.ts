@@ -1,84 +1,52 @@
 /* eslint-disable no-unused-vars */
 "use client";
 
-import { Market, Reserve } from "@aave/react";
-import type { ColumnFiltersState, OnChangeFn, SortingState } from "@tanstack/react-table";
+import { Market } from "@aave/react";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
 
-import type { MarketReserve } from "@/lib/aave";
+import { type MarketReserve, transformMarketReserves } from "@/lib/aave";
 
 interface MarketData {
-  reserves: MarketReserve[];
-  market: Market | null;
-  totalBorrows: number;
-  loading: boolean;
-  error: string | null;
+  currentMarket: Market | null;
+  supplyReserves: Record<string, MarketReserve>;
+  borrowReserves: Record<string, MarketReserve>;
 }
 
-interface MarketTableState {
-  sorting: SortingState;
-  columnFilters: ColumnFiltersState;
+interface MarketActions {
+  setMarketData: (market: Market) => void;
+  clearMarket: () => void;
+  getCurrentMarketAddress: () => string | null;
 }
 
-interface MarketStore extends MarketData, MarketTableState {
-  setSorting: OnChangeFn<SortingState>;
-  setColumnFilters: OnChangeFn<ColumnFiltersState>;
+export const useMarketStore = create<MarketData & MarketActions>()((set, get) => ({
+  currentMarket: null,
+  supplyReserves: {},
+  borrowReserves: {},
 
-  setMarketData: (payload: {
-    assets?: MarketReserve[];
-    market?: Market | null;
-    loading?: boolean;
-    error?: string | null;
-  }) => void;
-}
+  sorting: [],
+  columnFilters: [],
 
-export const useMarketStore = create<MarketStore>()(
-  persist(
-    (set) => ({
-      reserves: [],
-      market: null,
-      totalBorrows: 0,
-      loading: false,
-      error: null,
+  setMarketData: (market) => {
+    const supply = transformMarketReserves(market.supplyReserves ?? []).sort(
+      (a, b) => b.totalSuppliedUsd - a.totalSuppliedUsd
+    );
+    const borrow = transformMarketReserves(market.borrowReserves ?? []).sort(
+      (a, b) => b.totalSuppliedUsd - a.totalSuppliedUsd
+    );
 
-      sorting: [{ id: "totalSupplied", desc: true }],
-      columnFilters: [],
+    set({
+      currentMarket: market,
+      supplyReserves: Object.fromEntries(supply.map((r) => [r.underlyingAddress, r])),
+      borrowReserves: Object.fromEntries(borrow.map((r) => [r.underlyingAddress, r])),
+    });
+  },
 
-      setSorting: (updater) =>
-        set((state) => ({
-          sorting: typeof updater === "function" ? updater(state.sorting) : updater,
-        })),
-
-      setColumnFilters: (updater) =>
-        set((state) => ({
-          columnFilters: typeof updater === "function" ? updater(state.columnFilters) : updater,
-        })),
-
-      setMarketData: ({ assets, market, loading, error }) =>
-        set((state) => {
-          let totalBorrows = 0;
-          if (market && market.borrowReserves) {
-            totalBorrows = market.borrowReserves.reduce((acc: number, reserve: Reserve) => {
-              const value = reserve.borrowInfo?.total.usd ?? 0;
-              return acc + Number(value);
-            }, 0);
-          }
-          return {
-            reserves: assets ?? state.reserves,
-            market: market ?? state.market,
-            loading: loading ?? state.loading,
-            error: error ?? state.error,
-            totalBorrows,
-          };
-        }),
+  clearMarket: () =>
+    set({
+      currentMarket: null,
+      supplyReserves: {},
+      borrowReserves: {},
     }),
-    {
-      name: "market-store",
-      storage: createJSONStorage(() => sessionStorage),
-      partialize: (state) => ({
-        sorting: state.sorting,
-      }),
-    }
-  )
-);
+
+  getCurrentMarketAddress: () => get().currentMarket?.address ?? null,
+}));

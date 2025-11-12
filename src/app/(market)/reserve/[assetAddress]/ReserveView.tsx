@@ -4,7 +4,7 @@ import { useChainId } from "wagmi";
 
 import { Card } from "@/components";
 import { NETWORK_BY_CHAIN_ID, type NetworkConfig } from "@/config/networks";
-import { useMarketReserve } from "@/hooks";
+import { useMarketContext } from "@/context/MarketContext";
 
 import ReserveActions from "./components/ReserveActions";
 import ReserveCharts from "./components/ReserveCharts";
@@ -12,39 +12,31 @@ import ReserveHeader from "./components/ReserveHeader";
 import ReserveStats from "./components/ReserveStats";
 import { ReserveHeaderSkeleton, ReserveStatsSkeleton } from "./Skeletons";
 
-type ReserveViewProps = {
-  marketAddress: string;
-  assetAddress: string;
-};
-
-export default function ReserveView({ marketAddress, assetAddress }: ReserveViewProps) {
+export default function ReserveView({ assetAddress }: { assetAddress: string }) {
   const chainId = useChainId();
 
-  const { asset, loading, error } = useMarketReserve({
-    cid: chainId,
-    marketAddress,
-    underlyingToken: assetAddress,
-  });
+  const { isLoading, error, supplyReserves } = useMarketContext();
+  const reserve = supplyReserves[assetAddress];
 
-  const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[chainId];
+  const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[chainId]; // TODO: export to a web3 context
 
-  if (error) return <div>Error loading reserve: {error}</div>;
+  if (error) return <div>Error loading reserve</div>;
 
   return (
     <main className="bg-background min-h-screen w-full py-6">
       <div className="container mx-auto space-y-6">
         <Card>
-          {loading ? (
+          {isLoading ? (
             <>
               <ReserveHeaderSkeleton />
               <ReserveStatsSkeleton />
             </>
           ) : (
             <>
-              {asset && currentChain && (
+              {reserve && currentChain && (
                 <>
-                  <ReserveHeader asset={asset} chain={currentChain} />
-                  <ReserveStats asset={asset} />
+                  <ReserveHeader asset={reserve} chain={currentChain} />
+                  <ReserveStats asset={reserve} />
                 </>
               )}
             </>
@@ -52,8 +44,8 @@ export default function ReserveView({ marketAddress, assetAddress }: ReserveView
         </Card>
 
         <div className="flex gap-x-6">
-          <ReserveActions loading={loading} />
-          <ReserveCharts marketAddress={marketAddress} assetAddress={assetAddress} />
+          <ReserveActions loading={isLoading} />
+          <ReserveCharts reserve={reserve} loading={isLoading} />
         </div>
       </div>
     </main>

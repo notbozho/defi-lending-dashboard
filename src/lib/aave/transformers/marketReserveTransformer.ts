@@ -3,7 +3,7 @@ import { Reserve } from "@aave/react";
 import { Address } from "viem";
 
 export interface MarketReserve {
-  address: Address;
+  underlyingAddress: Address;
   marketAddress: Address;
   name: string;
   symbol: string;
@@ -12,9 +12,9 @@ export interface MarketReserve {
   imageUrl?: string;
   decimals: number;
   totalSupplied: BigNumber;
-  totalSuppliedUsd: string;
+  totalSuppliedUsd: number;
   totalBorrowed: BigNumber;
-  totalBorrowedUsd: string;
+  totalBorrowedUsd: number;
   supplyApy: number;
   borrowApy: number;
   isPaused?: boolean;
@@ -30,7 +30,7 @@ export interface MarketReserve {
 
 export function transformMarketReserve(raw: Reserve): MarketReserve {
   return {
-    address: raw.underlyingToken.address,
+    underlyingAddress: raw.underlyingToken.address,
     name: raw.underlyingToken.name,
     symbol: raw.underlyingToken.symbol,
     aTokenAddress: raw.aToken.address,
@@ -38,9 +38,9 @@ export function transformMarketReserve(raw: Reserve): MarketReserve {
     imageUrl: raw.underlyingToken.imageUrl,
     decimals: raw.underlyingToken.decimals,
     totalSupplied: valueToBigNumber(raw.supplyInfo.total.value),
-    totalSuppliedUsd: String(raw.size.usd),
+    totalSuppliedUsd: Number(raw.size.usd),
     totalBorrowed: valueToBigNumber(raw.borrowInfo?.total.amount.value || 0),
-    totalBorrowedUsd: String(raw.borrowInfo?.total.usd),
+    totalBorrowedUsd: Number(raw.borrowInfo?.total.usd),
     supplyApy: Number(raw.supplyInfo.apy.value),
     borrowApy: Number(raw.borrowInfo?.apy.value),
     isPaused: raw.isPaused,
@@ -56,12 +56,12 @@ export function transformMarketReserve(raw: Reserve): MarketReserve {
   };
 }
 
-export function transformMarketAssets(reserves: Reserve[]): MarketReserve[] {
+export function transformMarketReserves(reserves: Reserve[]): MarketReserve[] {
   return reserves.map(transformMarketReserve);
 }
 
-export function filterActiveMarketAssets(assets: MarketReserve[]): MarketReserve[] {
-  return assets
-    .filter((asset) => !asset.isPaused && !asset.isFrozen)
+export function filterActiveMarketReserves(reserves: MarketReserve[]): MarketReserve[] {
+  return reserves
+    .filter((reserve) => !reserve.isPaused && !reserve.isFrozen)
     .sort((a, b) => new BigNumber(b.totalSuppliedUsd).minus(a.totalSuppliedUsd).toNumber());
 }

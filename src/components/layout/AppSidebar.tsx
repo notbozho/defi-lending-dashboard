@@ -17,7 +17,7 @@ import { GitHub } from "../icons/GitHub";
 const side_bar_data = {
   navPrimary: [
     { name: "Dashboard", link: "/", icon: LayoutDashboard },
-    { name: "Markets", link: "/markets", icon: Store },
+    { name: "Reserves", link: "/reserves", icon: Store },
     { name: "Account", link: "/account", icon: User },
     { name: "Swap", link: "/swap", icon: ArrowLeftRight },
   ],

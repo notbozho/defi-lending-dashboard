@@ -1,5 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
+
+import { client } from "@/lib/aave";
 import { TimeWindowMap } from "@/lib/aave/constants";
-import { useAPRHistoryQuery } from "@/lib/aave/queries/aprHistory/useAprHistoryQuery";
+import { fetchAPRHistory } from "@/lib/aave/queries/fetchAprHistory";
+import { queryKeyFactory } from "@/utils/queryKeyFactory";
 
 type APRHistoryParams = {
   cid: number;
@@ -16,16 +20,24 @@ export function useAPRHistory({
   period = "1W",
   borrow = false,
 }: APRHistoryParams) {
+  const queryKey = [
+    borrow ? "borrowAPRHistory" : "supplyAPRHistory",
+    ...queryKeyFactory.reserve(cid, marketAddress, assetAddress),
+    period,
+  ];
+
   const {
     data: history,
     error,
     isLoading,
-  } = useAPRHistoryQuery({
-    cid,
-    marketAddress,
-    assetAddress,
-    period,
-    borrow,
+  } = useQuery({
+    enabled: !!client,
+    queryKey,
+    queryFn: () => fetchAPRHistory({ cid, marketAddress, assetAddress, period, borrow }),
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
 
   const loading = isLoading || !history;

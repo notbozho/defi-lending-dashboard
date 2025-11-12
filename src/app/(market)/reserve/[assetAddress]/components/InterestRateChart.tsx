@@ -1,6 +1,6 @@
 "use client";
 
-import React, { JSX, useMemo } from "react";
+import React, { useMemo } from "react";
 import { normalizeBN, RAY, rayDiv, rayMul } from "@aave/math-utils";
 import BigNumber from "bignumber.js";
 import { motion } from "motion/react";
@@ -19,8 +19,8 @@ type InterestRateModelType = {
   variableRateSlope1: string;
   variableRateSlope2: string;
   baseVariableBorrowRate: string;
-  totalLiquidityUSD: string;
-  totalDebtUSD: string;
+  totalLiquidityUSD: number;
+  totalDebtUSD: number;
 };
 
 type InterestRateChartProps = InterestRateModelType & {
@@ -38,8 +38,8 @@ type RechartsPayload<T> = { payload: T };
 type CustomTooltipProps = {
   active?: boolean;
   payload?: RechartsPayload<Rate>[];
-  liquidity: string;
-  debt: string;
+  liquidity: number;
+  debt: number;
 };
 type LabelViewBox = {
   x?: number;

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import {
   flexRender,
   getCoreRowModel,
@@ -11,7 +12,7 @@ import {
 } from "@tanstack/react-table";
 import { Search } from "lucide-react";
 
-import { marketAssetsColumns } from "@/app/markets/MarketAssetsColumns";
+import { marketAssetsColumns } from "@/app/(market)/reserves/MarketAssetsColumns";
 import FadeInOut from "@/components/animations/FadeInOut";
 import TextBlur from "@/components/animations/TextBlur";
 import { Button } from "@/components/ui/button";
@@ -29,16 +30,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MarketReserve } from "@/lib/aave";
-import { cn } from "@/lib/utils";
-import { useMarketStore } from "@/stores/useMarketStore";
 
-export function MarketsAssetsTable() {
-  const sorting = useMarketStore((state) => state.sorting);
-  const setSorting = useMarketStore((state) => state.setSorting);
-  const columnFilters = useMarketStore((state) => state.columnFilters);
-  const setColumnFilters = useMarketStore((state) => state.setColumnFilters);
-  const data = useMarketStore((state) => state.reserves);
-  const loading = useMarketStore((state) => state.loading);
+type MarketReservesTableProps = {
+  reserves: MarketReserve[];
+  loading: boolean;
+};
+
+export function MarketReservesTable({ reserves, loading }: MarketReservesTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
@@ -59,7 +59,7 @@ export function MarketsAssetsTable() {
   }, []);
 
   const table = useReactTable({
-    data,
+    data: reserves,
     columns: marketAssetsColumns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
@@ -72,7 +72,7 @@ export function MarketsAssetsTable() {
     },
   });
 
-  const isLoading = loading || data.length === 0;
+  const isLoading = loading || reserves.length === 0;
 
   return (
     <Card className="p-0">
@@ -140,9 +140,7 @@ export function MarketsAssetsTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  onClick={() =>
-                    router.push(`/reserve/${row.original.marketAddress}/${row.original.address}`)
-                  }
+                  onClick={() => router.push(`/reserve/${row.original.underlyingAddress}`)}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -156,9 +154,7 @@ export function MarketsAssetsTable() {
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
-                        router.push(
-                          `/reserve/${row.original.marketAddress}/${row.original.address}`
-                        );
+                        router.push(`/reserve/${row.original.underlyingAddress}`);
                       }}
                     >
                       View
