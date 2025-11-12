@@ -29,7 +29,6 @@ export default function MetricItem({
           value={value}
           symbol={symbol}
           compact
-          animated={true}
           decimals={decimals}
           loading={loading}
           compactThreshold={compactThreshold}
