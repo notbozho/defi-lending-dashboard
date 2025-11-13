@@ -1,22 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import {
-  ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import { Search } from "lucide-react";
 
+import { marketAssetsColumns } from "@/app/(market)/reserves/MarketAssetsColumns";
+import FadeInOut from "@/components/animations/FadeInOut";
+import TextBlur from "@/components/animations/TextBlur";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Kbd } from "@/components/ui/kbd";
+import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import {
   Table,
@@ -26,21 +29,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MarketAsset } from "@/lib/aave";
+import { MarketReserve } from "@/lib/aave";
 
-interface MarketTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
+type MarketReservesTableProps = {
+  reserves: MarketReserve[];
+  loading: boolean;
+};
 
-export function MarketsTable<TData, TValue>({ columns, data }: MarketTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([{ id: "totalSupplied", desc: true }]);
+export function MarketReservesTable({ reserves, loading }: MarketReservesTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const router = useRouter();
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const isInput =
+        e.target instanceof HTMLElement && ["INPUT", "TEXTAREA"].includes(e.target.tagName);
+
+      if (!isInput && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const table = useReactTable({
-    data,
-    columns,
+    data: reserves,
+    columns: marketAssetsColumns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -52,8 +72,10 @@ export function MarketsTable<TData, TValue>({ columns, data }: MarketTableProps<
     },
   });
 
+  const isLoading = loading || reserves.length === 0;
+
   return (
-    <div className="bg-card w-full space-y-4 overflow-hidden rounded-md">
+    <Card className="p-0">
       <div className="flex justify-between border-b p-4">
         <div className="flex items-center space-x-2">
           <span className="text-sm">Paused Assets</span>
@@ -61,6 +83,7 @@ export function MarketsTable<TData, TValue>({ columns, data }: MarketTableProps<
         </div>
         <InputGroup className="max-w-sm justify-self-end">
           <InputGroupInput
+            ref={searchRef}
             value={(table.getColumn("asset")?.getFilterValue() as string) ?? ""}
             onChange={(event) => table.getColumn("asset")?.setFilterValue(event.target.value)}
             placeholder="Search..."
@@ -94,11 +117,30 @@ export function MarketsTable<TData, TValue>({ columns, data }: MarketTableProps<
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={marketAssetsColumns.length + 1} className="h-full p-4">
+                  <div className="flex h-full w-full flex-col items-center justify-center">
+                    <FadeInOut variant="in">
+                      <Spinner className="text-muted-foreground h-10 w-10" />
+                    </FadeInOut>
+                    <TextBlur
+                      element="span"
+                      variant="in"
+                      wordByWord={true}
+                      delay={0.3}
+                      className="text-muted-foreground mt-2 text-sm"
+                    >
+                      Loading assets...
+                    </TextBlur>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  onClick={() => router.push(`/reserve/${(row.original as MarketAsset).id}`)}
+                  onClick={() => router.push(`/reserve/${row.original.underlyingAddress}`)}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -106,18 +148,24 @@ export function MarketsTable<TData, TValue>({ columns, data }: MarketTableProps<
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
+                  <TableCell className="not-first:text-right">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/reserve/${row.original.underlyingAddress}`);
+                      }}
+                    >
+                      View
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
-                </TableCell>
-              </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-    </div>
+    </Card>
   );
 }
