@@ -8,7 +8,13 @@ export function useEns(address?: `0x{string}`) {
   const resolvedAddress = address ?? account.address;
 
   const ensName = useEnsName({ address: resolvedAddress, chainId });
-  const ensAvatar = useEnsAvatar({ name: ensName.data ?? undefined, chainId });
+  const ensAvatar = useEnsAvatar({
+    name: ensName.data ?? undefined,
+    chainId,
+    query: {
+      staleTime: 1000 * 60 * 60, // 1 hour
+    },
+  });
 
   return {
     address: resolvedAddress,

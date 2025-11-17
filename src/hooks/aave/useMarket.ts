@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
+import { useWeb3Context } from "@/context/Web3Context";
 import { client } from "@/lib/aave";
 import { fetchMarket } from "@/lib/aave/queries/fetchMarket";
 import { useMarketStore } from "@/stores/useMarketStore";
@@ -14,6 +15,7 @@ type MarketParams = {
 
 export function useMarket({ cid, marketAddress, account }: MarketParams) {
   const setMarketData = useMarketStore((s) => s.setMarketData);
+  const { isLoading } = useWeb3Context();
 
   const queryKey = [
     ...queryKeyFactory.market(cid, marketAddress),
@@ -21,7 +23,7 @@ export function useMarket({ cid, marketAddress, account }: MarketParams) {
   ];
 
   const query = useQuery({
-    enabled: !!client,
+    enabled: !!client && !isLoading,
     queryKey,
     queryFn: () => fetchMarket({ cid, marketAddress, account }),
     staleTime: 1000 * 60 * 5,

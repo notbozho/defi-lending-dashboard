@@ -1,5 +1,10 @@
-import { AaveV3Ethereum } from "@bgd-labs/aave-address-book";
-import { mainnet } from "viem/chains";
+import {
+  AaveV3Arbitrum,
+  AaveV3Ethereum,
+  AaveV3Polygon,
+  AaveV3Sepolia,
+} from "@bgd-labs/aave-address-book";
+import { arbitrum, mainnet, polygon, sepolia } from "wagmi/chains";
 
 type MarketDataType = {
   marketTitle: string;
@@ -12,13 +17,40 @@ type MarketDataType = {
 };
 
 export const MARKETS: Record<string, MarketDataType> = {
-  aaveV3Ethereum: {
+  AaveV3Ethereum: {
     marketTitle: "Core V3",
     chainId: mainnet.id,
     subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-ethereum",
     addresses: {
       LENDING_POOL_ADDRESS_PROVIDER: AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
       LENDING_POOL: AaveV3Ethereum.POOL,
+    },
+  },
+  AaveV3Sepolia: {
+    marketTitle: "Aave V3 Sepolia",
+    chainId: sepolia.id,
+    subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-sepolia",
+    addresses: {
+      LENDING_POOL_ADDRESS_PROVIDER: AaveV3Sepolia.POOL_ADDRESSES_PROVIDER,
+      LENDING_POOL: AaveV3Sepolia.POOL,
+    },
+  },
+  AaveV3Polygon: {
+    marketTitle: "Aave V3 Polygon",
+    chainId: polygon.id,
+    subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-polygon",
+    addresses: {
+      LENDING_POOL_ADDRESS_PROVIDER: AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
+      LENDING_POOL: AaveV3Polygon.POOL,
+    },
+  },
+  AaveV3Arbitrum: {
+    marketTitle: "Aave V3 Arbitrum",
+    chainId: arbitrum.id,
+    subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-arbitrum",
+    addresses: {
+      LENDING_POOL_ADDRESS_PROVIDER: AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER,
+      LENDING_POOL: AaveV3Arbitrum.POOL,
     },
   },
 };

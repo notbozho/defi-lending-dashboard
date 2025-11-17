@@ -14,6 +14,7 @@ export async function fetchMarket({
   marketAddress,
   account,
 }: MarketFetchParams): Promise<Market | null> {
+  console.log("Fetching market data for:", { cid, marketAddress, account });
   const res = await market(client, {
     address: evmAddress(marketAddress),
     chainId: chainId(cid),

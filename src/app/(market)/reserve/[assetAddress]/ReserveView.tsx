@@ -24,7 +24,7 @@ export default function ReserveView({ assetAddress }: { assetAddress: string }) 
 
   return (
     <main className="bg-background min-h-screen w-full py-6">
-      <div className="container mx-auto space-y-6">
+      <div className="container mx-auto space-y-6 px-2">
         <Card>
           {isLoading ? (
             <>

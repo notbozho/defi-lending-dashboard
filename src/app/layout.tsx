@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
 
-import { AppSidebar, Header } from "@/components/layout";
-import { SidebarProvider } from "@/components/ui";
-import Web3Provider from "@/lib/web3/Web3Provider";
+import { Header } from "@/components/layout/Header";
+import Providers from "@/lib/Providers";
 
 import "@/styles/globals.css";
 
@@ -31,17 +30,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.variable} ${spaceMono.variable} font-sans antialiased`}>
-        <Web3Provider>
-          <SidebarProvider className="flex flex-col">
-            <div className="[--header-height:calc(--spacing(12))]">
-              <Header />
-              <div className="flex flex-1">
-                <AppSidebar />
-                {children}
-              </div>
-            </div>
-          </SidebarProvider>
-        </Web3Provider>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );

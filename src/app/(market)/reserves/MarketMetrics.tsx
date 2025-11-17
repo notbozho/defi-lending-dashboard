@@ -1,7 +1,7 @@
 import { BigDecimal } from "@aave/react";
 
 import MetricItem from "@/components/shared/MetricItem";
-import { Card } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 
 interface MarketMetricsProps {
   loading: boolean;
@@ -19,11 +19,35 @@ export function MarketMetrics({
   assetsCount,
 }: MarketMetricsProps) {
   return (
-    <Card className="flex-row divide-x px-6">
-      <MetricItem label="Total Supply" value={totalSupply} loading={loading} symbol="usd" />
-      <MetricItem label="Total Available" value={totalAvailable} loading={loading} symbol="usd" />
-      <MetricItem label="Total Borrows" value={totalBorrows} loading={loading} symbol="usd" />
-      <MetricItem label="Assets" value={assetsCount} loading={loading} decimals={0} />
-    </Card>
+    <CardContent className="flex flex-row gap-24">
+      <MetricItem
+        label="Total Supply"
+        tooltipText="The total amount of assets supplied to the market."
+        value={totalSupply}
+        loading={loading}
+        symbol="usd"
+      />
+      <MetricItem
+        label="Total Available"
+        tooltipText="The total amount of assets available for borrowing."
+        value={totalAvailable}
+        loading={loading}
+        symbol="usd"
+      />
+      <MetricItem
+        label="Total Borrows"
+        tooltipText="The total amount of assets borrowed from the market."
+        value={totalBorrows}
+        loading={loading}
+        symbol="usd"
+      />
+      <MetricItem
+        label="Assets"
+        tooltipText="The total number of unique assets in the market."
+        value={assetsCount}
+        loading={loading}
+        decimals={0}
+      />
+    </CardContent>
   );
 }

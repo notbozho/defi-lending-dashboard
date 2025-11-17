@@ -1,11 +1,11 @@
-import { Chain } from "viem";
-import { arbitrum, mainnet, sepolia } from "viem/chains";
+import { arbitrum, Chain, mainnet, polygon, sepolia } from "wagmi/chains";
 
 import { linkBuilder } from "@/utils/explorer";
 
 export type NetworkConfig = {
   id: number;
   name: string;
+  logoUrl?: string;
   rpcUrl: string;
   explorerUrl: string;
   isTestnet: boolean;
@@ -16,7 +16,7 @@ export type NetworkConfig = {
 export const NETWORKS: Record<string, NetworkConfig> = {
   mainnet: {
     id: mainnet.id,
-    name: "Ethereum Mainnet",
+    name: "Ethereum",
     rpcUrl: "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
     explorerUrl: "https://etherscan.io",
     isTestnet: false,
@@ -25,12 +25,21 @@ export const NETWORKS: Record<string, NetworkConfig> = {
   },
   sepolia: {
     id: sepolia.id,
-    name: "Sepolia Testnet",
+    name: "Sepolia",
     rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID",
     explorerUrl: "https://sepolia.etherscan.io",
     isTestnet: true,
     chain: sepolia,
     buildExplorerUrl: linkBuilder({ baseUrl: "https://sepolia.etherscan.io" }),
+  },
+  polygon: {
+    id: polygon.id,
+    name: "Polygon",
+    rpcUrl: "https://polygon-mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
+    explorerUrl: "https://polygonscan.com",
+    isTestnet: false,
+    chain: polygon,
+    buildExplorerUrl: linkBuilder({ baseUrl: "https://polygonscan.com" }),
   },
   arbitrum: {
     id: arbitrum.id,
