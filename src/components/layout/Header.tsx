@@ -1,5 +1,6 @@
 "use client";
 
+import { Route } from "next";
 import Link from "next/link";
 import { ArrowLeftRight, LayoutDashboard, MenuIcon, Store, User } from "lucide-react";
 
@@ -9,7 +10,15 @@ import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu
 
 import WalletStatus from "../WalletStatus";
 
-const links = [
+type HeaderLink = {
+  name: string;
+  link: Route;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  colorStart: string;
+  colorEnd: string;
+};
+
+const links: HeaderLink[] = [
   {
     name: "Dashboard",
     link: "/",
@@ -26,14 +35,14 @@ const links = [
   },
   {
     name: "Account",
-    link: "/account",
+    link: "/",
     icon: User,
     colorStart: "red-500",
     colorEnd: "yellow-600",
   },
   {
     name: "Swap",
-    link: "/swap",
+    link: "/",
     icon: ArrowLeftRight,
     colorStart: "purple-500",
     colorEnd: "pink-600",

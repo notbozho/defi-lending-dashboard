@@ -4,8 +4,13 @@ import path from "path";
 const nextConfig: NextConfig = {
   reactCompiler: true,
   reactStrictMode: false,
+  typedRoutes: true,
   turbopack: {
     root: path.join(__dirname),
+  },
+  experimental: {
+    typedEnv: true,
+    turbopackFileSystemCacheForDev: true,
   },
   images: {
     remotePatterns: [

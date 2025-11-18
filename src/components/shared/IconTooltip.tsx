@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Route } from "next";
 import Link from "next/link";
 import { Info } from "lucide-react";
 
@@ -36,7 +37,7 @@ export function IconTooltip({
 
   const wrappedIcon = href ? (
     <Link
-      href={href}
+      href={href as Route}
       target="_blank"
       rel="noopener noreferrer"
       className={cn(

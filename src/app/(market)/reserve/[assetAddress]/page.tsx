@@ -1,13 +1,7 @@
-import { use } from "react";
-
 import ReserveView from "./ReserveView";
 
-export default function Page({
-  params,
-}: {
-  params: Promise<{ marketAddress: string; assetAddress: string }>;
-}) {
-  const { assetAddress } = use(params);
+export default async function Page(props: PageProps<"/reserve/[assetAddress]">) {
+  const { assetAddress } = await props.params;
 
   return <ReserveView assetAddress={assetAddress} />;
 }

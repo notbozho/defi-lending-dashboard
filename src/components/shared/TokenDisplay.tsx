@@ -27,7 +27,7 @@ export function TokenDisplay({
   if (loading) {
     return (
       <div className={cn("flex items-center gap-3", className)}>
-        <Skeleton className={cn("rounded-full", `h-[${iconSize}px] w-[${iconSize}px]`)} />
+        <Skeleton className={cn("rounded-full", `size-[${iconSize}px]`)} />
         <div className="flex flex-col gap-1">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-3 w-12" />
