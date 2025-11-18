@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 import type { ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import {
   flexRender,
@@ -12,13 +13,15 @@ import {
 } from "@tanstack/react-table";
 import { Search } from "lucide-react";
 
-import { marketAssetsColumns } from "@/app/(market)/reserves/MarketAssetsColumns";
+import { marketReservesColumns } from "@/app/(market)/reserves/MarketReservesColumns";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components";
 import FadeInOut from "@/components/animations/FadeInOut";
 import TextBlur from "@/components/animations/TextBlur";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Kbd } from "@/components/ui/kbd";
+import { SortingIndicator } from "@/components/ui/sorting-indicator";
 import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -30,6 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MarketReserve } from "@/lib/aave";
+import { cn } from "@/lib/utils";
 
 type MarketReservesTableProps = {
   reserves: MarketReserve[];
@@ -60,7 +64,7 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
 
   const table = useReactTable({
     data: reserves,
-    columns: marketAssetsColumns,
+    columns: marketReservesColumns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -84,8 +88,8 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
         <InputGroup className="max-w-sm justify-self-end">
           <InputGroupInput
             ref={searchRef}
-            value={(table.getColumn("asset")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("asset")?.setFilterValue(event.target.value)}
+            value={(table.getColumn("reserve")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("reserve")?.setFilterValue(event.target.value)}
             placeholder="Search..."
           />
           <InputGroupAddon>
@@ -102,14 +106,53 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
+                  const [hover, setHover] = useState(false);
+
+                  const sorted = header.column.getIsSorted() as "asc" | "desc" | undefined;
+                  const canSort = header.column.getCanSort();
+
                   return (
                     <TableHead
-                      className="text-muted-foreground not-first:text-right"
+                      className="text-muted-foreground not-first:text-center"
                       key={header.id}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder ? null : (
+                        <TooltipProvider delayDuration={150}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div
+                                onMouseEnter={() => setHover(true)}
+                                onMouseLeave={() => setHover(false)}
+                                onClick={header.column.getToggleSortingHandler()}
+                                className={cn(
+                                  "group flex items-center justify-center select-none",
+                                  canSort && "cursor-pointer"
+                                )}
+                              >
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+
+                                <div className="w-4">
+                                  <SortingIndicator
+                                    direction={sorted}
+                                    visible={hover || !!sorted}
+                                  />
+                                </div>
+                              </div>
+                            </TooltipTrigger>
+
+                            {header.column.getCanSort() && (
+                              <TooltipContent side="top" className="text-xs">
+                                {header.column.getNextSortingOrder() === "asc"
+                                  ? "Sort ascending"
+                                  : header.column.getNextSortingOrder() === "desc"
+                                    ? "Sort descending"
+                                    : "Clear sort"}
+                              </TooltipContent>
+                            )}
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                     </TableHead>
                   );
                 })}
@@ -119,7 +162,7 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={marketAssetsColumns.length + 1} className="h-full p-4">
+                <TableCell colSpan={marketReservesColumns.length + 1} className="h-full p-4">
                   <div className="flex h-full w-full flex-col items-center justify-center">
                     <FadeInOut variant="in">
                       <Spinner className="text-muted-foreground h-10 w-10" />
@@ -144,11 +187,11 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className="not-first:text-right" key={cell.id}>
+                    <TableCell className="not-first:text-center" key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
-                  <TableCell className="not-first:text-right">
+                  <TableCell className="not-first:text-center">
                     <Button
                       variant="outline"
                       size="sm"
