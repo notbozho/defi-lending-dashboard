@@ -25,7 +25,7 @@ export default function ReserveView({ assetAddress }: { assetAddress: string }) 
   return (
     <main className="bg-background min-h-screen w-full py-6">
       <div className="container mx-auto space-y-6 px-2">
-        <Card>
+        <Card className="min-h-64 justify-between">
           {isLoading ? (
             <>
               <ReserveHeaderSkeleton />
@@ -44,7 +44,7 @@ export default function ReserveView({ assetAddress }: { assetAddress: string }) 
         </Card>
 
         <div className="flex gap-x-6">
-          <ReserveActions loading={isLoading} />
+          <ReserveActions reserve={reserve} loading={isLoading} />
           <ReserveCharts reserve={reserve} loading={isLoading} />
         </div>
       </div>
