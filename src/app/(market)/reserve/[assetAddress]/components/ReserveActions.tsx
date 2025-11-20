@@ -19,8 +19,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBalanceOf } from "@/hooks/web3/useBalanceOf";
 import { MarketReserve } from "@/lib/aave";
 import { cn } from "@/lib/utils";
+import { INPUT_REGEX, ZERO_ADDRESS } from "@/utils/constants";
 
 type ReserveActionsProps = {
   reserve: MarketReserve;
@@ -31,7 +33,12 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
   const [supplyAmount, setSupplyAmount] = useState("");
   const [borrowAmount, setBorrowAmount] = useState("");
 
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+
+  const { data: userBalanceData } = useBalanceOf({
+    accountAddress: address ?? ZERO_ADDRESS,
+    tokenAddress: reserve?.underlyingAddress || ZERO_ADDRESS,
+  });
 
   const TokenIcon =
     !reserve?.imageUrl || loading ? (
@@ -77,7 +84,11 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
                 maxLength={24}
                 className={cn(!supplyAmount && "text-lg!")}
                 value={supplyAmount}
-                onChange={(e) => setSupplyAmount(e.target.value)}
+                onChange={(e) => {
+                  if (!INPUT_REGEX.test(e.target.value)) return;
+
+                  setSupplyAmount(e.target.value);
+                }}
               />
               <motion.div
                 key={supplyAmount ? "usd-visible" : "usd-hidden"}
@@ -93,7 +104,7 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
               >
                 {supplyAmount && (
                   <FormattedNumber
-                    value={supplyAmount}
+                    value={Number(supplyAmount) * reserve.oraclePrice.toNumber()}
                     decimals={2}
                     compact
                     symbol="usd"
@@ -116,7 +127,7 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
                     transition={{ ease: "easeOut", type: "spring", stiffness: 300, damping: 20 }}
                     className="text-muted-foreground pr-2 text-xs"
                   >
-                    0.2324 {reserve?.symbol}
+                    {userBalanceData?.balance.toNumber() || 0} {reserve?.symbol}
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -170,9 +181,13 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
               <InputGroupInput
                 placeholder="Enter amount"
                 maxLength={24}
-                className={cn(!supplyAmount && "text-lg!")}
-                value={supplyAmount}
-                onChange={(e) => setSupplyAmount(e.target.value)}
+                className={cn(!borrowAmount && "text-lg!")}
+                value={borrowAmount}
+                onChange={(e) => {
+                  if (!INPUT_REGEX.test(e.target.value)) return;
+
+                  setBorrowAmount(e.target.value);
+                }}
               />
               <motion.div
                 key={supplyAmount ? "usd-visible" : "usd-hidden"}
@@ -181,14 +196,14 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
                   y: -4,
                 }}
                 animate={{
-                  opacity: supplyAmount ? 1 : 0,
-                  y: supplyAmount ? 0 : -4,
+                  opacity: borrowAmount ? 1 : 0,
+                  y: borrowAmount ? 0 : -4,
                 }}
                 transition={{ ease: "easeOut", type: "spring", stiffness: 230, damping: 22 }}
               >
-                {supplyAmount && (
+                {borrowAmount && (
                   <FormattedNumber
-                    value={supplyAmount}
+                    value={borrowAmount}
                     decimals={2}
                     compact
                     symbol="usd"
@@ -221,7 +236,7 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
           <span className="text-muted-foreground">Transaction Overview</span>
           <div className="bg-muted text-muted-foreground flex flex-col justify-between gap-2 rounded-md px-3 py-3 text-xs">
             <span className="flex items-center justify-between gap-2">
-              <span>Supplied</span>
+              <span>Borrowed</span>
               <div className="flex items-center">
                 <span>0</span>
                 <ArrowRight className="mx-1 inline h-4 w-4" />

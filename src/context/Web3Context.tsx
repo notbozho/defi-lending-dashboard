@@ -1,23 +1,34 @@
 "use client";
 
 import { createContext, ReactNode, useContext } from "react";
-import { useAccount } from "wagmi";
+import type { PublicClient } from "viem";
+import { useAccount, useChainId, usePublicClient } from "wagmi";
 
 interface Web3ContextValue {
   chainId: number;
   isLoading: boolean;
+  publicClient: PublicClient;
 }
 
 const Web3Context = createContext<Web3ContextValue | null>(null);
 
 export function Web3Provider({ children }: { children: ReactNode }) {
-  const { chainId, isConnecting, isReconnecting } = useAccount();
+  const { chainId: accountChainId, isConnecting, isReconnecting } = useAccount();
+
+  const fallbackChainId = useChainId();
+
+  const chainId = accountChainId ?? fallbackChainId;
+
+  const publicClient = usePublicClient({
+    chainId: chainId,
+  }) as PublicClient;
 
   const isLoading = isConnecting || isReconnecting;
 
   const value: Web3ContextValue = {
-    chainId: chainId ?? 0,
+    chainId: chainId,
     isLoading,
+    publicClient,
   };
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;

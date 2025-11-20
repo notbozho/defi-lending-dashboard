@@ -10,22 +10,22 @@ import { queryKeyFactory } from "@/utils/queryKeyFactory";
 type MarketParams = {
   cid: number;
   marketAddress: string;
-  account?: string;
+  accountAddress?: string;
 };
 
-export function useMarket({ cid, marketAddress, account }: MarketParams) {
+export function useMarket({ cid, marketAddress, accountAddress }: MarketParams) {
   const setMarketData = useMarketStore((s) => s.setMarketData);
   const { isLoading } = useWeb3Context();
 
   const queryKey = [
     ...queryKeyFactory.market(cid, marketAddress),
-    ...queryKeyFactory.user(account ?? "unknown"),
+    ...queryKeyFactory.user(accountAddress ?? "unknown"),
   ];
 
   const query = useQuery({
     enabled: !!client && !isLoading,
     queryKey,
-    queryFn: () => fetchMarket({ cid, marketAddress, account }),
+    queryFn: () => fetchMarket({ cid, marketAddress, account: accountAddress }),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: true,
