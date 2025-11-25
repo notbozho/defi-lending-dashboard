@@ -1,9 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { SquareArrowOutUpRight } from "lucide-react";
 
-import { IconTooltip } from "@/components/shared/IconTooltip";
 import { CardHeader } from "@/components/ui/card";
 import type { NetworkConfig } from "@/config/networks";
 import type { MarketReserve } from "@/lib/aave";
@@ -11,11 +9,14 @@ import type { MarketReserve } from "@/lib/aave";
 type ReserveHeaderProps = {
   asset: MarketReserve;
   chain: NetworkConfig;
+  goBackButton: React.ReactNode;
 };
 
-export default function ReserveHeader({ asset, chain }: ReserveHeaderProps) {
+export default function ReserveHeader({ asset, goBackButton }: ReserveHeaderProps) {
   return (
     <CardHeader className="flex items-center gap-4">
+      {goBackButton}
+
       <Image
         src={asset.imageUrl || ""}
         alt={asset.name || asset.symbol || "token"}
@@ -28,12 +29,12 @@ export default function ReserveHeader({ asset, chain }: ReserveHeaderProps) {
         <span className="text-muted-foreground text-lg">{asset.symbol}</span>
       </div>
 
-      <IconTooltip
+      {/* <IconTooltip
         icon={SquareArrowOutUpRight}
         circle
         href={chain.buildExplorerUrl({ address: asset.marketAddress })}
         text="View token contract"
-      />
+      /> */}
     </CardHeader>
   );
 }

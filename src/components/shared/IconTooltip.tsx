@@ -59,7 +59,7 @@ export function IconTooltip({
   );
 
   return (
-    <Tooltip>
+    <Tooltip delayDuration={300}>
       <div className="group">
         <TooltipTrigger asChild>{wrappedIcon}</TooltipTrigger>
         <TooltipContent className={cn("max-w-xs", className)}>

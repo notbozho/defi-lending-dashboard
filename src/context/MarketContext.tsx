@@ -2,8 +2,10 @@
 
 import { createContext, ReactNode, useContext } from "react";
 import { Market } from "@aave/react";
+import { useChainId } from "wagmi";
 import { useShallow } from "zustand/shallow";
 
+import { MARKET_BY_CHAIN_ID } from "@/config";
 import { useMarket } from "@/hooks";
 import { MarketReserve } from "@/lib/aave";
 import { useMarketStore } from "@/stores/useMarketStore";
@@ -18,15 +20,10 @@ interface MarketContextValue {
 
 const MarketContext = createContext<MarketContextValue | null>(null);
 
-export function MarketProvider({
-  cid,
-  marketAddress,
-  children,
-}: {
-  cid: number;
-  marketAddress: string;
-  children: ReactNode;
-}) {
+export function MarketProvider({ children }: { children: ReactNode }) {
+  const cid = useChainId();
+  const marketAddress = MARKET_BY_CHAIN_ID(cid)?.addresses.LENDING_POOL ?? "";
+
   const { isLoading, error } = useMarket({ cid, marketAddress });
 
   const { currentMarket, supplyReserves, borrowReserves } = useMarketStore(

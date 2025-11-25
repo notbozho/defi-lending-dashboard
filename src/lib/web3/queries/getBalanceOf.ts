@@ -9,6 +9,12 @@ type BalanceOfParams = {
   tokenAddress: Address;
 };
 
+type BalancesOfParams = {
+  publicClient: PublicClient;
+  accountAddress: Address;
+  tokenAddresses: Address[];
+};
+
 export async function getBalanceOf({
   publicClient,
   accountAddress,
@@ -36,4 +42,43 @@ export async function getBalanceOf({
   return {
     balance,
   };
+}
+
+export async function getBalancesOf({
+  publicClient,
+  accountAddress,
+  tokenAddresses,
+}: BalancesOfParams) {
+  const unique = Array.from(new Set(tokenAddresses));
+
+  const erc20s = unique.filter((a) => a !== NATIVE_TOKEN_ADDRESS);
+  const wantsNative = unique.includes(NATIVE_TOKEN_ADDRESS);
+
+  const balances: Record<string, BigNumber> = {};
+
+  if (wantsNative) {
+    const nativeBalance = await publicClient.getBalance({
+      address: accountAddress,
+    });
+    balances[NATIVE_TOKEN_ADDRESS] = new BigNumber(nativeBalance.toString());
+  }
+
+  if (erc20s.length > 0) {
+    const calls = erc20s.map((token) => ({
+      address: token,
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      args: [accountAddress],
+    }));
+
+    const results = await publicClient.multicall({ contracts: calls });
+
+    results.forEach((r, i) => {
+      const token = erc20s[i];
+      balances[token] =
+        r.status === "success" ? new BigNumber((r.result as bigint).toString()) : new BigNumber(0);
+    });
+  }
+
+  return balances;
 }

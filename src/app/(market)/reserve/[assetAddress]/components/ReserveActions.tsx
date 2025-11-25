@@ -56,7 +56,7 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
   const buttonText = isConnected ? "Supply" : "Connect Wallet";
 
   return (
-    <Card className="order-2 max-h-[calc(100vh-48px)] w-[400px] self-start overflow-x-auto px-6 py-4">
+    <Card className="order-2 max-h-[calc(100vh-48px)] w-[400px] self-start overflow-x-auto px-6 py-6">
       <Tabs defaultValue="supply" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="supply">Supply</TabsTrigger>
@@ -143,7 +143,7 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
                 <ArrowRight className="mx-1 inline h-4 w-4" />
                 <span className="text-foreground">
                   <AnimatedNumber mode="number" value={0.2324} className="text-xs" decimals={4} />{" "}
-                  {reserve?.symbol ?? <Skeleton className="inline-block h-4 w-8" />}
+                  {reserve?.symbol ?? <Skeleton className="inline-block h-3 w-8" />}
                 </span>
               </div>
             </span>

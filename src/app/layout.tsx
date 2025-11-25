@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
 
 import { Header } from "@/components/layout/Header";
+import { MarketProvider } from "@/context/MarketContext";
 import Providers from "@/lib/Providers";
 
 import "@/styles/globals.css";
@@ -25,10 +26,14 @@ export const metadata: Metadata = {
 export default function RootLayout(props: LayoutProps<"/">) {
   return (
     <html lang="en">
-      <body className={`${spaceGrotesk.variable} ${spaceMono.variable} font-sans antialiased`}>
+      <body
+        className={`${spaceGrotesk.variable} ${spaceMono.variable} from-background via-primary/20 to-background bg-linear-to-tr font-sans antialiased`}
+      >
         <Providers>
-          <Header />
-          {props.children}
+          <MarketProvider>
+            <Header />
+            {props.children}
+          </MarketProvider>
         </Providers>
       </body>
     </html>

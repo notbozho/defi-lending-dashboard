@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MARKETS } from "@/config";
 import { useMarketContext } from "@/context/MarketContext";
 
-export function MarketView() {
+export function MarketReservesView() {
   const { market, isLoading, supplyReserves } = useMarketContext();
 
   const marketConfig = MARKETS[market?.name || ""];
@@ -20,7 +20,7 @@ export function MarketView() {
   }, 0);
 
   return (
-    <div className="container mx-auto w-full space-y-6 px-2 py-10">
+    <div className="container mx-auto min-h-screen w-full space-y-6 px-2 py-6">
       <Card>
         <CardHeader className="flex items-center gap-4">
           {isLoading || !market ? (

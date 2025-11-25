@@ -7,4 +7,6 @@ export const queryKeyFactory = {
   token: (tokenAddress: string) => ["Token", tokenAddress] as const,
   balanceOf: (chainId: number, accountAddress: string, tokenAddress: string) =>
     ["BalanceOf", chainId, accountAddress, tokenAddress] as const,
+  balancesOf: (chainId: number, accountAddress: string, tokenAddresses: string[]) =>
+    ["BalancesOf", chainId, accountAddress, tokenAddresses] as const,
 };

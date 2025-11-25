@@ -1,9 +1,5 @@
-import { MarketView } from "@/app/(market)/reserves/MarketView";
+import { MarketReservesView } from "@/app/(market)/reserves/MarketReservesView";
 
 export default function Page() {
-  return (
-    <main className="bg-background min-h-screen w-full">
-      <MarketView />
-    </main>
-  );
+  return <MarketReservesView />;
 }

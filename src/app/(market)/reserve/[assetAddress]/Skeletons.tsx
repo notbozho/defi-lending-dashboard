@@ -1,11 +1,24 @@
 "use client";
 
-import { CardContent, CardHeader, IconTooltip, Skeleton } from "@/components";
+import React from "react";
 
-export function ReserveHeaderSkeleton() {
+import {
+  Button,
+  CardContent,
+  CardHeader,
+  IconTooltip,
+  Skeleton,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components";
+
+export function ReserveHeaderSkeleton({ goBackButton }: { goBackButton: React.ReactNode }) {
   return (
     <CardHeader>
       <div className="flex items-center gap-4">
+        {goBackButton}
+
         <Skeleton className="h-16 w-16 rounded-full" />
         <div className="flex flex-col gap-2">
           <Skeleton className="h-8 w-32" />

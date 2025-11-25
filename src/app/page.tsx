@@ -1,7 +1,7 @@
-"use client";
+import DashboardView from "@/app/DashboardView";
 
 function Page() {
-  return <div className="bg-background min-h-screen w-full"></div>;
+  return <DashboardView />;
 }
 
 export default Page;

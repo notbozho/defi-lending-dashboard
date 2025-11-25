@@ -51,8 +51,8 @@ const links: HeaderLink[] = [
 
 function Header() {
   return (
-    <header className="sticky top-2 z-50">
-      <div className="container mx-auto flex items-center justify-between gap-x-4 px-2 *:h-[70px] *:border">
+    <header className="relative top-2 z-50">
+      <div className="*:border-primary/25 container mx-auto flex items-center justify-between gap-x-4 px-2 *:h-[70px] *:border">
         {/* --- Mobile Menu --- */}
         {/* <Button variant={"ghost"} size={"icon"} className="md:hidden">
           <Menu className="h-5 w-5" />

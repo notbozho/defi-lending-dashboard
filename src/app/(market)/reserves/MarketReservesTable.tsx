@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 import type { ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import {
   flexRender,
@@ -80,7 +79,7 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
 
   return (
     <Card className="p-0">
-      <div className="flex justify-between border-b p-4">
+      <div className="border-primary/25 flex justify-between border-b p-4 px-6">
         <div className="flex items-center space-x-2">
           <span className="text-sm">Paused Assets</span>
           <Switch id="paused" size="lg" />
@@ -100,7 +99,7 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
           </InputGroupAddon>
         </InputGroup>
       </div>
-      <div className="px-2">
+      <div className="px-4">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -118,40 +117,35 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
                       key={header.id}
                     >
                       {header.isPlaceholder ? null : (
-                        <TooltipProvider delayDuration={150}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div
-                                onMouseEnter={() => setHover(true)}
-                                onMouseLeave={() => setHover(false)}
-                                onClick={header.column.getToggleSortingHandler()}
-                                className={cn(
-                                  "group flex items-center justify-center select-none",
-                                  canSort && "cursor-pointer"
-                                )}
-                              >
-                                {flexRender(header.column.columnDef.header, header.getContext())}
+                        <Tooltip delayDuration={500}>
+                          <TooltipTrigger asChild>
+                            <div
+                              onMouseEnter={() => setHover(true)}
+                              onMouseLeave={() => setHover(false)}
+                              onClick={header.column.getToggleSortingHandler()}
+                              className={cn(
+                                "group flex items-center justify-center select-none",
+                                canSort && "cursor-pointer"
+                              )}
+                            >
+                              {flexRender(header.column.columnDef.header, header.getContext())}
 
-                                <div className="w-4">
-                                  <SortingIndicator
-                                    direction={sorted}
-                                    visible={hover || !!sorted}
-                                  />
-                                </div>
+                              <div className="w-4">
+                                <SortingIndicator direction={sorted} visible={hover || !!sorted} />
                               </div>
-                            </TooltipTrigger>
+                            </div>
+                          </TooltipTrigger>
 
-                            {header.column.getCanSort() && (
-                              <TooltipContent side="top" className="text-xs">
-                                {header.column.getNextSortingOrder() === "asc"
-                                  ? "Sort ascending"
-                                  : header.column.getNextSortingOrder() === "desc"
-                                    ? "Sort descending"
-                                    : "Clear sort"}
-                              </TooltipContent>
-                            )}
-                          </Tooltip>
-                        </TooltipProvider>
+                          {header.column.getCanSort() && (
+                            <TooltipContent side="top" className="text-xs">
+                              {header.column.getNextSortingOrder() === "asc"
+                                ? "Sort ascending"
+                                : header.column.getNextSortingOrder() === "desc"
+                                  ? "Sort descending"
+                                  : "Clear sort"}
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
                       )}
                     </TableHead>
                   );
@@ -191,7 +185,7 @@ export function MarketReservesTable({ reserves, loading }: MarketReservesTablePr
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
-                  <TableCell className="not-first:text-center">
+                  <TableCell className="text-end">
                     <Button
                       variant="outline"
                       size="sm"
