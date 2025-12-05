@@ -114,7 +114,7 @@ function CustomTooltip({ active, payload, liquidity, debt }: CustomTooltipProps)
     >
       <div className="mb-2 flex justify-between">
         <span>Utilization</span>
-        <span className="font-medium">{utilization.toFixed(2)}%</span>
+        <span className="font-medium">{utilization.toNumber()}%</span>
       </div>
 
       <div className="mb-2 flex justify-between">
@@ -220,7 +220,7 @@ export function InterestRateChart({
   loading,
   className,
 }: InterestRateChartProps) {
-  const formattedCurrentUtilizationRate = (Number(utilizationRate) * 100).toFixed(0);
+  const formattedCurrentUtilizationRate = (Number(utilizationRate) * 100).toFixed(2);
   const formattedOptimalUtilizationRate = normalizeBN(optimalUsageRatio, 25).toNumber();
 
   const data = useMemo(
@@ -278,12 +278,13 @@ export function InterestRateChart({
             <CartesianGrid vertical={false} className="stroke-muted" strokeDasharray="2 2" />
             <XAxis
               dataKey="utilization"
+              type="number"
               tickLine={false}
               axisLine={false}
               tickFormatter={(v) => `${v}%`}
-              tickMargin={8}
-              minTickGap={32}
+              tickCount={16}
               fontSize={10}
+              domain={[0, 100]}
             />
             <YAxis
               tickFormatter={(v) => `${v}%`}

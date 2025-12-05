@@ -1,8 +1,9 @@
 "use client";
 
 import { InterestRateChart } from "@/app/(market)/reserve/[assetAddress]/components/InterestRateChart";
+import { Button } from "@/components";
 import { IconTooltip } from "@/components/shared/IconTooltip";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MarketReserve } from "@/lib/aave";
 
 import AprChart from "./AprChart";
@@ -16,8 +17,8 @@ export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) 
   return (
     <div className="grow space-y-6">
       <Card>
-        <CardHeader className="flex items-center justify-between">
-          <h2 className="text-xl font-medium">Supply Info</h2>
+        <CardHeader className="flex items-center gap-2">
+          <CardTitle className="text-xl font-medium">Supply Info</CardTitle>
           <IconTooltip text="The historical annual percentage rate (APR) for supplying this asset." />
         </CardHeader>
         <CardContent>
@@ -31,8 +32,8 @@ export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) 
       </Card>
 
       <Card>
-        <CardHeader className="flex items-center justify-between">
-          <h2 className="text-xl font-medium">Borrow Info</h2>
+        <CardHeader className="flex items-center gap-2">
+          <CardTitle className="text-xl font-medium">Borrow Info</CardTitle>
           <IconTooltip text="The historical annual percentage rate (APR) for borrowing this asset." />
         </CardHeader>
         <CardContent>
@@ -46,8 +47,9 @@ export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) 
       </Card>
 
       <Card>
-        <CardHeader>
-          <h2 className="text-xl font-medium">Interest Rate Model</h2>
+        <CardHeader className="flex items-center justify-between">
+          <CardTitle className="text-xl font-medium">Interest Rate Model</CardTitle>
+          <Button variant="link">Interest Rate Strategy</Button>
         </CardHeader>
         <CardContent>
           <InterestRateChart

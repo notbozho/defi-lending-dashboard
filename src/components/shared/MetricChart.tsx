@@ -132,6 +132,7 @@ export function MetricChart<T extends MetricDataPoint>({
               dataKey="date"
               tickLine={false}
               axisLine={false}
+              fontSize={10}
               tickMargin={8}
               minTickGap={64}
               tickFormatter={(value) =>
@@ -141,7 +142,13 @@ export function MetricChart<T extends MetricDataPoint>({
                 })
               }
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} unit={yAxisUnit} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              fontSize={10}
+              tickMargin={8}
+              unit={yAxisUnit}
+            />
             <ChartTooltip
               isAnimationActive={false}
               position={{ y: 40 }}

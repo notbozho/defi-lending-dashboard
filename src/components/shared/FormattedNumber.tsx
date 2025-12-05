@@ -6,6 +6,7 @@ import { Copy } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { truncateMiddle } from "@/utils/truncate";
 
 type CompactNumberProps = {
   value: string | number | BigNumber | undefined;
@@ -166,7 +167,9 @@ export function FormattedNumber({
 
       {percent && <span className="symbol ml-0.5">%</span>}
 
-      {symbol?.toLowerCase() !== "usd" && symbol && <span className="symbol ml-0.5">{symbol}</span>}
+      {symbol?.toLowerCase() !== "usd" && !!symbol && (
+        <span className="symbol ml-0.5">{truncateMiddle(symbol, 4, 3)}</span>
+      )}
     </span>
   );
 
@@ -182,12 +185,8 @@ export function FormattedNumber({
       <TooltipContent className="flex items-center gap-1">
         <span>{fullValue}</span>
         <Copy
-          // onClick={handleCopy}
           size={14}
-          className={cn(
-            "text-muted-foreground hover:text-foreground cursor-pointer transition"
-            // copied && "text-primary"
-          )}
+          className={cn("text-muted-foreground hover:text-foreground cursor-pointer transition")}
         />
       </TooltipContent>
     </Tooltip>

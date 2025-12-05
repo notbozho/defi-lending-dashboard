@@ -27,11 +27,14 @@ export function TokenDisplay({
   if (loading) {
     return (
       <div className={cn("flex items-center gap-3", className)}>
-        <Skeleton className={cn("rounded-full", `size-[${iconSize}px]`)} />
-        <div className="flex flex-col gap-1">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-3 w-12" />
-        </div>
+        <Skeleton
+          className="rounded-full"
+          style={{
+            width: iconSize,
+            height: iconSize,
+          }}
+        />
+        <Skeleton className="h-6 w-38" />
       </div>
     );
   }
@@ -61,8 +64,9 @@ export function TokenDisplay({
         </div>
       )}
 
-      <div className="flex flex-col leading-tight">
+      <div className="flex items-center gap-x-2 leading-tight">
         {name && <span className="text-sm font-medium">{name}</span>}
+        <span className="text-muted-foreground">/</span>
         {symbol && <span className="text-muted-foreground text-xs">{symbol}</span>}
       </div>
     </div>

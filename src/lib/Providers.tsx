@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeProvider } from "next-themes";
 import { AaveProvider } from "@aave/react";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -29,8 +30,15 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <RainbowKitProvider modalSize={"compact"}>
           <AaveProvider client={aaveClient}>
             <Web3Provider>
-              {children}
-              <Toaster />
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                // enableSystem
+                // disableTransitionOnChange
+              >
+                {children}
+                <Toaster />
+              </ThemeProvider>
             </Web3Provider>
           </AaveProvider>
         </RainbowKitProvider>

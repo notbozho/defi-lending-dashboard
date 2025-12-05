@@ -3,7 +3,14 @@ import BigNumber from "bignumber.js";
 import { motion } from "motion/react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-import { AnimatedNumber, Card, CardContent, CardHeader, IconTooltip, Skeleton } from "@/components";
+import {
+  AnimatedNumber,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  IconTooltip,
+} from "@/components";
 import { MarketReserve } from "@/lib/aave";
 
 type MyWalletCardProps = {
@@ -12,9 +19,19 @@ type MyWalletCardProps = {
   loading: boolean;
 };
 
-const CHART_COLORS = ["#4ade80", "#60a5fa", "#f87171", "#fbbf24", "#a78bfa", "#fb923c"];
+const GRADIENTS = [
+  { start: "#f97316", end: "#facc15" },
+  { start: "#8b5cf6", end: "#c026d3" },
+  { start: "#3b82f6", end: "#8b5cf6" },
+  { start: "#14b8a6", end: "#22c55e" },
+  { start: "#ec4899", end: "#e11d48" },
+  { start: "#64748b", end: "#94a3b8" },
+];
 
-const colored = (i: number) => CHART_COLORS[i % CHART_COLORS.length];
+const getCssGradient = (index: number) => {
+  const g = GRADIENTS[index % GRADIENTS.length];
+  return `linear-gradient(135deg, ${g.start}, ${g.end})`;
+};
 
 export default function MyWalletCard({ balances, reserves, loading }: MyWalletCardProps) {
   const [hoveredSlice, setHoveredSlice] = useState<string | null>(null);
@@ -24,7 +41,8 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
       name: string;
       symbol: string;
       value: number;
-      color: string;
+      gradientId: string;
+      gradientCss: string;
       rawValue: BigNumber;
       address: string;
       percentage: number;
@@ -45,7 +63,8 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
         data.push({
           name: reserve.name,
           symbol: reserve.symbol,
-          color: colored(data.length - 1),
+          gradientId: `url(#gradient-${data.length})`,
+          gradientCss: getCssGradient(data.length),
           value,
           rawValue: balance,
           address,
@@ -82,7 +101,8 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
           name: "Others",
           symbol: "",
           value: othersValue,
-          color: "#fbbf24",
+          gradientId: `url(#gradient-5)`,
+          gradientCss: getCssGradient(5),
           rawValue: new BigNumber(0),
           percentage: othersPercentage,
           address: "",
@@ -113,7 +133,8 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
           name: "Empty",
           symbol: "",
           value: 1,
-          color: "var(--muted)",
+          gradientId: "var(--muted)",
+          gradientCss: "var(--muted)",
           rawValue: new BigNumber(0),
           percentage: 100,
           address: "",
@@ -131,9 +152,9 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
   };
 
   return (
-    <Card className="basis-3/12">
-      <CardHeader className="flex items-center justify-between">
-        <h2 className="text-xl font-medium">My Wallet</h2>
+    <Card>
+      <CardHeader className="flex items-center gap-2">
+        <CardTitle className="text-xl font-medium">My Wallet</CardTitle>
         <IconTooltip text="Supported assets in your wallet" />
       </CardHeader>
       <CardContent>
@@ -145,15 +166,24 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
         >
           <ResponsiveContainer width="100%" height="100%">
             <PieChart className="z-50">
+              <defs>
+                {GRADIENTS.map((gradient, index) => (
+                  <linearGradient id={`gradient-${index}`} key={index} x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor={gradient.start} />
+                    <stop offset="100%" stopColor={gradient.end} />
+                  </linearGradient>
+                ))}
+              </defs>
+
               <Pie
                 data={displayCategories}
                 cx="50%"
                 cy="50%"
                 focusable={false}
-                innerRadius="85%"
+                innerRadius="90%"
                 outerRadius="100%"
                 paddingAngle={2}
-                cornerRadius={4}
+                cornerRadius={12}
                 dataKey="value"
                 startAngle={90}
                 endAngle={450}
@@ -163,8 +193,8 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
                 onFocus={handleMouseExit}
                 onBlur={handleMouseExit}
                 animationBegin={0}
-                animationDuration={800}
-                animationEasing="ease-out"
+                animationDuration={1000}
+                animationEasing="ease-in-out"
               >
                 {displayCategories.map((item, index) => {
                   const isDimmed = hoveredSlice && hoveredSlice !== item.name;
@@ -172,7 +202,7 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
                   return (
                     <Cell
                       key={index}
-                      fill={item.color}
+                      fill={isZero ? "#e5e7eb" : item.gradientId}
                       tabIndex={-1}
                       focusable={false}
                       style={{
@@ -194,23 +224,15 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
               {hoveredSlice ?? "Total"} Balance
             </span>
 
-            {loading ? (
-              <Skeleton className="h-7 w-32"></Skeleton>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <AnimatedNumber
-                  value={displayValue()}
-                  symbol="usd"
-                  className="text-2xl font-bold"
-                  size="xl"
-                  duration={hoveredSlice ? 0.2 : 1}
-                />
-              </motion.div>
-            )}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <AnimatedNumber
+                value={displayValue() || 0}
+                symbol="usd"
+                className="text-4xl font-bold"
+                size="xl"
+                duration={hoveredSlice ? 0.2 : 1}
+              />
+            </motion.div>
           </div>
         </div>
 
@@ -232,11 +254,8 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
                 }}
               >
                 <div className="flex items-center gap-2">
-                  <div
-                    className="h-2 w-2 rounded-full"
-                    style={{ backgroundColor: colored(index) }}
-                  />
-                  <span className="text">{item.symbol ? `${item.symbol}` : item.name}</span>
+                  <div className="h-2 w-2 rounded-full" style={{ background: item.gradientCss }} />
+                  <span>{item.symbol ? `${item.symbol}` : item.name}</span>
                 </div>
                 <AnimatedNumber value={item.percentage} className="font-medium" symbol="%" />
               </motion.div>

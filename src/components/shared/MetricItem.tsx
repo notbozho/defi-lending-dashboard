@@ -2,6 +2,7 @@ import { BigDecimal } from "@aave/react";
 
 import { FormattedNumber } from "@/components/shared/FormattedNumber";
 import { IconTooltip } from "@/components/shared/IconTooltip";
+import { Skeleton } from "@/components/ui";
 
 interface MetricItemProps {
   label: string;
@@ -28,16 +29,19 @@ export default function MetricItem({
         <span className="leading-none">{label}</span>
         <IconTooltip text={tooltipText} />
       </div>
-      <FormattedNumber
-        value={value}
-        symbol={symbol}
-        compact
-        decimals={decimals}
-        loading={loading}
-        compactThreshold={compactThreshold}
-        tone="mutedSymbol"
-        className="text-3xl"
-      />
+      {loading ? (
+        <Skeleton className="h-9 w-28 rounded-md align-middle" />
+      ) : (
+        <FormattedNumber
+          value={value}
+          symbol={symbol}
+          compact
+          decimals={decimals}
+          compactThreshold={compactThreshold}
+          tone="mutedSymbol"
+          className="text-3xl"
+        />
+      )}
     </div>
   );
 }

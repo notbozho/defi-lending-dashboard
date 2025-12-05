@@ -1,28 +1,24 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { MarketUserReserveBorrowPosition, MarketUserReserveSupplyPosition } from "@aave/react";
 import BigNumber from "bignumber.js";
-import { WalletIcon } from "lucide-react";
+import { motion } from "motion/react";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
+import HealthFactorCard from "@/app/components/HealthFactorGauge";
 import MyWalletCard from "@/app/components/MyWalletCard";
-import { Button, Card, CardContent, CardHeader } from "@/components";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
+import { PositionsTable } from "@/app/components/PositionsTable";
+import { userBorrowColumns } from "@/app/lib/userBorrowsColumns";
+import { userSuppliesColumns } from "@/app/lib/userSuppliesColumns";
 import { useMarketContext } from "@/context/MarketContext";
 import { useBalancesOf } from "@/hooks/web3/useBalancesOf";
 import { ZERO_ADDRESS } from "@/utils/constants";
 
 export default function DashboardView() {
-  const router = useRouter();
-  const { isLoading, error, supplyReserves } = useMarketContext();
-  const { isConnected, address } = useAccount();
+  const { isLoading, error, supplyReserves, market, userSupplyPositions, userBorrowPositions } =
+    useMarketContext();
+  const { address } = useAccount();
 
   const MOCK_BALANCES: Record<string, BigNumber> = {
     "0x111111111117dC0aa78b770fA6A738034120C302": new BigNumber("500000000000000000000"),
@@ -39,31 +35,29 @@ export default function DashboardView() {
   return (
     <main className="min-h-screen w-full py-6">
       <div className="container mx-auto flex gap-x-6 px-2">
-        <Card className="basis-9/12">
-          <CardHeader>
-            <h2 className="text-xl font-medium">My Positions</h2>
-          </CardHeader>
-          <CardContent>
-            <Empty>
-              <EmptyMedia variant="icon">
-                <WalletIcon className="text-muted-foreground h-12 w-12" />
-              </EmptyMedia>
+        <div className="flex basis-9/12 flex-col gap-y-6">
+          <PositionsTable<MarketUserReserveSupplyPosition>
+            columns={userSuppliesColumns}
+            loading={isLoading}
+            positions={userSupplyPositions}
+            title="Supply Positions"
+          />
 
-              <EmptyTitle>No supply or borrow positions yet</EmptyTitle>
-              <EmptyDescription>Your pool positions will appear here</EmptyDescription>
-              <EmptyContent>
-                <Button
-                  onClick={() => {
-                    router.push("/reserves");
-                  }}
-                >
-                  Browse
-                </Button>
-              </EmptyContent>
-            </Empty>
-          </CardContent>
-        </Card>
-        <MyWalletCard balances={MOCK_BALANCES} reserves={supplyReserves} loading={isLoading} />
+          <PositionsTable<MarketUserReserveBorrowPosition>
+            columns={userBorrowColumns}
+            loading={isLoading}
+            positions={userBorrowPositions}
+            title="Borrow Positions"
+          />
+        </div>
+        <motion.div
+          layout
+          transition={{ type: "spring", stiffness: 120, damping: 20 }}
+          className="flex basis-3/12 flex-col gap-y-6"
+        >
+          <MyWalletCard balances={MOCK_BALANCES} reserves={supplyReserves} loading={isLoading} />
+          <HealthFactorCard value={Number(market?.userState?.healthFactor) || 0} />
+        </motion.div>
       </div>
     </main>
   );

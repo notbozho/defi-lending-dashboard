@@ -2,16 +2,7 @@
 
 import React from "react";
 
-import {
-  Button,
-  CardContent,
-  CardHeader,
-  IconTooltip,
-  Skeleton,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components";
+import { CardContent, CardHeader, IconTooltip, Skeleton } from "@/components";
 
 export function ReserveHeaderSkeleton({ goBackButton }: { goBackButton: React.ReactNode }) {
   return (

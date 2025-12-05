@@ -1,12 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import { Route } from "next";
 import Link from "next/link";
-import { ArrowLeftRight, LayoutDashboard, MenuIcon, Store, User } from "lucide-react";
+import { useTheme } from "next-themes";
+import {
+  ArrowLeftRight,
+  Github,
+  LayoutDashboard,
+  MenuIcon,
+  Moon,
+  Move,
+  Store,
+  Sun,
+  User,
+} from "lucide-react";
 
 import ChainSelector from "@/components/ChainSelector";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import WalletStatus from "../WalletStatus";
 
@@ -50,18 +70,18 @@ const links: HeaderLink[] = [
 ];
 
 function Header() {
+  // const { theme, setTheme } = useTheme();
+  const [reducedMotion, setReducedMotion] = useState(false);
+
   return (
     <header className="relative top-2 z-50">
-      <div className="*:border-primary/25 container mx-auto flex items-center justify-between gap-x-4 px-2 *:h-[70px] *:border">
+      <div className="*:border-primary/25 *:bg-card dark:*:border-border container mx-auto flex items-center justify-between gap-x-4 px-2 *:h-[70px] *:border">
         {/* --- Mobile Menu --- */}
         {/* <Button variant={"ghost"} size={"icon"} className="md:hidden">
           <Menu className="h-5 w-5" />
         </Button> */}
-        {/* --- Left Side --- */}
-        <div className="bg-card hidden items-center rounded-md p-4 xl:flex">
-          <span className="text-lg font-medium tracking-wide">Lending</span>
-        </div>
-        <div className="bg-card flex grow items-center justify-start gap-x-4 rounded-md p-4">
+
+        <div className="flex grow items-center justify-start gap-x-4 rounded-md p-4">
           {links.map((item) => (
             <Link key={item.name} href={item.link}>
               <button
@@ -101,7 +121,7 @@ function Header() {
           ))}
         </div>
         {/* --- Web3 --- */}
-        <div className="bg-card flex items-center justify-center gap-x-2 rounded-md p-4">
+        <div className="flex items-center justify-center gap-x-2 rounded-md p-4">
           <ChainSelector />
           <WalletStatus />
           <DropdownMenu modal={false}>
@@ -110,6 +130,42 @@ function Header() {
                 <MenuIcon />
               </Button>
             </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuLabel>Settings</DropdownMenuLabel>
+
+              {/* Theme Toggle */}
+              <DropdownMenuItem
+                // onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="flex cursor-pointer items-center gap-2"
+              >
+                {/* {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />} */}
+                {/* <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span> */}
+              </DropdownMenuItem>
+
+              {/* Reduced Motion */}
+              <DropdownMenuCheckboxItem
+                checked={reducedMotion}
+                onCheckedChange={(v) => setReducedMotion(Boolean(v))}
+                className="flex items-center gap-2"
+              >
+                <Move className="h-4 w-4" />
+                Reduce Motion
+              </DropdownMenuCheckboxItem>
+
+              <DropdownMenuSeparator />
+
+              {/* GitHub link */}
+              <DropdownMenuItem
+                onClick={() =>
+                  window.open("https://github.com/notbozho/defi-lending-dashboard", "_blank")
+                }
+                className="flex cursor-pointer items-center gap-2"
+              >
+                <Github className="h-4 w-4" />
+                GitHub
+              </DropdownMenuItem>
+            </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
