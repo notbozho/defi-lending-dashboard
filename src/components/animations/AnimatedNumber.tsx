@@ -38,7 +38,11 @@ export function AnimatedNumber({
   }, [target, duration]);
 
   if (mode === "number") {
-    return <span className={formattedProps.className}>{display.toFixed(decimals)}</span>;
+    return (
+      <span className={formattedProps.className}>
+        {display === 0 ? "0" : display.toFixed(decimals).replace(/\.?0+$/, "")}
+      </span>
+    );
   }
 
   return <FormattedNumber value={display} {...formattedProps} />;

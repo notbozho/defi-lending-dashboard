@@ -2,7 +2,8 @@
 
 import React from "react";
 
-import { CardContent, CardHeader, IconTooltip, Skeleton } from "@/components";
+import { Card, CardContent, CardHeader, IconTooltip, Skeleton } from "@/components";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function ReserveHeaderSkeleton({ goBackButton }: { goBackButton: React.ReactNode }) {
   return (
@@ -52,5 +53,25 @@ export function ReserveStatsSkeleton() {
         </div>
       </div>
     </CardContent>
+  );
+}
+
+export function ReserveActionsSkeleton() {
+  return (
+    <Card className="order-2 max-h-[calc(100vh-48px)] w-[400px] self-start overflow-x-auto px-6 py-6">
+      <Skeleton className="mb-1 h-8 w-full" />
+
+      <div className="flex flex-col gap-4 text-sm">
+        <Skeleton className="h-4 w-40" />
+
+        <Skeleton className="h-16 w-full rounded-md" />
+      </div>
+
+      <div className="flex flex-col gap-4 text-sm">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-21 w-full" />
+      </div>
+      <Skeleton className="h-10 w-full rounded-md" />
+    </Card>
   );
 }

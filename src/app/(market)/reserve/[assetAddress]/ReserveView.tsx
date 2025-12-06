@@ -21,19 +21,22 @@ import ReserveActions from "./components/ReserveActions";
 import ReserveCharts from "./components/ReserveCharts";
 import ReserveHeader from "./components/ReserveHeader";
 import ReserveStats from "./components/ReserveStats";
-import { ReserveHeaderSkeleton, ReserveStatsSkeleton } from "./Skeletons";
+import { ReserveActionsSkeleton, ReserveHeaderSkeleton, ReserveStatsSkeleton } from "./Skeletons";
 
 export default function ReserveView({ assetAddress }: { assetAddress: string }) {
   const chainId = useChainId();
   const router = useRouter();
 
   const { isLoading, error, supplyReserves, market } = useMarketContext();
-  const reserve = supplyReserves[assetAddress];
+  const reserve = supplyReserves?.[assetAddress];
   const currentMarketConfig = MARKETS[market?.name || ""];
 
   const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[chainId]; // TODO: export to a web3 context
 
-  if (error) return <div>Error loading reserve</div>;
+  const loading = isLoading || !reserve;
+
+  if (error)
+    return <div className="flex h-full items-center justify-center">Error loading reserve</div>;
 
   const handleGoBackClick = () => {
     router.back();
@@ -62,7 +65,7 @@ export default function ReserveView({ assetAddress }: { assetAddress: string }) 
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/reserves">
-                {isLoading ? (
+                {loading ? (
                   <Skeleton className="h-5 w-32" />
                 ) : (
                   `${currentMarketConfig?.marketTitle} Market`
@@ -72,13 +75,13 @@ export default function ReserveView({ assetAddress }: { assetAddress: string }) 
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbPage>
-                {isLoading ? <Skeleton className="h-5 w-24" /> : `${reserve?.name} Reserve`}
+                {loading ? <Skeleton className="h-5 w-24" /> : `${reserve?.name} Reserve`}
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
         <Card className="min-h-64 justify-between">
-          {isLoading ? (
+          {loading ? (
             <>
               <ReserveHeaderSkeleton goBackButton={goBackButton} />
               <ReserveStatsSkeleton />
@@ -96,8 +99,14 @@ export default function ReserveView({ assetAddress }: { assetAddress: string }) 
         </Card>
 
         <div className="flex gap-x-6">
-          <ReserveActions reserve={reserve} loading={isLoading} />
-          <ReserveCharts reserve={reserve} loading={isLoading} />
+          {loading ? (
+            <ReserveActionsSkeleton />
+          ) : (
+            <>
+              <ReserveActions reserve={reserve} />
+            </>
+          )}
+          <ReserveCharts reserve={reserve} loading={loading} />
         </div>
       </div>
     </main>

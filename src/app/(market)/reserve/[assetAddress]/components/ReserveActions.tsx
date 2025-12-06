@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { valueToBigNumber } from "@aave/math-utils";
 import { ArrowRight, Fuel } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useAccount } from "wagmi";
+import { useAccount, useGasPrice } from "wagmi";
 
 import {
   AnimatedNumber,
   Button,
   FormattedNumber,
-  Input,
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
@@ -19,6 +19,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMarketContext } from "@/context/MarketContext";
 import { useBalanceOf } from "@/hooks/web3/useBalanceOf";
 import { MarketReserve } from "@/lib/aave";
 import { cn } from "@/lib/utils";
@@ -26,12 +27,13 @@ import { INPUT_REGEX, ZERO_ADDRESS } from "@/utils/constants";
 
 type ReserveActionsProps = {
   reserve: MarketReserve;
-  loading: boolean;
 };
 
-export default function ReserveActions({ reserve, loading }: ReserveActionsProps) {
+export default function ReserveActions({ reserve }: ReserveActionsProps) {
   const [supplyAmount, setSupplyAmount] = useState("");
   const [borrowAmount, setBorrowAmount] = useState("");
+
+  const { userSupplyPositions, userBorrowPositions } = useMarketContext();
 
   const { isConnected, address } = useAccount();
 
@@ -40,18 +42,39 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
     tokenAddress: reserve?.underlyingAddress || ZERO_ADDRESS,
   });
 
-  const TokenIcon =
-    !reserve?.imageUrl || loading ? (
-      <Skeleton className="size-8 rounded-full" />
-    ) : (
-      <Image
-        src={reserve.imageUrl}
-        alt={reserve.symbol}
-        width={16}
-        height={16}
-        className="size-8 rounded-full"
-      />
-    );
+  const userBalance = userBalanceData?.balance.toString() || "0";
+  const userMaxAvailableBorrow = String(reserve.userMaxBorrowable?.amount.value || "0");
+
+  const currentSupplyPosition = userSupplyPositions?.find(
+    (position) => position.currency.address === reserve.underlyingAddress
+  );
+  const currentBorrowPosition = userBorrowPositions?.find(
+    (position) => position.currency.address === reserve.underlyingAddress
+  );
+
+  const TokenIcon = !reserve?.imageUrl ? (
+    <Skeleton className="size-8 rounded-full" />
+  ) : (
+    <Image
+      src={reserve.imageUrl}
+      alt={reserve.symbol}
+      width={16}
+      height={16}
+      className="size-8 rounded-full"
+    />
+  );
+
+  const handleSupplyMaxClick = () => {
+    if (userBalance === "0") return;
+    // TODO: calculate max considering supply cap
+    setSupplyAmount(userBalance);
+  };
+
+  const handleBorrowMaxClick = () => {
+    if (userMaxAvailableBorrow === "0") return;
+
+    setBorrowAmount(userMaxAvailableBorrow);
+  };
 
   const buttonText = isConnected ? "Supply" : "Connect Wallet";
 
@@ -116,7 +139,9 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
             <InputGroupAddon align="inline-start">{TokenIcon}</InputGroupAddon>
 
             <InputGroupAddon align="inline-end" className="flex flex-col items-end gap-1">
-              <InputGroupButton variant="link">Max</InputGroupButton>
+              <InputGroupButton onClick={handleSupplyMaxClick} variant="link">
+                Max
+              </InputGroupButton>
               <AnimatePresence mode="popLayout">
                 {isConnected && !!reserve?.symbol && (
                   <motion.span
@@ -139,17 +164,34 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
             <span className="flex items-center justify-between gap-2">
               <span>Supplied</span>
               <div className="flex items-center">
-                <span>0</span>
+                <AnimatedNumber
+                  mode="number"
+                  value={currentSupplyPosition?.balance.amount.value || 0}
+                  className="text-xs"
+                  decimals={5}
+                />
                 <ArrowRight className="mx-1 inline h-4 w-4" />
                 <span className="text-foreground">
-                  <AnimatedNumber mode="number" value={0.2324} className="text-xs" decimals={4} />{" "}
+                  <AnimatedNumber
+                    mode="number"
+                    value={valueToBigNumber(currentSupplyPosition?.balance.amount.value || 0)
+                      .plus(Number(supplyAmount) || 0)
+                      .toNumber()}
+                    className="text-xs"
+                    decimals={5}
+                  />{" "}
                   {reserve?.symbol ?? <Skeleton className="inline-block h-3 w-8" />}
                 </span>
               </div>
             </span>
             <span className="flex items-center justify-between gap-2">
               <span>Supply APY</span>
-              <span className="text-foreground">3.25%</span>
+              <AnimatedNumber
+                mode="formatted"
+                percent
+                value={reserve.supplyApy}
+                className="text-foreground text-xs"
+              />
             </span>
             <span className="flex items-center justify-between gap-2">
               <span>Estimated Gas</span>
@@ -215,7 +257,9 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
             <InputGroupAddon align="inline-start">{TokenIcon}</InputGroupAddon>
 
             <InputGroupAddon align="inline-end" className="flex flex-col items-end gap-1">
-              <InputGroupButton variant="link">Max</InputGroupButton>
+              <InputGroupButton onClick={handleBorrowMaxClick} variant="link">
+                Max
+              </InputGroupButton>
               <AnimatePresence mode="popLayout">
                 {isConnected && !!reserve?.symbol && (
                   <motion.span
@@ -226,7 +270,15 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
                     transition={{ ease: "easeOut", type: "spring", stiffness: 300, damping: 20 }}
                     className="text-muted-foreground pr-2 text-xs"
                   >
-                    0.2324 {reserve?.symbol}
+                    <FormattedNumber
+                      value={userMaxAvailableBorrow}
+                      decimals={5}
+                      className={cn(
+                        "text-xs transition-colors duration-500",
+                        borrowAmount > userMaxAvailableBorrow && "text-red-500"
+                      )}
+                      symbol={reserve?.symbol}
+                    />
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -238,17 +290,34 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
             <span className="flex items-center justify-between gap-2">
               <span>Borrowed</span>
               <div className="flex items-center">
-                <span>0</span>
+                <AnimatedNumber
+                  mode="number"
+                  value={currentBorrowPosition?.debt.amount.value || 0}
+                  className="text-xs"
+                  decimals={5}
+                />
                 <ArrowRight className="mx-1 inline h-4 w-4" />
                 <span className="text-foreground">
-                  <AnimatedNumber mode="number" value={0.2324} className="text-xs" decimals={4} />{" "}
+                  <AnimatedNumber
+                    mode="number"
+                    value={valueToBigNumber(currentBorrowPosition?.debt.amount.value || 0).plus(
+                      Number(borrowAmount) || 0
+                    )}
+                    className="text-xs"
+                    decimals={5}
+                  />{" "}
                   {reserve?.symbol ?? <Skeleton className="inline-block h-4 w-8" />}
                 </span>
               </div>
             </span>
             <span className="flex items-center justify-between gap-2">
-              <span>Supply APY</span>
-              <span className="text-foreground">3.25%</span>
+              <span>Borrow APY</span>
+              <AnimatedNumber
+                mode="formatted"
+                percent
+                value={reserve.borrowApy}
+                className="text-foreground text-xs"
+              />
             </span>
             <span className="flex items-center justify-between gap-2">
               <span>Estimated Gas</span>
@@ -256,7 +325,10 @@ export default function ReserveActions({ reserve, loading }: ReserveActionsProps
             </span>
           </div>
 
-          <Button className="flex w-full items-center justify-center gap-2 py-3 text-base">
+          <Button
+            className="flex w-full items-center justify-center gap-2 py-3 text-base"
+            disabled={!isConnected || borrowAmount > userMaxAvailableBorrow}
+          >
             {buttonText}
           </Button>
         </TabsContent>

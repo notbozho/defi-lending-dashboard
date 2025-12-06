@@ -120,6 +120,13 @@ export function BaseTable<TData>({
       if (!isInput && e.key.toLowerCase() === "s") {
         e.preventDefault();
         searchRef.current?.focus();
+        return;
+      }
+
+      if (e.key === "Escape") {
+        if (document.activeElement === searchRef.current) {
+          searchRef.current?.blur();
+        }
       }
     };
 

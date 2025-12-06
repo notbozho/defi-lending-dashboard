@@ -1,5 +1,5 @@
 import { valueToBigNumber } from "@aave/math-utils";
-import { Reserve } from "@aave/react";
+import { Reserve, TokenAmount } from "@aave/react";
 import { Address } from "viem";
 
 export interface MarketReserve {
@@ -26,6 +26,7 @@ export interface MarketReserve {
   variableRateSlope1: string;
   variableRateSlope2: string;
   baseVariableBorrowRate: string;
+  userMaxBorrowable?: TokenAmount;
 }
 
 export function transformMarketReserve(raw: Reserve): MarketReserve {
@@ -53,6 +54,7 @@ export function transformMarketReserve(raw: Reserve): MarketReserve {
     variableRateSlope1: String(raw.borrowInfo?.variableRateSlope1.raw),
     variableRateSlope2: String(raw.borrowInfo?.variableRateSlope2.raw),
     baseVariableBorrowRate: String(raw.borrowInfo?.reserveFactor.raw),
+    userMaxBorrowable: raw.userState?.borrowable,
   };
 }
 
