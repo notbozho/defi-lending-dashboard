@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { useChainId } from "wagmi";
+import { useShallow } from "zustand/shallow";
 
 import FadeInOut from "@/components/animations/FadeInOut";
 import { MetricChart } from "@/components/shared/MetricChart";
 import { Toggle, ToggleGroup } from "@/components/shared/ToggleGroup";
 import type { ChartConfig } from "@/components/ui/chart";
-import { useMarketContext } from "@/context/MarketContext";
 import { useAPRHistory } from "@/hooks";
 import { TimeWindowMap } from "@/lib/aave/constants";
+import { useMarketStore } from "@/stores/useMarketStore";
 
 type AprChartType = "supply" | "borrow";
 
@@ -41,12 +42,16 @@ export default function AprChart({
   const cid = useChainId();
   const [timeRange, setTimeRange] = useState<keyof typeof TimeWindowMap>("1W");
 
-  const { isLoading: marketLoading } = useMarketContext();
+  const { isLoading: isMarketLoading } = useMarketStore(
+    useShallow((s) => ({
+      isLoading: s.isLoading,
+    }))
+  );
 
   const {
     history,
     error,
-    loading: aprLoading,
+    loading: isAprLoading,
   } = useAPRHistory({
     cid,
     marketAddress,
@@ -55,7 +60,7 @@ export default function AprChart({
     borrow: type === "borrow",
   });
 
-  const loading = marketLoading || aprLoading;
+  const isLoading = isMarketLoading || isAprLoading;
 
   const color = chartColors[type];
   const label = chartLabels[type];
@@ -94,7 +99,7 @@ export default function AprChart({
         chartConfig={chartConfig}
         data={history}
         dataKey={`apr`}
-        isLoading={loading}
+        isLoading={isLoading}
         error={error ?? null}
         color={color}
         yAxisUnit="%"

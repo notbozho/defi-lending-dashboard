@@ -1,52 +1,81 @@
-/* eslint-disable no-unused-vars */
 "use client";
 
-import { Market } from "@aave/react";
+import {
+  Market,
+  MarketUserReserveBorrowPosition,
+  MarketUserReserveSupplyPosition,
+} from "@aave/react";
 import { create } from "zustand";
 
-import { type MarketReserve, transformMarketReserves } from "@/lib/aave";
+import { MarketReserve, transformMarketReserves } from "@/lib/aave";
 
-interface MarketData {
-  currentMarket: Market | null;
+interface MarketState {
+  isLoading: boolean;
+  error: unknown;
+
+  market: Market | null;
   supplyReserves: Record<string, MarketReserve>;
   borrowReserves: Record<string, MarketReserve>;
-}
 
-interface MarketActions {
+  userSupplyPositions: MarketUserReserveSupplyPosition[];
+  userBorrowPositions: MarketUserReserveBorrowPosition[];
+
+  setLoading: (b: boolean) => void;
+  setError: (e: unknown) => void;
+
   setMarketData: (market: Market) => void;
-  clearMarket: () => void;
-  getCurrentMarketAddress: () => string | null;
+  setUserPositions: (
+    supplies: MarketUserReserveSupplyPosition[],
+    borrows: MarketUserReserveBorrowPosition[]
+  ) => void;
+
+  reset: () => void;
 }
 
-export const useMarketStore = create<MarketData & MarketActions>()((set, get) => ({
-  currentMarket: null,
+export const useMarketStore = create<MarketState>()((set) => ({
+  isLoading: false,
+  error: null,
+
+  market: null,
   supplyReserves: {},
   borrowReserves: {},
 
-  sorting: [],
-  columnFilters: [],
+  userSupplyPositions: [],
+  userBorrowPositions: [],
+
+  setLoading: (b) => set({ isLoading: b }),
+  setError: (e) => set({ error: e }),
 
   setMarketData: (market) => {
     const supply = transformMarketReserves(market.supplyReserves ?? []).sort(
       (a, b) => b.totalSuppliedUsd - a.totalSuppliedUsd
     );
+
     const borrow = transformMarketReserves(market.borrowReserves ?? []).sort(
       (a, b) => b.totalSuppliedUsd - a.totalSuppliedUsd
     );
 
     set({
-      currentMarket: market,
+      market,
       supplyReserves: Object.fromEntries(supply.map((r) => [r.underlyingAddress, r])),
       borrowReserves: Object.fromEntries(borrow.map((r) => [r.underlyingAddress, r])),
     });
   },
 
-  clearMarket: () =>
+  setUserPositions: (supplies, borrows) =>
     set({
-      currentMarket: null,
-      supplyReserves: {},
-      borrowReserves: {},
+      userSupplyPositions: supplies ?? [],
+      userBorrowPositions: borrows ?? [],
     }),
 
-  getCurrentMarketAddress: () => get().currentMarket?.address ?? null,
+  reset: () =>
+    set({
+      isLoading: false,
+      error: null,
+      market: null,
+      supplyReserves: {},
+      borrowReserves: {},
+      userSupplyPositions: [],
+      userBorrowPositions: [],
+    }),
 }));

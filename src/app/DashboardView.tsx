@@ -11,13 +11,14 @@ import MyWalletCard from "@/app/components/MyWalletCard";
 import { PositionsTable } from "@/app/components/PositionsTable";
 import { userBorrowColumns } from "@/app/lib/userBorrowsColumns";
 import { userSuppliesColumns } from "@/app/lib/userSuppliesColumns";
-import { useMarketContext } from "@/context/MarketContext";
+import { useLoadMarketData } from "@/hooks/aave/useLoadMarketData";
 import { useBalancesOf } from "@/hooks/web3/useBalancesOf";
 import { ZERO_ADDRESS } from "@/utils/constants";
 
 export default function DashboardView() {
-  const { isLoading, error, supplyReserves, market, userSupplyPositions, userBorrowPositions } =
-    useMarketContext();
+  const { isLoading, market, supplyReserves, userSupplyPositions, userBorrowPositions } =
+    useLoadMarketData();
+
   const { address } = useAccount();
 
   const MOCK_BALANCES: Record<string, BigNumber> = {

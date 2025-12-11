@@ -7,17 +7,12 @@ import { MarketReservesTable } from "@/app/(market)/reserves/MarketReservesTable
 import { Card, CardHeader } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MARKETS } from "@/config";
-import { useMarketContext } from "@/context/MarketContext";
+import { useLoadMarketData } from "@/hooks/aave/useLoadMarketData";
 
 export function MarketReservesView() {
-  const { market, isLoading, supplyReserves } = useMarketContext();
+  const { isLoading, market, supplyReserves } = useLoadMarketData();
 
   const marketConfig = MARKETS[market?.name || ""];
-
-  const totalBorrows = market?.borrowReserves.reduce((acc, reserve) => {
-    const value = reserve.borrowInfo?.total.usd ?? 0;
-    return acc + Number(value);
-  }, 0);
 
   return (
     <div className="container mx-auto min-h-screen w-full space-y-6 px-2 py-6">
@@ -42,13 +37,7 @@ export function MarketReservesView() {
             )}
           </div>
         </CardHeader>
-        <MarketMetrics
-          loading={isLoading}
-          totalSupply={market?.totalMarketSize ?? 0}
-          totalAvailable={market?.totalAvailableLiquidity ?? 0}
-          totalBorrows={totalBorrows ?? 0}
-          assetsCount={market?.supplyReserves.length ?? 0}
-        />
+        <MarketMetrics />
       </Card>
 
       <MarketReservesTable reserves={Object.values(supplyReserves)} loading={isLoading} />

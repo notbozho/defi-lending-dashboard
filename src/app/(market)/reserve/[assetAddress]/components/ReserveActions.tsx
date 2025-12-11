@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import { valueToBigNumber } from "@aave/math-utils";
-import { ArrowRight, Fuel } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useAccount, useGasPrice } from "wagmi";
+import { useShallow } from "zustand/shallow";
 
 import {
   AnimatedNumber,
@@ -19,10 +20,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMarketContext } from "@/context/MarketContext";
 import { useBalanceOf } from "@/hooks/web3/useBalanceOf";
 import { MarketReserve } from "@/lib/aave";
 import { cn } from "@/lib/utils";
+import { useMarketStore } from "@/stores/useMarketStore";
 import { INPUT_REGEX, ZERO_ADDRESS } from "@/utils/constants";
 
 type ReserveActionsProps = {
@@ -33,7 +34,12 @@ export default function ReserveActions({ reserve }: ReserveActionsProps) {
   const [supplyAmount, setSupplyAmount] = useState("");
   const [borrowAmount, setBorrowAmount] = useState("");
 
-  const { userSupplyPositions, userBorrowPositions } = useMarketContext();
+  const { userSupplyPositions, userBorrowPositions } = useMarketStore(
+    useShallow((s) => ({
+      userSupplyPositions: s.userSupplyPositions,
+      userBorrowPositions: s.userBorrowPositions,
+    }))
+  );
 
   const { isConnected, address } = useAccount();
 

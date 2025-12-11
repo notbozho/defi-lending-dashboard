@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
 
 import { Header } from "@/components/layout/Header";
-import { MarketProvider } from "@/context/MarketContext";
 import Providers from "@/lib/Providers";
 
 import "@/styles/globals.css";
@@ -30,10 +29,8 @@ export default function RootLayout(props: LayoutProps<"/">) {
         className={`${spaceGrotesk.variable} ${spaceMono.variable} from-background dark:from-primary/10 dark:via-background dark:to-primary/10 via-primary/20 to-background bg-linear-to-tr font-sans antialiased`}
       >
         <Providers>
-          <MarketProvider>
-            <Header />
-            {props.children}
-          </MarketProvider>
+          <Header />
+          {props.children}
         </Providers>
       </body>
     </html>

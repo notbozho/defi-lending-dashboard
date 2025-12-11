@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { MARKETS } from "@/config";
 import { NETWORK_BY_CHAIN_ID, type NetworkConfig } from "@/config/networks";
-import { useMarketContext } from "@/context/MarketContext";
+import { useLoadMarketData } from "@/hooks/aave/useLoadMarketData";
 
 import ReserveActions from "./components/ReserveActions";
 import ReserveCharts from "./components/ReserveCharts";
@@ -27,11 +27,12 @@ export default function ReserveView({ assetAddress }: { assetAddress: string }) 
   const chainId = useChainId();
   const router = useRouter();
 
-  const { isLoading, error, supplyReserves, market } = useMarketContext();
+  const { isLoading, error, supplyReserves, market } = useLoadMarketData();
+
   const reserve = supplyReserves?.[assetAddress];
   const currentMarketConfig = MARKETS[market?.name || ""];
 
-  const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[chainId]; // TODO: export to a web3 context
+  const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[chainId]; // TODO: export to a web3 store
 
   const loading = isLoading || !reserve;
 

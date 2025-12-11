@@ -1,36 +1,40 @@
-import { BigDecimal } from "@aave/react";
+import { useShallow } from "zustand/shallow";
 
 import MetricItem from "@/components/shared/MetricItem";
 import { CardContent } from "@/components/ui/card";
+import { useMarketStore } from "@/stores/useMarketStore";
 
-interface MarketMetricsProps {
-  loading: boolean;
-  totalSupply: BigNumber | number | BigDecimal;
-  totalAvailable: BigNumber | number | BigDecimal;
-  totalBorrows: BigNumber | number | BigDecimal;
-  assetsCount: number;
-}
+export function MarketMetrics() {
+  const {
+    isLoading: loading,
+    market,
+    supplyReserves,
+  } = useMarketStore(
+    useShallow((s) => ({
+      isLoading: s.isLoading,
+      market: s.market,
+      supplyReserves: s.supplyReserves,
+    }))
+  );
 
-export function MarketMetrics({
-  loading,
-  totalSupply,
-  totalAvailable,
-  totalBorrows,
-  assetsCount,
-}: MarketMetricsProps) {
+  const totalBorrows = market?.borrowReserves.reduce((acc, reserve) => {
+    const value = reserve.borrowInfo?.total.usd ?? 0;
+    return acc + Number(value);
+  }, 0);
+
   return (
     <CardContent className="flex flex-row gap-24">
       <MetricItem
         label="Total Supply"
         tooltipText="The total amount of assets supplied to the market."
-        value={totalSupply}
+        value={market?.totalMarketSize}
         loading={loading}
         symbol="usd"
       />
       <MetricItem
         label="Total Available"
         tooltipText="The total amount of assets available for borrowing."
-        value={totalAvailable}
+        value={market?.totalAvailableLiquidity}
         loading={loading}
         symbol="usd"
       />
@@ -44,7 +48,7 @@ export function MarketMetrics({
       <MetricItem
         label="Assets"
         tooltipText="The total number of unique assets in the market."
-        value={assetsCount}
+        value={Object.values(supplyReserves).length}
         loading={loading}
         decimals={0}
       />

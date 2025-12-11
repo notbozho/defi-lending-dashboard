@@ -23,13 +23,16 @@ export default function MetricItem({
   decimals,
   compactThreshold,
 }: MetricItemProps) {
+  const isLoading = loading || value === undefined || value === null;
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <span className="leading-none">{label}</span>
         <IconTooltip text={tooltipText} />
       </div>
-      {loading ? (
+
+      {isLoading ? (
         <Skeleton className="h-9 w-28 rounded-md align-middle" />
       ) : (
         <FormattedNumber
