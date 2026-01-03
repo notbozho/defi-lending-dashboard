@@ -121,7 +121,7 @@ export function Toggle({
             exit={{ opacity: 0 }}
             className={cn(
               "absolute inset-0 z-0 rounded-md",
-              variant === "muted" ? "bg-white shadow-sm" : "bg-accent"
+              variant === "muted" ? "bg-background shadow-sm" : "bg-accent"
             )}
           />
         )}

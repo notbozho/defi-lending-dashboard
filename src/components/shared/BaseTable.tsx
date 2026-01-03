@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -38,7 +38,7 @@ type BaseTableProps<TData> = {
   data: TData[];
   columns: ColumnDef<TData, unknown>[];
   loading: boolean;
-
+  hideHeader?: boolean;
   minHeight?: string | number;
 
   searchKeys?: (keyof TData)[];
@@ -47,6 +47,7 @@ type BaseTableProps<TData> = {
 
   onRowClick?: (row: TData) => void;
 
+  title?: React.ReactNode;
   renderToolbar?: (table: TanstackTable<TData>) => React.ReactNode;
 
   emptyState?: React.ReactNode;
@@ -75,11 +76,13 @@ function SkeletonRow<TData>({ table }: { table: TanstackTable<TData> }) {
 export function BaseTable<TData>({
   data,
   columns,
+  hideHeader = false,
   loading,
   minHeight: min = "auto",
   searchKeys = [],
   initialSorting = [],
   onRowClick,
+  title,
   renderToolbar,
   rowProps,
   emptyState,
@@ -140,7 +143,8 @@ export function BaseTable<TData>({
 
   return (
     <Card className="gap-0 p-0" style={{ minHeight: min }}>
-      <CardHeader className="bg-accent/50 mb-2 flex items-center justify-between p-4 px-6">
+      <CardHeader variant={"inline"} className="px-6 py-4">
+        {title}
         {renderToolbar?.(table)}
         {searchKeys.length > 0 && (
           <InputGroup className="group bg-card max-w-sm">
@@ -175,41 +179,43 @@ export function BaseTable<TData>({
         </AnimatePresence>
       ) : (
         <Table className="table-fixed overflow-hidden">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const sorted = header.column.getIsSorted();
-                  const canSort = header.column.getCanSort();
+          {!hideHeader && (
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    const sorted = header.column.getIsSorted();
+                    const canSort = header.column.getCanSort();
 
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className="px-6"
-                      style={{
-                        width: `${header.getSize()}px`,
-                      }}
-                    >
-                      {header.isPlaceholder ? null : (
-                        <div
-                          onClick={header.column.getToggleSortingHandler()}
-                          className={cn(
-                            "group flex items-center select-none",
-                            canSort && "cursor-pointer"
-                          )}
-                        >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          <div className="w-4">
-                            <SortingIndicator direction={sorted} visible={canSort} />
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className="text-muted-foreground px-6 font-light"
+                        style={{
+                          width: `${header.getSize()}px`,
+                        }}
+                      >
+                        {header.isPlaceholder ? null : (
+                          <div
+                            onClick={header.column.getToggleSortingHandler()}
+                            className={cn(
+                              "group flex items-center select-none",
+                              canSort && "cursor-pointer"
+                            )}
+                          >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            <div className="w-4">
+                              <SortingIndicator direction={sorted} visible={canSort} />
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
+                        )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+          )}
 
           <TableBody>
             {isLoading

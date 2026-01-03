@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 import HealthFactorCard from "@/app/components/HealthFactorGauge";
 import MyWalletCard from "@/app/components/MyWalletCard";
 import { PositionsTable } from "@/app/components/PositionsTable";
+import { TransactionHistoryTable } from "@/app/components/TransactionHistoryTable";
 import { userBorrowColumns } from "@/app/lib/userBorrowsColumns";
 import { userSuppliesColumns } from "@/app/lib/userSuppliesColumns";
 import { useLoadMarketData } from "@/hooks/aave/useLoadMarketData";

@@ -123,8 +123,39 @@ export function MetricChart<T extends MetricDataPoint>({
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.4} />
-                <stop offset="100%" stopColor={color} stopOpacity={0.0} />
+                <stop offset="50%" stopColor={color} stopOpacity={0.1} />
+                <stop offset="100%" stopColor={color} stopOpacity={0} />
               </linearGradient>
+              <filter id={`${gradientId}-noise`} filterUnits="userSpaceOnUse">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.45"
+                  numOctaves="1"
+                  seed="5"
+                  result="noise"
+                />
+
+                <feColorMatrix
+                  in="noise"
+                  type="matrix"
+                  values="
+      1 0 0 0 0
+      0 1 0 0 0
+      0 0 1 0 0
+      0 0 0 0.35 0
+    "
+                  result="visibleNoise"
+                />
+
+                <feComposite
+                  in="visibleNoise"
+                  in2="SourceAlpha"
+                  operator="in"
+                  result="maskedNoise"
+                />
+
+                <feBlend in="SourceGraphic" in2="maskedNoise" mode="overlay" />
+              </filter>
             </defs>
 
             <CartesianGrid vertical={false} className="stroke-muted" strokeDasharray="2 2" />
@@ -170,6 +201,7 @@ export function MetricChart<T extends MetricDataPoint>({
               dataKey={dataKey}
               type="natural"
               fill={`url(#${gradientId})`}
+              filter={`url(#${gradientId}-noise)`}
               stroke={color}
               strokeWidth={2}
               activeDot={{ r: 6 }}

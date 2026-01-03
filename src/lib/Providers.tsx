@@ -32,9 +32,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             <Web3Provider>
               <ThemeProvider
                 attribute="class"
-                defaultTheme="light"
-                // enableSystem
-                // disableTransitionOnChange
+                defaultTheme="dark"
+                enableSystem={false}
+                disableTransitionOnChange
               >
                 {children}
                 <Toaster />

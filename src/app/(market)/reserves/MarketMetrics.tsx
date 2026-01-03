@@ -22,6 +22,8 @@ export function MarketMetrics() {
     return acc + Number(value);
   }, 0);
 
+  const assetsCount = loading ? undefined : Object.values(supplyReserves).length;
+
   return (
     <CardContent className="flex flex-row gap-24">
       <MetricItem
@@ -48,7 +50,7 @@ export function MarketMetrics() {
       <MetricItem
         label="Assets"
         tooltipText="The total number of unique assets in the market."
-        value={Object.values(supplyReserves).length}
+        value={assetsCount}
         loading={loading}
         decimals={0}
       />

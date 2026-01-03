@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
+import { FaShieldHeart } from "react-icons/fa6";
 import { animate, motion, useMotionValue, useTransform } from "motion/react";
 
 import { AnimatedNumber, IconTooltip } from "@/components";
@@ -52,9 +53,9 @@ function lerpColor(a: string, b: string, amount: number) {
 }
 
 const GRADIENT_STOPS = [
-  { percent: 0, color: "#ef4444" },
-  { percent: 0.5, color: "#eab308" },
-  { percent: 1, color: "#21c43f" },
+  { percent: 0, color: "#FF003C" },
+  { percent: 0.5, color: "#FFE600" },
+  { percent: 1, color: "#00FF80" },
 ];
 
 function getGradientColorAtPercent(percent: number) {
@@ -69,7 +70,9 @@ function getGradientColorAtPercent(percent: number) {
       break;
     }
   }
+
   if (lower === upper) return lower.color;
+
   const range = upper.percent - lower.percent;
   const rangePercent = (p - lower.percent) / range;
   return lerpColor(lower.color, upper.color, rangePercent);
@@ -77,11 +80,12 @@ function getGradientColorAtPercent(percent: number) {
 
 const VIEWBOX_WIDTH = 300;
 const VIEWBOX_HEIGHT = 160;
-const CENTER_X = VIEWBOX_WIDTH / 2;
-const CENTER_Y = VIEWBOX_HEIGHT - 16;
 
 const RADIUS = 130;
-const STROKE_WIDTH = 16;
+const STROKE_WIDTH = 13;
+
+const CENTER_X = VIEWBOX_WIDTH / 2;
+const CENTER_Y = VIEWBOX_HEIGHT - STROKE_WIDTH / 2;
 
 const LABEL_RADIUS = RADIUS - 25;
 const ARROW_RADIUS = RADIUS - 50;
@@ -164,11 +168,12 @@ export default function HealthFactorGauge({ value }: HealthFactorGaugeProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <CardTitle className="text-lg font-medium">Health Factor</CardTitle>
-          <IconTooltip text={toolTip} />
-        </div>
+      <CardHeader variant="inline">
+        <CardTitle className="text-lg" variant="withIcon">
+          <FaShieldHeart />
+          Health Factor
+        </CardTitle>
+        <IconTooltip text={toolTip} />
       </CardHeader>
 
       <CardContent className="flex flex-col items-center pt-4 pb-6">

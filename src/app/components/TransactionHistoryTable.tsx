@@ -1,11 +1,12 @@
 "use client";
 
+import { TbReceiptDollar } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Button, CardTitle } from "@/components";
+import { CardTitle } from "@/components";
 import { BaseTable } from "@/components/shared/BaseTable";
-import { Empty, EmptyContent, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
+import { Empty, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
 
 type PositionWithAddress = {
   currency: {
@@ -13,7 +14,7 @@ type PositionWithAddress = {
   };
 };
 
-export function PositionsTable<Positions extends PositionWithAddress>({
+export function TransactionHistoryTable<Positions extends PositionWithAddress>({
   positions,
   columns,
   loading,
@@ -37,23 +38,14 @@ export function PositionsTable<Positions extends PositionWithAddress>({
       skeletonCount={1}
       emptyState={
         <Empty>
-          <EmptyTitle>No {title} Yet</EmptyTitle>
-          <EmptyDescription>Your positions will appear here</EmptyDescription>
-          <EmptyContent>
-            <Button
-              onClick={() => {
-                router.push("/reserves");
-              }}
-            >
-              Browse
-            </Button>
-          </EmptyContent>
+          <EmptyTitle>No Transactions Yet</EmptyTitle>
+          <EmptyDescription>Your transaction history will appear here</EmptyDescription>
         </Empty>
       }
       title={
         <CardTitle variant={icon ? "withIcon" : "default"}>
-          {icon}
-          {title}
+          <TbReceiptDollar fill="white" />
+          Transaction History
         </CardTitle>
       }
     />

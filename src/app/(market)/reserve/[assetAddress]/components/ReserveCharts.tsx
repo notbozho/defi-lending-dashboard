@@ -17,7 +17,7 @@ export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) 
   return (
     <div className="grow space-y-6">
       <Card>
-        <CardHeader className="flex items-center gap-2">
+        <CardHeader variant="inline">
           <CardTitle className="text-xl font-medium">Supply Info</CardTitle>
           <IconTooltip text="The historical annual percentage rate (APR) for supplying this asset." />
         </CardHeader>
@@ -32,7 +32,7 @@ export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) 
       </Card>
 
       <Card>
-        <CardHeader className="flex items-center gap-2">
+        <CardHeader variant="inline">
           <CardTitle className="text-xl font-medium">Borrow Info</CardTitle>
           <IconTooltip text="The historical annual percentage rate (APR) for borrowing this asset." />
         </CardHeader>

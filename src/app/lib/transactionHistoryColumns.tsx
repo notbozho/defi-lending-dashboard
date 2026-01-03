@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { ColumnWithSkeleton } from "@/types/table";
 
-export const userSuppliesColumns: ColumnWithSkeleton<MarketUserReserveSupplyPosition>[] = [
+export const transactionHistoryColumns: ColumnWithSkeleton<MarketUserReserveSupplyPosition>[] = [
   {
     id: "asset",
     header: "Asset",
@@ -79,8 +79,8 @@ export const userSuppliesColumns: ColumnWithSkeleton<MarketUserReserveSupplyPosi
     skeleton: <Skeleton className="h-6 w-12" />,
   },
   {
-    id: "collateral",
-    header: "Collateral",
+    id: "view",
+    header: "View",
     maxSize: 120,
     size: 120,
     minSize: 80,

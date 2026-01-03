@@ -19,7 +19,7 @@ export function MarketReservesView() {
       <Card>
         <CardHeader className="flex items-center gap-4">
           {isLoading || !market ? (
-            <Skeleton className="size-12 bg-white/80" />
+            <Skeleton className="size-12" />
           ) : (
             <Image
               src={market.icon}
@@ -31,7 +31,7 @@ export function MarketReservesView() {
           )}
           <div className="flex flex-col">
             {isLoading ? (
-              <Skeleton className="h-6 w-32 bg-white/80" />
+              <Skeleton className="h-6 w-32" />
             ) : (
               <span className="text-3xl font-medium">{marketConfig?.marketTitle}</span>
             )}

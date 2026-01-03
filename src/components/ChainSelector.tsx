@@ -39,7 +39,7 @@ export default function ChainSelector() {
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" aria-label="Open menu" size="default">
+          <Button variant="secondary" aria-label="Open menu" size="default">
             <NetworkIcon
               chainId={chainId}
               width={64}

@@ -19,14 +19,14 @@ const spaceMono = Space_Mono({
 
 export const metadata: Metadata = {
   title: "Lending Dashboard",
-  description: "A lending dashboard wrapped around Aave V3 protocol.",
+  description: "A lending dashboard wrapped around Aave V3.",
 };
 
 export default function RootLayout(props: LayoutProps<"/">) {
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${spaceMono.variable} from-background dark:from-primary/10 dark:via-background dark:to-primary/10 via-primary/20 to-background bg-linear-to-tr font-sans antialiased`}
+        className={`${spaceGrotesk.variable} ${spaceMono.variable} from-background dark:from-primary/10 dark:via-background dark:to-primary/5 via-primary/20 to-background bg-linear-to-tr font-sans antialiased`}
       >
         <Providers>
           <Header />

@@ -49,7 +49,7 @@ export const userBorrowColumns: ColumnWithSkeleton<MarketUserReserveBorrowPositi
       const debt = row.original.debt;
 
       return (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <FormattedNumber
             value={debt?.amount.value}
             symbol={row.original.currency.symbol}
@@ -58,7 +58,7 @@ export const userBorrowColumns: ColumnWithSkeleton<MarketUserReserveBorrowPositi
           />
 
           {valueToBigNumber(debt?.usd).isGreaterThan(0) && (
-            <Badge variant="subtle" className="text-[0.70rem] font-normal">
+            <Badge asChild variant="subtle" className="text-[0.70rem] font-normal">
               <FormattedNumber value={debt?.usd} symbol="USD" compact />
             </Badge>
           )}

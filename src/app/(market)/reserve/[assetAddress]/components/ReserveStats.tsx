@@ -75,7 +75,7 @@ export default function ReserveStats({ asset }: ReserveStatsProps) {
             value={1 / (asset.oraclePrice?.toNumber() || 1)}
             symbol={asset.symbol}
             decimals={5}
-            className="text-black"
+            className="text-foreground"
           />
         </span>
       </div>

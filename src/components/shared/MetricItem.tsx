@@ -28,7 +28,7 @@ export default function MetricItem({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <span className="leading-none">{label}</span>
+        <span className="text-secondary-foreground leading-none">{label}</span>
         <IconTooltip text={tooltipText} />
       </div>
 

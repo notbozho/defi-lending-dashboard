@@ -1,4 +1,5 @@
 import { SetStateAction, useMemo, useState } from "react";
+import { FaWallet } from "react-icons/fa6";
 import BigNumber from "bignumber.js";
 import { motion } from "motion/react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
@@ -20,12 +21,12 @@ type MyWalletCardProps = {
 };
 
 const GRADIENTS = [
-  { start: "#f97316", end: "#facc15" },
-  { start: "#8b5cf6", end: "#c026d3" },
-  { start: "#3b82f6", end: "#8b5cf6" },
-  { start: "#14b8a6", end: "#22c55e" },
-  { start: "#ec4899", end: "#e11d48" },
-  { start: "#64748b", end: "#94a3b8" },
+  { start: "#00FF94", end: "#00B8FF" },
+  { start: "#FF0F7B", end: "#F89B29" },
+  { start: "#9D00FF", end: "#5400FF" },
+  { start: "#7F00FF", end: "#E100FF" },
+  { start: "#00F0FF", end: "#0047FF" },
+  { start: "#FFD600", end: "#FF5E00" },
 ];
 
 const getCssGradient = (index: number) => {
@@ -153,8 +154,11 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
 
   return (
     <Card>
-      <CardHeader className="flex items-center gap-2">
-        <CardTitle className="text-xl font-medium">My Wallet</CardTitle>
+      <CardHeader variant="inline">
+        <CardTitle className="text-lg font-medium" variant="withIcon">
+          <FaWallet />
+          My Wallet
+        </CardTitle>
         <IconTooltip text="Supported assets in your wallet" />
       </CardHeader>
       <CardContent>

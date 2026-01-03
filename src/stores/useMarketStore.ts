@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Cursor,
   Market,
   MarketUserReserveBorrowPosition,
   MarketUserReserveSupplyPosition,
@@ -20,6 +21,8 @@ interface MarketState {
   userSupplyPositions: MarketUserReserveSupplyPosition[];
   userBorrowPositions: MarketUserReserveBorrowPosition[];
 
+  sdkCursor: Cursor | null;
+
   setLoading: (b: boolean) => void;
   setError: (e: unknown) => void;
 
@@ -33,7 +36,7 @@ interface MarketState {
 }
 
 export const useMarketStore = create<MarketState>()((set) => ({
-  isLoading: false,
+  isLoading: true,
   error: null,
 
   market: null,
@@ -42,6 +45,8 @@ export const useMarketStore = create<MarketState>()((set) => ({
 
   userSupplyPositions: [],
   userBorrowPositions: [],
+
+  sdkCursor: null,
 
   setLoading: (b) => set({ isLoading: b }),
   setError: (e) => set({ error: e }),

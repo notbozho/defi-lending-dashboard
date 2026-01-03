@@ -66,7 +66,7 @@ export function TokenDisplay({
 
       <div className="flex items-center gap-x-2 leading-tight">
         {name && <span className="text-sm font-medium">{name}</span>}
-        <span className="text-muted-foreground">/</span>
+        {/* <span className="text-muted-foreground">/</span> */}
         {symbol && <span className="text-muted-foreground text-xs">{symbol}</span>}
       </div>
     </div>

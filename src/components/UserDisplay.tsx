@@ -31,8 +31,14 @@ export default function UserDisplay({
   const referrerPolicy = ensAvatar ? "no-referrer" : undefined;
 
   return (
-    <Button variant="outline" onClick={onClick} className={`flex items-center gap-2 ${className}`}>
-      <span className="hidden text-base sm:inline-block">{displayName}</span>
+    <Button
+      variant="secondary"
+      onClick={onClick}
+      className={`flex items-center gap-2 ${className}`}
+    >
+      <span className="hidden text-sm font-normal text-gray-300 sm:inline-block">
+        {displayName}
+      </span>
 
       <Avatar className="size-6">
         <AvatarImage

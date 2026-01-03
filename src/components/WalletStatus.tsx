@@ -16,7 +16,7 @@ export default function WalletStatus({ className }: { className?: string }) {
 
   if (openConnectModal) {
     return (
-      <Button variant={"default"} onClick={openConnectModal} className={className}>
+      <Button variant={"secondary"} onClick={openConnectModal} className={className}>
         Connect Wallet
       </Button>
     );

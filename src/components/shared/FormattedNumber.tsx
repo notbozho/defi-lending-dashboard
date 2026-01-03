@@ -161,7 +161,7 @@ export function FormattedNumber({
     <span className={cn(numberVariants({ tone, size }), className)}>
       {isSmallerThanMin && <span className="symbol text-muted-foreground mr-0.5">&lt;</span>}
 
-      {symbol?.toLowerCase() === "usd" && !percent && <span className="symbol mr-0.5">$</span>}
+      {symbol?.toLowerCase() === "usd" && !percent && <span className="symbol">$</span>}
 
       <span className="number">{displayValue}</span>
 
