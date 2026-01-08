@@ -165,63 +165,72 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
         {/* reset hover state here due to a bug when pointer leaves the chart area too fast, 
         outline-none to fix a bug in recharts of showing focus outline when the chart is clicked  */}
         <div
-          className="relative mx-auto mb-6 h-72 w-72 **:outline-none"
+          className="relative mx-auto mb-6 h-72 min-h-72 w-72 min-w-72 **:outline-none"
           onPointerLeave={handleMouseExit}
         >
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart className="z-50">
-              <defs>
-                {GRADIENTS.map((gradient, index) => (
-                  <linearGradient id={`gradient-${index}`} key={index} x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor={gradient.start} />
-                    <stop offset="100%" stopColor={gradient.end} />
-                  </linearGradient>
-                ))}
-              </defs>
-
-              <Pie
-                data={displayCategories}
-                cx="50%"
-                cy="50%"
-                focusable={false}
-                innerRadius="90%"
-                outerRadius="100%"
-                paddingAngle={2}
-                cornerRadius={12}
-                dataKey="value"
-                startAngle={90}
-                endAngle={450}
-                strokeWidth={0}
-                onMouseOver={handleMouseEnter}
-                onMouseLeave={handleMouseExit}
-                onFocus={handleMouseExit}
-                onBlur={handleMouseExit}
-                animationBegin={0}
-                animationDuration={1000}
-                animationEasing="ease-in-out"
-              >
-                {displayCategories.map((item, index) => {
-                  const isDimmed = hoveredSlice && hoveredSlice !== item.name;
-
-                  return (
-                    <Cell
+          {!loading && displayCategories.length > 0 && (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart className="z-50">
+                <defs>
+                  {GRADIENTS.map((gradient, index) => (
+                    <linearGradient
+                      id={`gradient-${index}`}
                       key={index}
-                      fill={isZero ? "#e5e7eb" : item.gradientId}
-                      tabIndex={-1}
-                      focusable={false}
-                      style={{
-                        transition: "filter 0.25s ease, opacity 0.25s ease",
-                        filter: isDimmed ? "blur(3px) brightness(0.75)" : "none",
-                        opacity: isDimmed ? 0.6 : 1,
-                        cursor: isZero ? "default" : "pointer",
-                        pointerEvents: isZero ? "none" : "auto",
-                      }}
-                    />
-                  );
-                })}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+                      x1="0"
+                      y1="0"
+                      x2="1"
+                      y2="1"
+                    >
+                      <stop offset="0%" stopColor={gradient.start} />
+                      <stop offset="100%" stopColor={gradient.end} />
+                    </linearGradient>
+                  ))}
+                </defs>
+
+                <Pie
+                  data={displayCategories}
+                  cx="50%"
+                  cy="50%"
+                  focusable={false}
+                  innerRadius="90%"
+                  outerRadius="100%"
+                  paddingAngle={2}
+                  cornerRadius={12}
+                  dataKey="value"
+                  startAngle={90}
+                  endAngle={450}
+                  strokeWidth={0}
+                  onMouseOver={handleMouseEnter}
+                  onMouseLeave={handleMouseExit}
+                  onFocus={handleMouseExit}
+                  onBlur={handleMouseExit}
+                  animationBegin={0}
+                  animationDuration={1000}
+                  animationEasing="ease-in-out"
+                >
+                  {displayCategories.map((item, index) => {
+                    const isDimmed = hoveredSlice && hoveredSlice !== item.name;
+
+                    return (
+                      <Cell
+                        key={index}
+                        fill={isZero ? "#e5e7eb" : item.gradientId}
+                        tabIndex={-1}
+                        focusable={false}
+                        style={{
+                          transition: "filter 0.25s ease, opacity 0.25s ease",
+                          filter: isDimmed ? "blur(3px) brightness(0.75)" : "none",
+                          opacity: isDimmed ? 0.6 : 1,
+                          cursor: isZero ? "default" : "pointer",
+                          pointerEvents: isZero ? "none" : "auto",
+                        }}
+                      />
+                    );
+                  })}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          )}
 
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="wrap mb-1 w-48 text-center text-pretty text-gray-500">

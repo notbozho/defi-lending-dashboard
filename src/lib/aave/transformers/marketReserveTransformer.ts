@@ -1,33 +1,7 @@
 import { valueToBigNumber } from "@aave/math-utils";
-import { Reserve, TokenAmount } from "@aave/react";
-import { Address } from "viem";
+import { Reserve } from "@aave/react";
 
-export interface MarketReserve {
-  underlyingAddress: Address;
-  marketAddress: Address;
-  name: string;
-  symbol: string;
-  aTokenAddress: Address;
-  vTokenAddress: Address;
-  imageUrl?: string;
-  decimals: number;
-  totalSupplied: BigNumber;
-  totalSuppliedUsd: number;
-  totalBorrowed: BigNumber;
-  totalBorrowedUsd: number;
-  supplyApy: number;
-  borrowApy: number;
-  isPaused?: boolean;
-  isFrozen?: boolean;
-  oraclePrice: BigNumber;
-  oracleContractAddress: Address;
-  utilizationRate: string;
-  optimalUsageRatio: string;
-  variableRateSlope1: string;
-  variableRateSlope2: string;
-  baseVariableBorrowRate: string;
-  userMaxBorrowable?: TokenAmount;
-}
+import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 
 export function transformMarketReserve(raw: Reserve): MarketReserve {
   return {

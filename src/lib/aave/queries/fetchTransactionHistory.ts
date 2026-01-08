@@ -13,7 +13,7 @@ import { client } from "@/lib/aave";
 export type TransactionHistoryFetchParams = {
   cid: number;
   marketAddress: string;
-  userAddress: string;
+  accountAddress: string;
   pageSize?: PageSize;
   cursor: Cursor | null;
 };
@@ -21,12 +21,12 @@ export type TransactionHistoryFetchParams = {
 export async function fetchTransactionHistory({
   cid,
   marketAddress,
-  userAddress,
+  accountAddress,
   pageSize,
   cursor,
 }: TransactionHistoryFetchParams): Promise<PaginatedUserTransactionHistoryResult> {
   const res = await userTransactionHistory(client, {
-    user: evmAddress(userAddress),
+    user: evmAddress(accountAddress),
     market: evmAddress(marketAddress),
     orderBy: { date: OrderDirection.Desc },
     chainId: chainId(cid),

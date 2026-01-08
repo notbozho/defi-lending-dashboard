@@ -40,18 +40,16 @@ type BaseTableProps<TData> = {
   loading: boolean;
   hideHeader?: boolean;
   minHeight?: string | number;
-
   searchKeys?: (keyof TData)[];
-
   initialSorting?: SortingState;
 
   onRowClick?: (row: TData) => void;
 
   title?: React.ReactNode;
   renderToolbar?: (table: TanstackTable<TData>) => React.ReactNode;
+  renderFooter?: (table: TanstackTable<TData>) => React.ReactNode;
 
   emptyState?: React.ReactNode;
-
   rowProps?: (row: TData) => React.HTMLAttributes<HTMLTableRowElement>;
 
   skeletonCount?: number;
@@ -77,13 +75,14 @@ export function BaseTable<TData>({
   data,
   columns,
   hideHeader = false,
-  loading,
+  loading: isLoading,
   minHeight: min = "auto",
   searchKeys = [],
   initialSorting = [],
   onRowClick,
   title,
   renderToolbar,
+  renderFooter,
   rowProps,
   emptyState,
   skeletonCount = 20,
@@ -137,9 +136,17 @@ export function BaseTable<TData>({
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const isLoading = loading || data.length === 0;
+  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, row: TData) => {
+    const target = e.target as HTMLElement;
 
-  const isEmpty = !loading && data.length === 0;
+    if (target.closest("[data-no-row-click]")) {
+      return;
+    }
+
+    onRowClick?.(row);
+  };
+
+  const isEmpty = !isLoading && data.length === 0;
 
   return (
     <Card className="gap-0 p-0" style={{ minHeight: min }}>
@@ -233,7 +240,11 @@ export function BaseTable<TData>({
                       ease: "easeInOut",
                       delay: index * 0.03,
                     }}
-                    onClick={() => onRowClick?.(row.original)}
+                    className={cn(
+                      onRowClick &&
+                        "hover:bg-accent/50 cursor-pointer transition-all duration-700 hover:duration-150"
+                    )}
+                    onClick={(e) => handleRowClick(e, row.original)}
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     {...(rowProps?.(row.original) as any)}
                   >
@@ -247,6 +258,7 @@ export function BaseTable<TData>({
           </TableBody>
         </Table>
       )}
+      {renderFooter && !isEmpty && <div className="border-t px-6 py-4">{renderFooter(table)}</div>}
     </Card>
   );
 }

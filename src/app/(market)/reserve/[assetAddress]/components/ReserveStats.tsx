@@ -3,7 +3,7 @@
 import { FormattedNumber } from "@/components/shared/FormattedNumber";
 import { IconTooltip } from "@/components/shared/IconTooltip";
 import { CardContent } from "@/components/ui/card";
-import type { MarketReserve } from "@/lib/aave";
+import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 
 type ReserveStatsProps = {
   asset: MarketReserve;

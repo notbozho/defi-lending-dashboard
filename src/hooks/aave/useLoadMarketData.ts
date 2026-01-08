@@ -1,9 +1,11 @@
 import { useEffect } from "react";
-import { useAccount, useChainId } from "wagmi";
+import { PageSize } from "@aave/react";
+import { useAccount, useChainId, useTransaction } from "wagmi";
 import { useShallow } from "zustand/shallow";
 
 import { MARKET_BY_CHAIN_ID } from "@/config";
 import { useMarket } from "@/hooks";
+import { useTransactionHistory } from "@/hooks/aave/useTransactionHistory";
 import { useUserBorrows } from "@/hooks/aave/useUserBorrows";
 import { useUserSupplies } from "@/hooks/aave/useUserSupplies";
 import { useMarketStore } from "@/stores/useMarketStore";

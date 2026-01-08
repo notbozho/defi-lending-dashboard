@@ -1,0 +1,29 @@
+import { TokenAmount } from "@aave/react";
+import { Address } from "viem";
+
+export type MarketReserve = {
+  underlyingAddress: Address;
+  marketAddress: Address;
+  name: string;
+  symbol: string;
+  aTokenAddress: Address;
+  vTokenAddress: Address;
+  imageUrl?: string;
+  decimals: number;
+  totalSupplied: BigNumber;
+  totalSuppliedUsd: number;
+  totalBorrowed: BigNumber;
+  totalBorrowedUsd: number;
+  supplyApy: number;
+  borrowApy: number;
+  isPaused?: boolean;
+  isFrozen?: boolean;
+  oraclePrice: BigNumber;
+  oracleContractAddress: Address;
+  utilizationRate: string;
+  optimalUsageRatio: string;
+  variableRateSlope1: string;
+  variableRateSlope2: string;
+  baseVariableBorrowRate: string;
+  userMaxBorrowable?: TokenAmount;
+};

@@ -1,6 +1,11 @@
 "use client";
 
-import { MarketUserReserveBorrowPosition, MarketUserReserveSupplyPosition } from "@aave/react";
+import { useMemo, useState } from "react";
+import {
+  MarketUserReserveBorrowPosition,
+  MarketUserReserveSupplyPosition,
+  PageSize,
+} from "@aave/react";
 import BigNumber from "bignumber.js";
 import { motion } from "motion/react";
 import { Address } from "viem";
@@ -8,11 +13,13 @@ import { useAccount } from "wagmi";
 
 import HealthFactorCard from "@/app/components/HealthFactorGauge";
 import MyWalletCard from "@/app/components/MyWalletCard";
-import { PositionsTable } from "@/app/components/PositionsTable";
-import { TransactionHistoryTable } from "@/app/components/TransactionHistoryTable";
+import PositionsTable from "@/app/components/Positions/PositionsTable";
+import { TransactionHistoryTable } from "@/app/components/TransactionHistory/TransactionHistoryTable";
+import { getTransactionHistoryColumns } from "@/app/lib/getTransactionHistoryColumns";
+import { getUserSuppliesColumns } from "@/app/lib/getUserSuppliesColumns";
 import { userBorrowColumns } from "@/app/lib/userBorrowsColumns";
-import { userSuppliesColumns } from "@/app/lib/userSuppliesColumns";
 import { useLoadMarketData } from "@/hooks/aave/useLoadMarketData";
+import { useTransactionHistory } from "@/hooks/aave/useTransactionHistory";
 import { useBalancesOf } from "@/hooks/web3/useBalancesOf";
 import { ZERO_ADDRESS } from "@/utils/constants";
 
@@ -21,6 +28,21 @@ export default function DashboardView() {
     useLoadMarketData();
 
   const { address } = useAccount();
+
+  const [page, setPage] = useState(1);
+
+  const {
+    data: transactionHistory,
+    loading: transactionHistoryLoading,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+  } = useTransactionHistory({
+    // accountAddress: address ?? ZERO_ADDRESS,
+    accountAddress: "0xD431E6bBC9395d3264Ac646c7cc32De906eA7EDF",
+    pageSize: PageSize.Ten,
+  });
 
   const MOCK_BALANCES: Record<string, BigNumber> = {
     "0x111111111117dC0aa78b770fA6A738034120C302": new BigNumber("500000000000000000000"),
@@ -33,6 +55,24 @@ export default function DashboardView() {
     accountAddress: address ?? ZERO_ADDRESS,
     tokenAddresses: Object.keys(supplyReserves) as Address[],
   });
+
+  const transactions = transactionHistory?.pages[page - 1]?.items ?? [];
+
+  const userSuppliesColumns = useMemo(
+    () =>
+      getUserSuppliesColumns((address: string, enabled: boolean) => {
+        console.log("Toggle collateral for", address, "to", enabled);
+      }),
+    []
+  );
+
+  const transactionHistoryColumns = useMemo(
+    () =>
+      getTransactionHistoryColumns((url: string) => {
+        window.open(url, "_blank");
+      }),
+    []
+  );
 
   return (
     <main className="min-h-screen w-full py-6">
@@ -50,6 +90,12 @@ export default function DashboardView() {
             loading={isLoading}
             positions={userBorrowPositions}
             title="Borrow Positions"
+          />
+          <TransactionHistoryTable
+            transactions={transactions}
+            columns={transactionHistoryColumns}
+            loading={transactionHistoryLoading}
+            // title="Transaction History"
           />
         </div>
         <motion.div

@@ -1,14 +1,14 @@
 "use client";
 
 import {
-  Cursor,
   Market,
   MarketUserReserveBorrowPosition,
   MarketUserReserveSupplyPosition,
 } from "@aave/react";
 import { create } from "zustand";
 
-import { MarketReserve, transformMarketReserves } from "@/lib/aave";
+import { transformMarketReserves } from "@/lib/aave";
+import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 
 interface MarketState {
   isLoading: boolean;
@@ -20,8 +20,6 @@ interface MarketState {
 
   userSupplyPositions: MarketUserReserveSupplyPosition[];
   userBorrowPositions: MarketUserReserveBorrowPosition[];
-
-  sdkCursor: Cursor | null;
 
   setLoading: (b: boolean) => void;
   setError: (e: unknown) => void;
@@ -45,8 +43,6 @@ export const useMarketStore = create<MarketState>()((set) => ({
 
   userSupplyPositions: [],
   userBorrowPositions: [],
-
-  sdkCursor: null,
 
   setLoading: (b) => set({ isLoading: b }),
   setError: (e) => set({ error: e }),
