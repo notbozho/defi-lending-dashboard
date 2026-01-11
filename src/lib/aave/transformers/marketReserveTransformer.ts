@@ -24,11 +24,15 @@ export function transformMarketReserve(raw: Reserve): MarketReserve {
     oraclePrice: valueToBigNumber(raw.usdExchangeRate || 0),
     oracleContractAddress: raw.usdOracleAddress,
     utilizationRate: String(raw.borrowInfo?.utilizationRate.value),
+    maxLTV: String(raw.supplyInfo.maxLTV.value),
     optimalUsageRatio: String(raw.borrowInfo?.optimalUsageRate.raw),
     variableRateSlope1: String(raw.borrowInfo?.variableRateSlope1.raw),
     variableRateSlope2: String(raw.borrowInfo?.variableRateSlope2.raw),
     baseVariableBorrowRate: String(raw.borrowInfo?.reserveFactor.raw),
     userMaxBorrowable: raw.userState?.borrowable,
+    canBeCollateral: raw.supplyInfo.canBeCollateral,
+    supplyCapReached: raw.supplyInfo.supplyCapReached,
+    borrowCapReached: raw.borrowInfo?.borrowCapReached || false,
   };
 }
 

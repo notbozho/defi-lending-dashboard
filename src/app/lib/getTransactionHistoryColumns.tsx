@@ -5,7 +5,6 @@ import TransactionDateCell from "@/app/components/TransactionHistory/cells/Trans
 import TransactionLinkCell from "@/app/components/TransactionHistory/cells/TransactionLinkCell";
 import TransactionTypeCell from "@/app/components/TransactionHistory/cells/TransactionTypeCell";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTransactionAmount } from "@/lib/aave/helpers/transactionHistoryHelper";
 import { Transaction } from "@/lib/aave/types/Transaction";
 import { ColumnWithSkeleton } from "@/types/table";
 
@@ -14,11 +13,19 @@ export function getTransactionHistoryColumns(
 ): ColumnWithSkeleton<Transaction>[] {
   return [
     {
-      id: "amount",
-      header: "Amount",
+      id: "change",
+      header: "Change",
 
-      accessorFn: (row) => getTransactionAmount(row),
+      enableHiding: false,
+      accessorFn: (row) => {
+        if (row.legs?.length) {
+          return row.legs.map((l) => l.underlyingToken?.symbol).filter(Boolean);
+        }
+
+        return row.tokenSymbol ? [row.tokenSymbol] : [];
+      },
       sortingFn: "basic",
+      filterFn: "assetFilter",
 
       size: 240,
       minSize: 140,
@@ -30,7 +37,9 @@ export function getTransactionHistoryColumns(
       id: "type",
       header: "Type",
 
+      filterFn: "enumArrayFilter",
       accessorFn: (row) => row.type,
+      enableSorting: false,
 
       size: 160,
       minSize: 140,
@@ -53,6 +62,9 @@ export function getTransactionHistoryColumns(
     {
       id: "transaction",
       header: "Transaction",
+
+      accessorFn: (row) => row.explorerUrl,
+      enableSorting: false,
 
       size: 120,
       minSize: 80,

@@ -1,4 +1,4 @@
-import { BigDecimal } from "@aave/react";
+import { BigDecimal, Currency } from "@aave/react";
 
 export type HasCurrency = {
   currency: {
@@ -7,6 +7,10 @@ export type HasCurrency = {
     imageUrl?: string;
     address?: string;
   };
+};
+
+export type HasUnderlyingToken = {
+  underlyingToken: Currency;
 };
 
 export type HasApy = {

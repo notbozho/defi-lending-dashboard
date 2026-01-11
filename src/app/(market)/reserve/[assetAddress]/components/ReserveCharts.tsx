@@ -4,7 +4,7 @@ import { InterestRateChart } from "@/app/(market)/reserve/[assetAddress]/compone
 import { Button } from "@/components";
 import { IconTooltip } from "@/components/shared/IconTooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MarketReserve } from "@/lib/aave";
+import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 
 import AprChart from "./AprChart";
 

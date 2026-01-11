@@ -83,12 +83,12 @@ function TooltipContent({
                       : "center left",
             }}
             className={cn(
-              "bg-foreground text-background z-50 origin-[--radix-tooltip-content-transform-origin] rounded-md px-3 py-1.5 text-left text-xs leading-snug shadow-sm",
+              "bg-popover text-popover-foreground z-50 origin-[--radix-tooltip-content-transform-origin] rounded-md px-3 py-1.5 text-left text-xs leading-snug shadow-sm",
               className
             )}
           >
             {children}
-            <TooltipPrimitive.Arrow className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px]" />
+            <TooltipPrimitive.Arrow className="bg-popover fill-popover z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px]" />
           </motion.div>
         </AnimatePresence>
       </TooltipPrimitive.Content>

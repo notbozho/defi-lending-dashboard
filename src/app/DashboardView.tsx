@@ -1,11 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  MarketUserReserveBorrowPosition,
-  MarketUserReserveSupplyPosition,
-  PageSize,
-} from "@aave/react";
+import { useMemo } from "react";
+import { FaCoins, FaMoneyCheck } from "react-icons/fa6";
+import { MarketUserReserveBorrowPosition, MarketUserReserveSupplyPosition } from "@aave/react";
 import BigNumber from "bignumber.js";
 import { motion } from "motion/react";
 import { Address } from "viem";
@@ -29,20 +26,17 @@ export default function DashboardView() {
 
   const { address } = useAccount();
 
-  const [page, setPage] = useState(1);
-
   const {
-    data: transactionHistory,
+    transactions,
     loading: transactionHistoryLoading,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
+    loadedInitialPage,
   } = useTransactionHistory({
     // accountAddress: address ?? ZERO_ADDRESS,
-    accountAddress: "0xD431E6bBC9395d3264Ac646c7cc32De906eA7EDF",
-    pageSize: PageSize.Ten,
+    accountAddress: "0xfed5f381870ccf1539a42b473893c7683242914b",
+    // accountAddress: "0x24D5C7337b70f3702bf0e770401822C9D95bEAe6",
   });
+
+  const isTransactionHistoryLoading = transactionHistoryLoading && !loadedInitialPage;
 
   const MOCK_BALANCES: Record<string, BigNumber> = {
     "0x111111111117dC0aa78b770fA6A738034120C302": new BigNumber("500000000000000000000"),
@@ -55,8 +49,6 @@ export default function DashboardView() {
     accountAddress: address ?? ZERO_ADDRESS,
     tokenAddresses: Object.keys(supplyReserves) as Address[],
   });
-
-  const transactions = transactionHistory?.pages[page - 1]?.items ?? [];
 
   const userSuppliesColumns = useMemo(
     () =>
@@ -83,6 +75,7 @@ export default function DashboardView() {
             loading={isLoading}
             positions={userSupplyPositions}
             title="Supply Positions"
+            icon={<FaCoins />}
           />
 
           <PositionsTable<MarketUserReserveBorrowPosition>
@@ -90,12 +83,12 @@ export default function DashboardView() {
             loading={isLoading}
             positions={userBorrowPositions}
             title="Borrow Positions"
+            icon={<FaMoneyCheck />}
           />
           <TransactionHistoryTable
             transactions={transactions}
             columns={transactionHistoryColumns}
-            loading={transactionHistoryLoading}
-            // title="Transaction History"
+            loading={isTransactionHistoryLoading}
           />
         </div>
         <motion.div

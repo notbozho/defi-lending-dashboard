@@ -1,7 +1,7 @@
 import { TbArrowUpRight } from "react-icons/tb";
 
 import { Button } from "@/components";
-import { Transaction } from "@/lib/aave/transformers/transactionHistoryTransformer";
+import { Transaction } from "@/lib/aave/types/Transaction";
 import { truncateMiddle } from "@/utils/truncate";
 
 export default function TransactionLinkCell({
@@ -12,7 +12,12 @@ export default function TransactionLinkCell({
   onOpen: (_url: string) => void;
 }) {
   return (
-    <Button variant="ghost" onClick={() => onOpen(tx.explorerUrl)}>
+    <Button
+      variant="ghost"
+      className="text-foreground font-normal"
+      size="sm"
+      onClick={() => onOpen(tx.explorerUrl)}
+    >
       {truncateMiddle(tx.id)}
       <TbArrowUpRight />
     </Button>

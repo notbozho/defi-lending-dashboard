@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button, CardTitle } from "@/components";
-import { BaseTable } from "@/components/shared/BaseTable";
+import DataTable from "@/components/shared/table/DataTable";
 import { Empty, EmptyContent, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
 
 type PositionWithAddress = {
@@ -27,14 +27,15 @@ export default function PositionsTable<Positions extends PositionWithAddress>({
   icon?: React.ReactNode;
 }) {
   const router = useRouter();
+
   return (
-    <BaseTable<Positions>
+    <DataTable<Positions>
       data={positions}
       columns={columns}
-      minHeight="250px"
       onRowClick={(row) => router.push(`/reserve/${row.currency.address}`)}
       loading={loading}
-      skeletonCount={1}
+      skeletonCount={2}
+      maxHeight="270px"
       emptyState={
         <Empty>
           <EmptyTitle>No {title} Yet</EmptyTitle>

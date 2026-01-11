@@ -3,7 +3,6 @@
 import React from "react";
 
 import { Card, CardContent, CardHeader, IconTooltip, Skeleton } from "@/components";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function ReserveHeaderSkeleton({ goBackButton }: { goBackButton: React.ReactNode }) {
   return (

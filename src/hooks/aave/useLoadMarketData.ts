@@ -1,11 +1,9 @@
 import { useEffect } from "react";
-import { PageSize } from "@aave/react";
-import { useAccount, useChainId, useTransaction } from "wagmi";
+import { useChainId } from "wagmi";
 import { useShallow } from "zustand/shallow";
 
 import { MARKET_BY_CHAIN_ID } from "@/config";
 import { useMarket } from "@/hooks";
-import { useTransactionHistory } from "@/hooks/aave/useTransactionHistory";
 import { useUserBorrows } from "@/hooks/aave/useUserBorrows";
 import { useUserSupplies } from "@/hooks/aave/useUserSupplies";
 import { useMarketStore } from "@/stores/useMarketStore";
@@ -34,7 +32,7 @@ export function useLoadMarketData() {
     cid,
     marketAddress,
     // accountAddress: address ?? "",
-    accountAddress: "0xD431E6bBC9395d3264Ac646c7cc32De906eA7EDF", // TODO: MOCK DATA, use above line later,
+    accountAddress: "0x24D5C7337b70f3702bf0e770401822C9D95bEAe6", // TODO: MOCK DATA, use above line later,
   });
 
   const {
@@ -44,7 +42,7 @@ export function useLoadMarketData() {
   } = useUserBorrows({
     cid,
     marketAddress,
-    accountAddress: "0xD431E6bBC9395d3264Ac646c7cc32De906eA7EDF",
+    accountAddress: "0x24D5C7337b70f3702bf0e770401822C9D95bEAe6",
   });
 
   const {
@@ -54,7 +52,7 @@ export function useLoadMarketData() {
   } = useUserSupplies({
     cid,
     marketAddress,
-    accountAddress: "0xD431E6bBC9395d3264Ac646c7cc32De906eA7EDF",
+    accountAddress: "0x24D5C7337b70f3702bf0e770401822C9D95bEAe6",
   });
 
   useEffect(() => {
@@ -75,6 +73,12 @@ export function useLoadMarketData() {
     marketError,
     userBorrowsError,
     userSuppliesError,
+    setLoading,
+    marketLoading,
+    userBorrowsLoading,
+    userSuppliesLoading,
+    setMarketData,
+    setError,
   ]);
 
   return useMarketStore();

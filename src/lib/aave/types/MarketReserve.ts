@@ -21,9 +21,13 @@ export type MarketReserve = {
   oraclePrice: BigNumber;
   oracleContractAddress: Address;
   utilizationRate: string;
+  maxLTV: string;
   optimalUsageRatio: string;
   variableRateSlope1: string;
   variableRateSlope2: string;
   baseVariableBorrowRate: string;
   userMaxBorrowable?: TokenAmount;
+  canBeCollateral?: boolean;
+  supplyCapReached?: boolean;
+  borrowCapReached?: boolean;
 };

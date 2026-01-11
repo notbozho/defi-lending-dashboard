@@ -79,6 +79,22 @@ export function transformTransaction(
         id: raw.txHash,
         type: "liquidation",
         timestamp: new Date(raw.timestamp),
+        marketName: raw.collateral.reserve.market.name,
+        chainId: raw.collateral.reserve.market.chain.chainId,
+        legs: [
+          {
+            underlyingToken: raw.debtRepaid.reserve.underlyingToken,
+            amount: raw.debtRepaid.amount.amount.value,
+            amountUsd: raw.debtRepaid.amount.usd,
+            direction: "out",
+          },
+          {
+            underlyingToken: raw.collateral.reserve.underlyingToken,
+            amount: String(raw.collateral.amount?.amount.value),
+            amountUsd: String(raw.collateral.amount?.usd),
+            direction: "in",
+          },
+        ],
         explorerUrl: raw.blockExplorerUrl,
         raw,
       };

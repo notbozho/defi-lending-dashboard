@@ -21,13 +21,13 @@ interface MarketState {
   userSupplyPositions: MarketUserReserveSupplyPosition[];
   userBorrowPositions: MarketUserReserveBorrowPosition[];
 
-  setLoading: (b: boolean) => void;
-  setError: (e: unknown) => void;
+  setLoading: (_loading: boolean) => void;
+  setError: (_err: unknown) => void;
 
-  setMarketData: (market: Market) => void;
+  setMarketData: (_market: Market) => void;
   setUserPositions: (
-    supplies: MarketUserReserveSupplyPosition[],
-    borrows: MarketUserReserveBorrowPosition[]
+    _supplies: MarketUserReserveSupplyPosition[],
+    _borrows: MarketUserReserveBorrowPosition[]
   ) => void;
 
   reset: () => void;

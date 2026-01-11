@@ -1,22 +1,18 @@
 "use client";
 
-import { valueToBigNumber } from "@aave/math-utils";
 import { MarketUserReserveSupplyPosition } from "@aave/react";
 
 import { ApyCell } from "@/app/components/Positions/cells/ApyCell";
 import { AssetCell } from "@/app/components/Positions/cells/AssetCell";
-import { SupplyBalanceCell } from "@/app/components/Positions/cells/SupplyBualanceCell";
+import { SupplyBalanceCell } from "@/app/components/Positions/cells/SupplyBalanceCell";
 import { SupplyCollateralToggleCell } from "@/app/components/Positions/cells/SupplyCollateralToggleCell";
-import { FormattedNumber } from "@/components/shared/FormattedNumber";
 import { TokenDisplay } from "@/components/shared/TokenDisplay";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
 import { getApy, getAssetName, getSupplyUsdBalance } from "@/lib/aave/helpers/marketHelper";
 import { ColumnWithSkeleton } from "@/types/table";
 
 export function getUserSuppliesColumns(
-  onToggleCollateral: (address: string, enabled: boolean) => void
+  onToggleCollateral: (_address: string, _enabled: boolean) => void
 ): ColumnWithSkeleton<MarketUserReserveSupplyPosition>[] {
   return [
     {

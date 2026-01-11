@@ -87,7 +87,7 @@
   --foreground: var(--color-gray-300);
   --card: oklch(0.16 0.02 290);
   --card-foreground: oklch(0.98 0.01 275);
-  --popover: oklch(0.16 0.02 290);
+  --popover: oklch(0.14 0.02 290);
   --popover-foreground: oklch(0.98 0.01 275);
   --primary: oklch(0.60 0.24 285);
   --primary-foreground: oklch(1 0 0);
@@ -126,5 +126,29 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  .minimal-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+  }
+
+  .minimal-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .minimal-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .minimal-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+  }
+
+  .minimal-scroll::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
   }
 }

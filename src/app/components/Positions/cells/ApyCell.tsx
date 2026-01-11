@@ -6,5 +6,5 @@ type ApyCellProps<T extends HasApy> = {
 };
 
 export function ApyCell<T extends HasApy>({ position }: ApyCellProps<T>) {
-  return <FormattedNumber value={position.apy.value} percent className="text-foreground" />;
+  return <FormattedNumber value={position.apy.value} percent className="text-foreground text-sm" />;
 }

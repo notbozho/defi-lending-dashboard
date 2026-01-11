@@ -38,8 +38,8 @@ export const userBorrowColumns: ColumnWithSkeleton<MarketUserReserveBorrowPositi
     header: "Borrow APY",
     accessorFn: getApy,
 
-    size: 120,
-    minSize: 90,
+    size: 100,
+    minSize: 70,
 
     cell: ({ row }) => <ApyCell position={row.original} />,
     skeleton: <Skeleton className="h-6 w-12" />,

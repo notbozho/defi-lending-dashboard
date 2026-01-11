@@ -50,7 +50,7 @@ export default function ChainSelector() {
             <ChevronDown className="size-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center">
+        <DropdownMenuContent align="center" className="bg-secondary">
           <DropdownMenuGroup>
             {SUPPORTED_NETWORKS.map((chain) => (
               <DropdownMenuItem

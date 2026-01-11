@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 
-import { MarketMetrics } from "@/app/(market)/reserves/MarketMetrics";
-import { MarketReservesTable } from "@/app/(market)/reserves/MarketReservesTable";
+import { MarketMetrics } from "@/app/(market)/reserves/components/MarketMetrics";
+import { MarketReservesTable } from "@/app/(market)/reserves/components/MarketReservesTable";
 import { Card, CardHeader } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MARKETS } from "@/config";

@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch";
 
 type Props = {
   position: MarketUserReserveSupplyPosition;
-  onToggle: (address: string, enabled: boolean) => void;
+  onToggle: (_address: string, _enabled: boolean) => void;
 };
 
 export function SupplyCollateralToggleCell({ position, onToggle }: Props) {
