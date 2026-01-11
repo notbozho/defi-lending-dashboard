@@ -1,7 +1,7 @@
-import { NetworkIcon } from "@web3icons/react";
 import { ChevronDown } from "lucide-react";
 import { useSwitchChain } from "wagmi";
 
+import ChainIcon from "@/components/ChainIcon";
 import { Button } from "@/components/ui";
 import {
   DropdownMenu,
@@ -11,13 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SUPPORTED_NETWORKS } from "@/config";
+import { NETWORK_BY_CHAIN_ID, SUPPORTED_NETWORKS } from "@/config";
 import { useWeb3Context } from "@/context/Web3Context";
-
-// const ChainIconSkeleton = () => <Skeleton className="size-7 rounded-md" />;
 
 export default function ChainSelector() {
   const { chainId, isLoading: isWeb3Loading } = useWeb3Context();
+
+  const currentChain = chainId ? NETWORK_BY_CHAIN_ID[chainId] : null;
 
   const { switchChainAsync } = useSwitchChain();
 
@@ -40,13 +40,7 @@ export default function ChainSelector() {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" aria-label="Open menu" size="default">
-            <NetworkIcon
-              chainId={chainId}
-              width={64}
-              height={64}
-              className="size-7"
-              variant="branded"
-            />
+            <ChainIcon chainKey={currentChain?.key} />
             <ChevronDown className="size-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -59,14 +53,7 @@ export default function ChainSelector() {
                 onClick={() => switchChain(chain.id)}
                 disabled={chain.id === chainId}
               >
-                <NetworkIcon
-                  chainId={chain.id}
-                  // fallback={<ChainIconSkeleton />}
-                  width={64}
-                  height={64}
-                  className="size-7"
-                  variant="branded"
-                />
+                <ChainIcon chainKey={chain.key} />
                 <span className="text-base">{chain.name}</span>
               </DropdownMenuItem>
             ))}

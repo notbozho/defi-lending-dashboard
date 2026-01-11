@@ -4,6 +4,7 @@ import { linkBuilder } from "@/utils/explorer";
 
 export type NetworkConfig = {
   id: number;
+  key: string;
   name: string;
   logoUrl?: string;
   rpcUrl: string;
@@ -16,6 +17,7 @@ export type NetworkConfig = {
 export const NETWORKS: Record<string, NetworkConfig> = {
   mainnet: {
     id: mainnet.id,
+    key: "ethereum",
     name: "Ethereum",
     rpcUrl: "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
     explorerUrl: "https://etherscan.io",
@@ -25,6 +27,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
   },
   sepolia: {
     id: sepolia.id,
+    key: "sepolia",
     name: "Sepolia",
     rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID",
     explorerUrl: "https://sepolia.etherscan.io",
@@ -34,6 +37,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
   },
   polygon: {
     id: polygon.id,
+    key: "polygon",
     name: "Polygon",
     rpcUrl: "https://polygon-mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
     explorerUrl: "https://polygonscan.com",
@@ -43,6 +47,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
   },
   arbitrum: {
     id: arbitrum.id,
+    key: "arbitrum",
     name: "Arbitrum One",
     rpcUrl: "https://arbitrum-mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
     explorerUrl: "https://arbiscan.io",

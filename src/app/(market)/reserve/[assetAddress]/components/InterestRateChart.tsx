@@ -110,7 +110,7 @@ function CustomTooltip({ active, payload, liquidity, debt }: CustomTooltipProps)
         damping: 35,
         mass: 0.4,
       }}
-      className="w-64 rounded-md bg-white p-3 text-xs text-gray-700 shadow-lg"
+      className="bg-popover text-foreground w-64 rounded-md p-3 text-xs shadow-lg"
     >
       <div className="mb-2 flex justify-between">
         <span>Utilization</span>

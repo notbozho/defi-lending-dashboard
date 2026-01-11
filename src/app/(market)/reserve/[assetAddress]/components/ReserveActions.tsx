@@ -5,7 +5,7 @@ import Image from "next/image";
 import { valueToBigNumber } from "@aave/math-utils";
 import { ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useAccount, useGasPrice } from "wagmi";
+import { useAccount } from "wagmi";
 import { useShallow } from "zustand/shallow";
 
 import {
@@ -21,7 +21,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBalanceOf } from "@/hooks/web3/useBalanceOf";
-import { MarketReserve } from "@/lib/aave";
+import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 import { cn } from "@/lib/utils";
 import { useMarketStore } from "@/stores/useMarketStore";
 import { INPUT_REGEX, ZERO_ADDRESS } from "@/utils/constants";

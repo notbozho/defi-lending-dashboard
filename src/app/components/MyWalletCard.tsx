@@ -12,7 +12,7 @@ import {
   CardTitle,
   IconTooltip,
 } from "@/components";
-import { MarketReserve } from "@/lib/aave";
+import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 
 type MyWalletCardProps = {
   balances: Record<string, BigNumber>;

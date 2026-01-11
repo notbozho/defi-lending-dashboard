@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { CardHeader } from "@/components/ui/card";
 import type { NetworkConfig } from "@/config/networks";
-import type { MarketReserve } from "@/lib/aave";
+import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 
 type ReserveHeaderProps = {
   asset: MarketReserve;
