@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   reactStrictMode: false,
   typedRoutes: true,
+  serverExternalPackages: ["pino"],
   turbopack: {
     root: path.join(__dirname),
   },

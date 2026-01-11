@@ -1,3 +1,5 @@
+"use client";
+
 import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 
 import { Button } from "@/components/ui/button";
