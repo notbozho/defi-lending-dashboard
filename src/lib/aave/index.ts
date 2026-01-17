@@ -1,2 +1,2 @@
-export * from "./client";
+export * from "./aaveClient";
 export * from "./transformers/marketReserveTransformer";

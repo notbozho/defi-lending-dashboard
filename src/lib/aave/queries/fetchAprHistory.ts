@@ -1,6 +1,6 @@
 import { BorrowAPYHistoryQuery, chainId, evmAddress, SupplyAPYHistoryQuery } from "@aave/react";
 
-import { client } from "@/lib/aave";
+import { aaveClient } from "@/lib/aave";
 import { TimeWindowMap } from "@/lib/aave/constants";
 import { transformAssetHistoryData } from "@/lib/aave/transformers/assetHistoryTransformer";
 
@@ -19,7 +19,7 @@ export async function fetchAPRHistory({
   period,
   borrow = false,
 }: AprHistoryFetchParams) {
-  const res = await client.query(borrow ? BorrowAPYHistoryQuery : SupplyAPYHistoryQuery, {
+  const res = await aaveClient.query(borrow ? BorrowAPYHistoryQuery : SupplyAPYHistoryQuery, {
     request: {
       chainId: chainId(cid),
       market: evmAddress(marketAddress),

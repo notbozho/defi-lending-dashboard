@@ -10,10 +10,10 @@ import AprChart from "./AprChart";
 
 type ReserveChartsProps = {
   reserve: MarketReserve;
-  loading: boolean;
+  isLoading: boolean;
 };
 
-export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) {
+export default function ReserveCharts({ reserve, isLoading }: ReserveChartsProps) {
   return (
     <div className="grow space-y-6">
       <Card>
@@ -26,7 +26,7 @@ export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) 
             type="supply"
             marketAddress={reserve?.marketAddress}
             assetAddress={reserve?.underlyingAddress}
-            currentApr={reserve?.supplyApy || 0}
+            currentApr={reserve?.supplyInfo.supplyApy || 0}
           />
         </CardContent>
       </Card>
@@ -41,7 +41,7 @@ export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) 
             type="borrow"
             marketAddress={reserve?.marketAddress}
             assetAddress={reserve?.underlyingAddress}
-            currentApr={reserve?.borrowApy || 0}
+            currentApr={reserve?.borrowInfo.borrowApy || 0}
           />
         </CardContent>
       </Card>
@@ -55,12 +55,12 @@ export default function ReserveCharts({ reserve, loading }: ReserveChartsProps) 
           <InterestRateChart
             baseVariableBorrowRate={reserve?.baseVariableBorrowRate || ""}
             optimalUsageRatio={reserve?.optimalUsageRatio || ""}
-            totalLiquidityUSD={reserve?.totalSuppliedUsd || 0}
+            totalLiquidityUSD={reserve?.supplyInfo.totalSuppliedUsd || 0}
             variableRateSlope1={reserve?.variableRateSlope1 || ""}
             variableRateSlope2={reserve?.variableRateSlope2 || ""}
             utilizationRate={reserve?.utilizationRate || ""}
-            totalDebtUSD={reserve?.totalBorrowedUsd || 0}
-            loading={loading}
+            totalDebtUSD={reserve?.borrowInfo.totalBorrowedUsd || 0}
+            loading={isLoading}
           />
         </CardContent>
       </Card>

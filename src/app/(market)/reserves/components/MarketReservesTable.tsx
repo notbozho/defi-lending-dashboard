@@ -29,7 +29,7 @@ export function MarketReservesTable({
       renderToolbar={(table) => <ColumnCustomizer table={table} />}
       skeletonCount={10}
       pageSize={-1}
-      onRowClick={(row) => router.push(`/reserve/${row.underlyingAddress}`)}
+      onRowClick={(row) => router.push(`/reserve/${row.underlyingAddress}?chainId=${row.chainId}`)}
       title={
         <CardTitle variant="withIcon">
           <FaShop />

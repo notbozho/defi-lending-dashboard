@@ -4,7 +4,7 @@ import { useShallow } from "zustand/shallow";
 
 import { MARKET_BY_CHAIN_ID } from "@/config";
 import { useMarket } from "@/hooks";
-import { useUserBorrows } from "@/hooks/aave/useUserBorrows";
+import { useUserMarket } from "@/hooks/aave/useUserMarket";
 import { useUserSupplies } from "@/hooks/aave/useUserSupplies";
 import { useMarketStore } from "@/stores/useMarketStore";
 
@@ -39,7 +39,7 @@ export function useLoadMarketData() {
     data: borrows,
     isLoading: userBorrowsLoading,
     error: userBorrowsError,
-  } = useUserBorrows({
+  } = useUserMarket({
     cid,
     marketAddress,
     accountAddress: "0x24D5C7337b70f3702bf0e770401822C9D95bEAe6",

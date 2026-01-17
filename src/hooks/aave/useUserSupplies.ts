@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useWeb3Context } from "@/context/Web3Context";
-import { client } from "@/lib/aave";
+import { aaveClient } from "@/lib/aave";
 import { fetchUserSupplies } from "@/lib/aave/queries/fetchUserSupplies";
 import { queryKeyFactory } from "@/utils/queryKeyFactory";
 
@@ -21,9 +21,9 @@ export function useUserSupplies({ cid, marketAddress, accountAddress }: UserSupp
   ];
 
   const query = useQuery({
-    enabled: !!client && !isLoading,
+    enabled: !!aaveClient && !isLoading,
     queryKey,
-    queryFn: () => fetchUserSupplies({ cid, marketAddress, account: accountAddress }),
+    queryFn: () => fetchUserSupplies({ cid, marketAddress, accountAddress }),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: true,

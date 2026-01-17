@@ -3,25 +3,25 @@ import { useQuery } from "@tanstack/react-query";
 import { MARKET_BY_CHAIN_ID } from "@/config/markets";
 import { useWeb3Context } from "@/context/Web3Context";
 import { aaveClient } from "@/lib/aave";
-import { marketMapper } from "@/lib/aave/mappers/marketMapper";
+import { userPositionsMapper } from "@/lib/aave/mappers/userPositionsMapper";
 import { HALF_MINUTE } from "@/utils/constants";
 
-type MarketParams = {
+type UserPositionsParams = {
   cid: number;
   accountAddress?: string;
 };
 
-export function useMarket({ cid, accountAddress }: MarketParams) {
+export function useUserPositions({ cid, accountAddress }: UserPositionsParams) {
   const { isLoading } = useWeb3Context();
 
   const marketAddress = MARKET_BY_CHAIN_ID(cid)?.addresses.LENDING_POOL ?? "";
 
-  const queryKey = ["useMarket", cid, marketAddress, accountAddress ?? "unknown"];
+  const queryKey = ["useUserPositions", cid, marketAddress, accountAddress ?? "unknown"];
 
   return useQuery({
     enabled: !!aaveClient && !isLoading,
     queryKey,
-    queryFn: () => marketMapper({ cid, marketAddress, accountAddress }),
+    queryFn: () => userPositionsMapper({ cid, marketAddress, accountAddress: accountAddress }),
     staleTime: HALF_MINUTE,
   });
 }

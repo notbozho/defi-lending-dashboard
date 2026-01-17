@@ -16,7 +16,7 @@ import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 
 type MyWalletCardProps = {
   balances: Record<string, BigNumber>;
-  reserves: Record<string, MarketReserve>;
+  reserves: MarketReserve[];
   loading: boolean;
 };
 
@@ -52,7 +52,7 @@ export default function MyWalletCard({ balances, reserves, loading }: MyWalletCa
     let total = 0;
 
     Object.entries(balances).forEach(([address, balance]) => {
-      const reserve = reserves[address];
+      const reserve = reserves.find((r) => r.underlyingAddress === address);
       if (!reserve) return;
 
       const value = balance

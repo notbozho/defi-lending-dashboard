@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { TbHomeFilled } from "react-icons/tb";
 import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
-import { useChainId } from "wagmi";
+import { ChevronLeft, Slash } from "lucide-react";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
 
+import ReserveNotFound from "@/app/(market)/reserve/[assetAddress]/components/ReserveNotFound";
 import { Button, Card, Skeleton, Tooltip, TooltipContent, TooltipTrigger } from "@/components";
 import {
   Breadcrumb,
@@ -15,29 +18,60 @@ import {
 } from "@/components/ui/breadcrumb";
 import { MARKETS } from "@/config";
 import { NETWORK_BY_CHAIN_ID, type NetworkConfig } from "@/config/networks";
-import { useLoadMarketData } from "@/hooks/aave/useLoadMarketData";
+import { useMarket } from "@/hooks";
 
 import ReserveActions from "./components/ReserveActions";
 import ReserveCharts from "./components/ReserveCharts";
 import ReserveHeader from "./components/ReserveHeader";
 import ReserveStats from "./components/ReserveStats";
-import { ReserveActionsSkeleton, ReserveHeaderSkeleton, ReserveStatsSkeleton } from "./Skeletons";
 
-export default function ReserveView({ assetAddress }: { assetAddress: string }) {
-  const chainId = useChainId();
+export default function ReserveView({
+  assetAddress,
+  chainId,
+}: {
+  assetAddress: string;
+  chainId?: number;
+}) {
+  const fallbackChainId = useChainId();
+  const { switchChain } = useSwitchChain();
   const router = useRouter();
 
-  const { isLoading, error, supplyReserves, market } = useLoadMarketData();
+  const account = useAccount();
 
-  const reserve = supplyReserves?.[assetAddress];
+  const {
+    data: marketData,
+    isLoading,
+    isError,
+  } = useMarket({
+    cid: fallbackChainId,
+    accountAddress: account.address,
+  });
+
+  const { market, supplyReserves } = marketData || {};
+
+  const didAttemptSwitchRef = useRef(false);
+
+  const reserve = supplyReserves?.find((r) => r.underlyingAddress === assetAddress);
   const currentMarketConfig = MARKETS[market?.name || ""];
 
-  const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[chainId]; // TODO: export to a web3 store
+  const actualChainId = chainId ?? fallbackChainId;
+  const currentChain: NetworkConfig | undefined = NETWORK_BY_CHAIN_ID[actualChainId];
 
-  const loading = isLoading || !reserve;
+  const notFound = !isLoading && (!reserve || Object.keys(reserve).length === 0);
 
-  if (error)
+  useEffect(() => {
+    if (!chainId) return;
+    if (didAttemptSwitchRef.current) return;
+    if (fallbackChainId === chainId) return;
+
+    didAttemptSwitchRef.current = true;
+    switchChain({ chainId });
+  }, [fallbackChainId, chainId, switchChain]);
+
+  if (isError)
     return <div className="flex h-full items-center justify-center">Error loading reserve</div>;
+
+  if (notFound) return <ReserveNotFound />;
 
   const handleGoBackClick = () => {
     router.back();
@@ -60,56 +94,52 @@ export default function ReserveView({ assetAddress }: { assetAddress: string }) 
   );
 
   return (
-    <main className="min-h-screen w-full py-6">
-      <div className="container mx-auto space-y-6 px-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/reserves">
-                {loading ? (
-                  <Skeleton className="h-5 w-32" />
-                ) : (
-                  `${currentMarketConfig?.marketTitle} Market`
-                )}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>
-                {loading ? <Skeleton className="h-5 w-24" /> : `${reserve?.name} Reserve`}
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <Card className="min-h-64 justify-between">
-          {loading ? (
-            <>
-              <ReserveHeaderSkeleton goBackButton={goBackButton} />
-              <ReserveStatsSkeleton />
-            </>
-          ) : (
-            <>
-              {reserve && currentChain && (
-                <>
-                  <ReserveHeader asset={reserve} chain={currentChain} goBackButton={goBackButton} />
-                  <ReserveStats asset={reserve} />
-                </>
+    <div className="container mx-auto space-y-6 px-2 py-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">
+              <TbHomeFilled className="size-6" />
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <Slash className="text-muted-foreground size-4" />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/reserves">
+              {isLoading ? (
+                <Skeleton className="h-5 w-32" />
+              ) : (
+                `${currentMarketConfig?.marketTitle} Market`
               )}
-            </>
-          )}
-        </Card>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <Slash className="text-muted-foreground size-4" />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>
+              {isLoading ? <Skeleton className="h-5 w-32" /> : `${reserve?.name} Reserve`}
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-        <div className="flex gap-x-6">
-          {loading ? (
-            <ReserveActionsSkeleton />
-          ) : (
-            <>
-              <ReserveActions reserve={reserve} />
-            </>
-          )}
-          <ReserveCharts reserve={reserve} loading={loading} />
-        </div>
+      <ReserveHeader
+        asset={reserve}
+        chain={currentChain}
+        goBackButton={goBackButton}
+        isLoading={isLoading}
+      />
+
+      <Card className="justify-between">
+        <ReserveStats asset={reserve} isLoading={isLoading} />
+      </Card>
+
+      <div className="flex gap-x-6">
+        <ReserveActions reserve={reserve!} isLoading={isLoading} />
+        <ReserveCharts reserve={reserve!} isLoading={isLoading} />
       </div>
-    </main>
+    </div>
   );
 }

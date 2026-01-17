@@ -1,28 +1,23 @@
-import { useShallow } from "zustand/shallow";
+import { Market } from "@aave/react";
 
 import MetricItem from "@/components/shared/MetricItem";
 import { CardContent } from "@/components/ui/card";
-import { useMarketStore } from "@/stores/useMarketStore";
+import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 
-export function MarketMetrics() {
-  const {
-    isLoading: loading,
-    market,
-    supplyReserves,
-  } = useMarketStore(
-    useShallow((s) => ({
-      isLoading: s.isLoading,
-      market: s.market,
-      supplyReserves: s.supplyReserves,
-    }))
-  );
+type MarketMetricsProps = {
+  market?: Market;
+  supplyReserves: MarketReserve[];
+  loading: boolean;
+};
 
-  const totalBorrows = market?.borrowReserves.reduce((acc, reserve) => {
-    const value = reserve.borrowInfo?.total.usd ?? 0;
-    return acc + Number(value);
-  }, 0);
+export function MarketMetrics({ market, supplyReserves, loading }: MarketMetricsProps) {
+  const totalBorrows =
+    market?.borrowReserves.reduce((acc, reserve) => {
+      const value = reserve.borrowInfo?.total.usd ?? 0;
+      return acc + Number(value);
+    }, 0) ?? 0;
 
-  const assetsCount = loading ? undefined : Object.values(supplyReserves).length;
+  const assetsCount = loading ? undefined : supplyReserves.length;
 
   return (
     <CardContent className="flex flex-row gap-24">

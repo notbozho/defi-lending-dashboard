@@ -36,16 +36,16 @@ export const marketReservesColumns: ColumnWithSkeleton<MarketReserve>[] = [
   },
   {
     id: "totalSupplied",
-    accessorFn: (row) => row.totalSuppliedUsd,
+    accessorFn: (row) => row.supplyInfo.totalSuppliedUsd,
     header: "Total Supplied",
 
     size: 150,
 
     cell: ({ row }) => (
       <AmountWithBadge
-        value={row.original.totalSupplied}
+        value={row.original.supplyInfo.totalSupplied}
         symbol={row.original.symbol}
-        usdAmount={row.original.totalSuppliedUsd}
+        usdAmount={row.original.supplyInfo.totalSuppliedUsd}
       />
     ),
     skeleton: <Skeleton className="h-6 w-38" />,
@@ -56,7 +56,7 @@ export const marketReservesColumns: ColumnWithSkeleton<MarketReserve>[] = [
 
     size: 100,
 
-    cell: ({ row }) => <NumberCell value={row.original.supplyApy} />,
+    cell: ({ row }) => <NumberCell value={row.original.supplyInfo.supplyApy} />,
     skeleton: <Skeleton className="h-6 w-16" />,
   },
   {
@@ -67,9 +67,9 @@ export const marketReservesColumns: ColumnWithSkeleton<MarketReserve>[] = [
 
     cell: ({ row }) => (
       <AmountWithBadge
-        value={row.original.totalBorrowed}
+        value={row.original.borrowInfo.totalBorrowed}
         symbol={row.original.symbol}
-        usdAmount={row.original.totalBorrowedUsd}
+        usdAmount={row.original.borrowInfo.totalBorrowedUsd}
       />
     ),
     skeleton: <Skeleton className="h-6 w-38" />,

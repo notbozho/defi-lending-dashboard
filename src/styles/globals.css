@@ -92,7 +92,7 @@
   --primary: oklch(0.60 0.24 285);
   --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.21 0.03 290);
+  --secondary: oklch(0.19 0.03 290);
   --secondary-foreground: oklch(0.88 0.01 275);
 
   --muted: oklch(0.21 0.03 290);
@@ -150,5 +150,23 @@
     display: none;
     width: 0;
     height: 0;
+  }
+}
+
+@layer utilities {
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .animate-skeleton {
+    background-size: 200% 100%;
+
+    animation: skeleton-shimmer 1.8s linear infinite;
   }
 }

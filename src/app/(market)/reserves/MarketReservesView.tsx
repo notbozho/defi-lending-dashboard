@@ -1,29 +1,76 @@
 "use client";
 
+import { TbHomeFilled } from "react-icons/tb";
 import Image from "next/image";
+import { Market } from "@aave/react";
+import { Slash } from "lucide-react";
+import { useAccount, useChainId } from "wagmi";
 
 import { MarketMetrics } from "@/app/(market)/reserves/components/MarketMetrics";
 import { MarketReservesTable } from "@/app/(market)/reserves/components/MarketReservesTable";
 import { Card, CardHeader } from "@/components/ui";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MARKETS } from "@/config";
-import { useLoadMarketData } from "@/hooks/aave/useLoadMarketData";
+import { useMarket } from "@/hooks";
 
 export function MarketReservesView() {
-  const { isLoading, market, supplyReserves } = useLoadMarketData();
+  const cid = useChainId();
+  const account = useAccount();
 
-  const marketConfig = MARKETS[market?.name || ""];
+  const {
+    data: marketData,
+    isLoading,
+    isError,
+  } = useMarket({
+    cid,
+    accountAddress: account.address,
+  });
+
+  const isEmpty = !isLoading && !marketData?.market;
+  if (isError)
+    return <div className="flex h-full items-center justify-center">Error loading reserves</div>;
+
+  const marketConfig = MARKETS[marketData?.market?.name || ""];
 
   return (
-    <div className="container mx-auto min-h-screen w-full space-y-6 px-2 py-6">
+    <div className="container mx-auto w-full space-y-6 px-2 py-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">
+              <TbHomeFilled className="size-6" />
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <Slash className="text-muted-foreground size-4" />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbPage>
+              {isLoading ? (
+                <Skeleton className="h-5 w-32" />
+              ) : (
+                `${marketConfig?.marketTitle} Market`
+              )}
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <Card>
         <CardHeader className="flex items-center gap-4">
-          {isLoading || !market ? (
+          {isLoading || !marketData ? (
             <Skeleton className="size-12" />
           ) : (
             <Image
-              src={market.icon}
-              alt={market?.name || "market logo"}
+              src={marketData?.market!.icon}
+              alt={marketData?.market!.name || "market logo"}
               className="size-12 rounded-full"
               width={40}
               height={40}
@@ -37,10 +84,17 @@ export function MarketReservesView() {
             )}
           </div>
         </CardHeader>
-        <MarketMetrics />
+        <MarketMetrics
+          market={marketData?.market}
+          supplyReserves={Object.values(marketData?.supplyReserves || {})}
+          loading={isLoading}
+        />
       </Card>
 
-      <MarketReservesTable reserves={Object.values(supplyReserves)} loading={isLoading} />
+      <MarketReservesTable
+        reserves={Object.values(marketData?.supplyReserves || {})}
+        loading={isLoading}
+      />
     </div>
   );
 }

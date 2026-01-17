@@ -6,8 +6,8 @@ import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 import { cn } from "@/lib/utils";
 
 export default function StatusCell({ asset }: { asset: MarketReserve }) {
-  const supplyCapReached = asset.supplyCapReached;
-  const borrowCapReached = asset.borrowCapReached;
+  const supplyCapReached = asset.supplyInfo.supplyCapReached;
+  const borrowCapReached = asset.borrowInfo.borrowCapReached;
   const canBeCollateral = asset.canBeCollateral;
   const isFrozen = asset.isFrozen;
 

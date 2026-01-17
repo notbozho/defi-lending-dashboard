@@ -1,35 +1,50 @@
 import { userSupplies } from "@aave/client/actions";
-import { chainId, evmAddress, MarketUserReserveSupplyPosition, OrderDirection } from "@aave/react";
+import { chainId, evmAddress, OrderDirection } from "@aave/react";
 
-import { client } from "@/lib/aave";
+import { aaveClient } from "@/lib/aave";
+import { queryClient } from "@/lib/queryClient";
+import { FIVE_MINUTES } from "@/utils/constants";
+import { queryKeyFactory } from "@/utils/queryKeyFactory";
 
 export type UserSuppliesFetchParams = {
   cid: number;
   marketAddress: string;
-  account?: string;
+  accountAddress?: string;
 };
 
-export async function fetchUserSupplies({
-  cid,
-  marketAddress,
-  account,
-}: UserSuppliesFetchParams): Promise<MarketUserReserveSupplyPosition[]> {
-  const userAddress = account ? evmAddress(account) : undefined;
+export async function fetchUserSupplies(params: UserSuppliesFetchParams) {
+  return queryClient.fetchQuery(getUserSuppliesQuery(params));
+}
 
-  const res = await userSupplies(client, {
-    markets: [
-      {
-        address: evmAddress(marketAddress),
-        chainId: chainId(cid),
-      },
-    ],
-    user: userAddress!,
-    orderBy: { balance: OrderDirection.Asc },
-  });
+function getUserSuppliesQuery({ cid, marketAddress, accountAddress }: UserSuppliesFetchParams) {
+  const userAddress = accountAddress ? evmAddress(accountAddress) : undefined;
 
-  if (res.isErr()) {
-    throw res.error;
-  }
+  const queryKey = [
+    ...queryKeyFactory.market(cid, marketAddress),
+    ...queryKeyFactory.user(userAddress ?? "unknown"),
+    "userSupplies",
+  ];
 
-  return res.value;
+  return {
+    queryKey,
+    queryFn: async () => {
+      const res = await userSupplies(aaveClient, {
+        markets: [
+          {
+            address: evmAddress(marketAddress),
+            chainId: chainId(cid),
+          },
+        ],
+        user: userAddress!,
+        orderBy: { balance: OrderDirection.Asc },
+      });
+
+      if (res.isErr()) {
+        throw res.error;
+      }
+
+      return res.value;
+    },
+    staleTime: FIVE_MINUTES,
+  };
 }

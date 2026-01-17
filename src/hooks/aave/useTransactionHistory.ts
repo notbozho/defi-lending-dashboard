@@ -2,21 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import { Cursor, PageSize } from "@aave/react";
 import { useQuery } from "@tanstack/react-query";
 
-import { client } from "@/lib/aave";
+import { aaveClient } from "@/lib/aave";
 import { fetchTransactionHistory } from "@/lib/aave/queries/fetchTransactionHistory";
 import { transformTransactions } from "@/lib/aave/transformers/transactionHistoryTransformer";
 import { Transaction } from "@/lib/aave/types/Transaction";
-import { useMarketStore } from "@/stores/useMarketStore";
 import { ZERO_ADDRESS } from "@/utils/constants";
 import { queryKeyFactory } from "@/utils/queryKeyFactory";
 
 type TransactionHistoryParams = {
+  cid: number;
+  marketAddress: string;
   accountAddress: string;
 };
 
-export function useTransactionHistory({ accountAddress }: TransactionHistoryParams) {
-  const currentMarket = useMarketStore((s) => s.market);
-
+export function useTransactionHistory({
+  cid,
+  marketAddress,
+  accountAddress,
+}: TransactionHistoryParams) {
   const [aaveCursor, setAaveCursor] = useState<Cursor | null>(null);
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -30,18 +33,12 @@ export function useTransactionHistory({ accountAddress }: TransactionHistoryPara
 
   const queryKey = [
     ...queryKeyFactory.transactionHistory(aaveCursor ?? undefined),
-    ...queryKeyFactory.market(
-      currentMarket?.chain.chainId as number,
-      currentMarket?.address as string
-    ),
+    ...queryKeyFactory.market(cid, marketAddress),
     ...queryKeyFactory.user(validAccount ? accountAddress : ZERO_ADDRESS),
   ];
 
-  const cid = currentMarket?.chain.chainId as number;
-  const marketAddress = currentMarket?.address as string;
-
   const { data, error, isLoading } = useQuery({
-    enabled: !!client && currentMarket != null,
+    enabled: !!aaveClient,
     queryKey,
     queryFn: () =>
       fetchTransactionHistory({

@@ -42,16 +42,10 @@ export default function AprChart({
   const cid = useChainId();
   const [timeRange, setTimeRange] = useState<keyof typeof TimeWindowMap>("1W");
 
-  const { isLoading: isMarketLoading } = useMarketStore(
-    useShallow((s) => ({
-      isLoading: s.isLoading,
-    }))
-  );
-
   const {
     history,
     error,
-    loading: isAprLoading,
+    loading: isLoading,
   } = useAPRHistory({
     cid,
     marketAddress,
@@ -59,8 +53,6 @@ export default function AprChart({
     period: timeRange,
     borrow: type === "borrow",
   });
-
-  const isLoading = isMarketLoading || isAprLoading;
 
   const color = chartColors[type];
   const label = chartLabels[type];

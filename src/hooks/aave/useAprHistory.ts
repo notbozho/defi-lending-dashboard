@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { client } from "@/lib/aave";
+import { aaveClient } from "@/lib/aave";
 import { TimeWindowMap } from "@/lib/aave/constants";
 import { fetchAPRHistory } from "@/lib/aave/queries/fetchAprHistory";
 import { queryKeyFactory } from "@/utils/queryKeyFactory";
@@ -31,7 +31,7 @@ export function useAPRHistory({
     error,
     isLoading,
   } = useQuery({
-    enabled: !!client,
+    enabled: !!aaveClient,
     queryKey,
     queryFn: () => fetchAPRHistory({ cid, marketAddress, assetAddress, period, borrow }),
     staleTime: 1000 * 60 * 5,

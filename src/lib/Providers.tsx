@@ -3,23 +3,16 @@
 import { ThemeProvider } from "next-themes";
 import { AaveProvider } from "@aave/react";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { WagmiProvider } from "wagmi";
 
 import { Toaster } from "@/components/ui/sonner";
 import { Web3Provider } from "@/context/Web3Context";
-import { client as aaveClient } from "@/lib/aave/client";
+import { aaveClient } from "@/lib/aave/aaveClient";
+import { queryClient } from "@/lib/queryClient";
 
 import { config } from "./web3/wagmi";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 10_000,
-    },
-  },
-});
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const isDev = process.env.NODE_ENV === "development";
@@ -37,7 +30,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                 disableTransitionOnChange
               >
                 {children}
-                <Toaster />
+                <Toaster position="top-center" />
               </ThemeProvider>
             </Web3Provider>
           </AaveProvider>

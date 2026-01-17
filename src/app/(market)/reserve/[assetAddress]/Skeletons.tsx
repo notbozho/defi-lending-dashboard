@@ -2,21 +2,19 @@
 
 import React from "react";
 
-import { Card, CardContent, CardHeader, IconTooltip, Skeleton } from "@/components";
+import { Card, CardContent, IconTooltip, Skeleton } from "@/components";
 
 export function ReserveHeaderSkeleton({ goBackButton }: { goBackButton: React.ReactNode }) {
   return (
-    <CardHeader>
-      <div className="flex items-center gap-4">
-        {goBackButton}
+    <div className="flex items-center gap-8">
+      {goBackButton}
 
-        <Skeleton className="h-16 w-16 rounded-full" />
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-8 w-32" />
-          <Skeleton className="h-6 w-16" />
-        </div>
+      <Skeleton className="h-16 w-16 rounded-full" />
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-8 w-32" />
+        <Skeleton className="h-6 w-16" />
       </div>
-    </CardHeader>
+    </div>
   );
 }
 

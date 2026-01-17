@@ -13,11 +13,16 @@ export function Skeleton({
         <motion.div
           key="animated-skeleton"
           data-slot="skeleton"
-          className={cn("bg-accent animate-pulse rounded-md", className)}
+          className={cn(
+            "relative overflow-hidden rounded-md",
+            "animate-skeleton",
+            "bg-[linear-gradient(90deg,var(--accent)_25%,var(--secondary)_37%,var(--accent)_63%)]",
+            className
+          )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
           {...props}
         />
       )}

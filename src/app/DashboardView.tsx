@@ -6,7 +6,7 @@ import { MarketUserReserveBorrowPosition, MarketUserReserveSupplyPosition } from
 import BigNumber from "bignumber.js";
 import { motion } from "motion/react";
 import { Address } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 
 import HealthFactorCard from "@/app/components/HealthFactorGauge";
 import MyWalletCard from "@/app/components/MyWalletCard";
@@ -15,22 +15,32 @@ import { TransactionHistoryTable } from "@/app/components/TransactionHistory/Tra
 import { getTransactionHistoryColumns } from "@/app/lib/getTransactionHistoryColumns";
 import { getUserSuppliesColumns } from "@/app/lib/getUserSuppliesColumns";
 import { userBorrowColumns } from "@/app/lib/userBorrowsColumns";
-import { useLoadMarketData } from "@/hooks/aave/useLoadMarketData";
 import { useTransactionHistory } from "@/hooks/aave/useTransactionHistory";
+import { useUserMarket } from "@/hooks/aave/useUserMarket";
 import { useBalancesOf } from "@/hooks/web3/useBalancesOf";
 import { ZERO_ADDRESS } from "@/utils/constants";
 
 export default function DashboardView() {
-  const { isLoading, market, supplyReserves, userSupplyPositions, userBorrowPositions } =
-    useLoadMarketData();
+  // const { isLoading, market, supplyReserves, userSupplyPositions, userBorrowPositions } =
+  //   useLoadMarketData();
 
+  const chainId = useChainId();
   const { address } = useAccount();
+
+  const {
+    data: userMarketData,
+    isLoading: userMarketLoading,
+    error: userMarketError,
+  } = useUserMarket({ cid: chainId, accountAddress: "0xfed5f381870ccf1539a42b473893c7683242914b" });
+  // } = useUserMarket({ cid: chainId, accountAddress: address });
 
   const {
     transactions,
     loading: transactionHistoryLoading,
     loadedInitialPage,
   } = useTransactionHistory({
+    cid: chainId,
+    marketAddress: userMarketData?.market?.address || "",
     // accountAddress: address ?? ZERO_ADDRESS,
     accountAddress: "0xfed5f381870ccf1539a42b473893c7683242914b",
     // accountAddress: "0x24D5C7337b70f3702bf0e770401822C9D95bEAe6",
@@ -47,7 +57,7 @@ export default function DashboardView() {
 
   const { data: walletBalances } = useBalancesOf({
     accountAddress: address ?? ZERO_ADDRESS,
-    tokenAddresses: Object.keys(supplyReserves) as Address[],
+    tokenAddresses: Object.keys(userMarketData?.supplyReserves ?? {}) as Address[],
   });
 
   const userSuppliesColumns = useMemo(
@@ -67,39 +77,41 @@ export default function DashboardView() {
   );
 
   return (
-    <main className="min-h-screen w-full py-6">
-      <div className="container mx-auto flex gap-x-6 px-2">
-        <div className="flex basis-9/12 flex-col gap-y-6">
-          <PositionsTable<MarketUserReserveSupplyPosition>
-            columns={userSuppliesColumns}
-            loading={isLoading}
-            positions={userSupplyPositions}
-            title="Supply Positions"
-            icon={<FaCoins />}
-          />
+    <div className="container mx-auto flex gap-x-6 px-2 py-6">
+      <div className="flex basis-9/12 flex-col gap-y-6">
+        <PositionsTable<MarketUserReserveSupplyPosition>
+          columns={userSuppliesColumns}
+          loading={userMarketLoading}
+          positions={userMarketData?.userSupplies || []}
+          title="Supply Positions"
+          icon={<FaCoins />}
+        />
 
-          <PositionsTable<MarketUserReserveBorrowPosition>
-            columns={userBorrowColumns}
-            loading={isLoading}
-            positions={userBorrowPositions}
-            title="Borrow Positions"
-            icon={<FaMoneyCheck />}
-          />
-          <TransactionHistoryTable
-            transactions={transactions}
-            columns={transactionHistoryColumns}
-            loading={isTransactionHistoryLoading}
-          />
-        </div>
-        <motion.div
-          layout
-          transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          className="flex basis-3/12 flex-col gap-y-6"
-        >
-          <MyWalletCard balances={MOCK_BALANCES} reserves={supplyReserves} loading={isLoading} />
-          <HealthFactorCard value={Number(market?.userState?.healthFactor) || 0} />
-        </motion.div>
+        <PositionsTable<MarketUserReserveBorrowPosition>
+          columns={userBorrowColumns}
+          loading={userMarketLoading}
+          positions={userMarketData?.userBorrows || []}
+          title="Borrow Positions"
+          icon={<FaMoneyCheck />}
+        />
+        <TransactionHistoryTable
+          transactions={transactions}
+          columns={transactionHistoryColumns}
+          loading={isTransactionHistoryLoading}
+        />
       </div>
-    </main>
+      <motion.div
+        layout
+        transition={{ type: "spring", stiffness: 120, damping: 20 }}
+        className="flex basis-3/12 flex-col gap-y-6"
+      >
+        <MyWalletCard
+          balances={MOCK_BALANCES}
+          reserves={userMarketData?.supplyReserves || []}
+          loading={userMarketLoading}
+        />
+        <HealthFactorCard value={Number(userMarketData?.market?.userState?.healthFactor) || 0} />
+      </motion.div>
+    </div>
   );
 }

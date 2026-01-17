@@ -1,35 +1,50 @@
 import { userBorrows } from "@aave/client/actions";
-import { chainId, evmAddress, MarketUserReserveBorrowPosition, OrderDirection } from "@aave/react";
+import { chainId, evmAddress, OrderDirection } from "@aave/react";
 
-import { client } from "@/lib/aave";
+import { aaveClient } from "@/lib/aave";
+import { queryClient } from "@/lib/queryClient";
+import { FIVE_MINUTES } from "@/utils/constants";
+import { queryKeyFactory } from "@/utils/queryKeyFactory";
 
 export type UserBorrowsFetchParams = {
   cid: number;
   marketAddress: string;
-  account?: string;
+  accountAddress?: string;
 };
 
-export async function fetchUserBorrows({
-  cid,
-  marketAddress,
-  account,
-}: UserBorrowsFetchParams): Promise<MarketUserReserveBorrowPosition[]> {
-  const userAddress = account ? evmAddress(account) : undefined;
+export async function fetchUserBorrows(params: UserBorrowsFetchParams) {
+  return queryClient.fetchQuery(getUserBorrowsQuery(params));
+}
 
-  const res = await userBorrows(client, {
-    markets: [
-      {
-        address: evmAddress(marketAddress),
-        chainId: chainId(cid),
-      },
-    ],
-    user: userAddress!,
-    orderBy: { debt: OrderDirection.Asc },
-  });
+function getUserBorrowsQuery({ cid, marketAddress, accountAddress }: UserBorrowsFetchParams) {
+  const userAddress = accountAddress ? evmAddress(accountAddress) : undefined;
 
-  if (res.isErr()) {
-    throw res.error;
-  }
+  const queryKey = [
+    ...queryKeyFactory.market(cid, marketAddress),
+    ...queryKeyFactory.user(userAddress ?? "unknown"),
+    "userBorrows",
+  ];
 
-  return res.value;
+  return {
+    queryKey,
+    queryFn: async () => {
+      const res = await userBorrows(aaveClient, {
+        markets: [
+          {
+            address: evmAddress(marketAddress),
+            chainId: chainId(cid),
+          },
+        ],
+        user: userAddress!,
+        orderBy: { debt: OrderDirection.Asc },
+      });
+
+      if (res.isErr()) {
+        throw res.error;
+      }
+
+      return res.value;
+    },
+    staleTime: FIVE_MINUTES,
+  };
 }

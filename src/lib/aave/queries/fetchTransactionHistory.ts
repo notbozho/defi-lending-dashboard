@@ -8,7 +8,7 @@ import {
   PaginatedUserTransactionHistoryResult,
 } from "@aave/react";
 
-import { client } from "@/lib/aave";
+import { aaveClient } from "@/lib/aave";
 
 export type TransactionHistoryFetchParams = {
   cid: number;
@@ -25,7 +25,7 @@ export async function fetchTransactionHistory({
   pageSize,
   cursor,
 }: TransactionHistoryFetchParams): Promise<PaginatedUserTransactionHistoryResult> {
-  const res = await userTransactionHistory(client, {
+  const res = await userTransactionHistory(aaveClient, {
     user: evmAddress(accountAddress),
     market: evmAddress(marketAddress),
     orderBy: { date: OrderDirection.Desc },

@@ -2,6 +2,8 @@
 
 import { useAccount, useChainId, useEnsAvatar, useEnsName } from "wagmi";
 
+import { ONE_DAY } from "@/utils/constants";
+
 export function useEns(address?: `0x{string}`) {
   const account = useAccount();
   const chainId = useChainId();
@@ -12,7 +14,7 @@ export function useEns(address?: `0x{string}`) {
     name: ensName.data ?? undefined,
     chainId,
     query: {
-      staleTime: 1000 * 60 * 60, // 1 hour
+      staleTime: ONE_DAY,
     },
   });
 

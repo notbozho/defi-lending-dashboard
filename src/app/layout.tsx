@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
 
+import { ChainChangeNotifier } from "@/components/ChainChangeNotifier";
 import { Header } from "@/components/layout/Header";
 import Providers from "@/lib/Providers";
 
@@ -26,11 +27,13 @@ export default function RootLayout(props: LayoutProps<"/">) {
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${spaceMono.variable} from-background dark:from-primary/10 dark:via-background dark:to-primary/5 via-primary/20 to-background bg-linear-to-tr font-sans antialiased`}
+        className={`${spaceGrotesk.variable} ${spaceMono.variable} from-background dark:from-primary/10 dark:via-background dark:to-primary/5 via-primary/20 to-background min-h-dvh bg-linear-to-tr font-sans antialiased`}
       >
         <Providers>
           <Header />
-          {props.children}
+          <ChainChangeNotifier>
+            <main className="flex-1">{props.children}</main>
+          </ChainChangeNotifier>
         </Providers>
       </body>
     </html>

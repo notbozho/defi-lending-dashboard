@@ -6,8 +6,8 @@ import { valueToBigNumber } from "@aave/math-utils";
 import { ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useAccount } from "wagmi";
-import { useShallow } from "zustand/shallow";
 
+import { ReserveActionsSkeleton } from "@/app/(market)/reserve/[assetAddress]/Skeletons";
 import {
   AnimatedNumber,
   Button,
@@ -20,26 +20,28 @@ import {
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useUserPositions } from "@/hooks/aave/useUserPositions";
 import { useBalanceOf } from "@/hooks/web3/useBalanceOf";
 import { MarketReserve } from "@/lib/aave/types/MarketReserve";
 import { cn } from "@/lib/utils";
-import { useMarketStore } from "@/stores/useMarketStore";
 import { INPUT_REGEX, ZERO_ADDRESS } from "@/utils/constants";
 
 type ReserveActionsProps = {
   reserve: MarketReserve;
+  isLoading: boolean;
 };
 
-export default function ReserveActions({ reserve }: ReserveActionsProps) {
+export default function ReserveActions({ reserve, isLoading }: ReserveActionsProps) {
   const [supplyAmount, setSupplyAmount] = useState("");
   const [borrowAmount, setBorrowAmount] = useState("");
 
-  const { userSupplyPositions, userBorrowPositions } = useMarketStore(
-    useShallow((s) => ({
-      userSupplyPositions: s.userSupplyPositions,
-      userBorrowPositions: s.userBorrowPositions,
-    }))
-  );
+  const { data: userPositionsData } = useUserPositions({
+    cid: reserve.chainId,
+    accountAddress: useAccount().address,
+  });
+
+  const userSupplyPositions = userPositionsData?.userSupplies || [];
+  const userBorrowPositions = userPositionsData?.userBorrows || [];
 
   const { isConnected, address } = useAccount();
 
@@ -49,20 +51,20 @@ export default function ReserveActions({ reserve }: ReserveActionsProps) {
   });
 
   const userBalance = userBalanceData?.balance.toString() || "0";
-  const userMaxAvailableBorrow = String(reserve.userMaxBorrowable?.amount.value || "0");
+  const userMaxAvailableBorrow = String(reserve?.borrowInfo.userMaxBorrowable?.amount.value || "0");
 
   const currentSupplyPosition = userSupplyPositions?.find(
-    (position) => position.currency.address === reserve.underlyingAddress
+    (position) => position.currency.address === reserve?.underlyingAddress
   );
   const currentBorrowPosition = userBorrowPositions?.find(
-    (position) => position.currency.address === reserve.underlyingAddress
+    (position) => position.currency.address === reserve?.underlyingAddress
   );
 
   const TokenIcon = !reserve?.imageUrl ? (
     <Skeleton className="size-8 rounded-full" />
   ) : (
     <Image
-      src={reserve.imageUrl}
+      src={reserve?.imageUrl}
       alt={reserve.symbol}
       width={16}
       height={16}
@@ -84,8 +86,12 @@ export default function ReserveActions({ reserve }: ReserveActionsProps) {
 
   const buttonText = isConnected ? "Supply" : "Connect Wallet";
 
+  if (isLoading) {
+    return <ReserveActionsSkeleton />;
+  }
+
   return (
-    <Card className="order-2 max-h-[calc(100vh-48px)] w-[400px] self-start overflow-x-auto px-6 py-6">
+    <Card className="order-2 max-h-[calc(100vh-48px)] w-100 self-start overflow-x-auto px-6 py-6">
       <Tabs defaultValue="supply" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="supply">Supply</TabsTrigger>
@@ -195,7 +201,7 @@ export default function ReserveActions({ reserve }: ReserveActionsProps) {
               <AnimatedNumber
                 mode="formatted"
                 percent
-                value={reserve.supplyApy}
+                value={reserve.supplyInfo.supplyApy}
                 className="text-foreground text-xs"
               />
             </span>
@@ -321,7 +327,7 @@ export default function ReserveActions({ reserve }: ReserveActionsProps) {
               <AnimatedNumber
                 mode="formatted"
                 percent
-                value={reserve.borrowApy}
+                value={reserve.borrowInfo.borrowApy}
                 className="text-foreground text-xs"
               />
             </span>

@@ -6,7 +6,7 @@ import {
 } from "@bgd-labs/aave-address-book";
 import { arbitrum, mainnet, polygon, sepolia } from "wagmi/chains";
 
-type MarketDataType = {
+export type MarketDataType = {
   marketTitle: string;
   chainId: number;
   subgraphUrl?: string;
@@ -20,7 +20,7 @@ export const MARKETS: Record<string, MarketDataType> = {
   AaveV3Ethereum: {
     marketTitle: "Core V3",
     chainId: mainnet.id,
-    subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-ethereum",
+    // subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-ethereum",
     addresses: {
       LENDING_POOL_ADDRESS_PROVIDER: AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
       LENDING_POOL: AaveV3Ethereum.POOL,
@@ -29,7 +29,7 @@ export const MARKETS: Record<string, MarketDataType> = {
   AaveV3Sepolia: {
     marketTitle: "Aave V3 Sepolia",
     chainId: sepolia.id,
-    subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-sepolia",
+    // subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-sepolia",
     addresses: {
       LENDING_POOL_ADDRESS_PROVIDER: AaveV3Sepolia.POOL_ADDRESSES_PROVIDER,
       LENDING_POOL: AaveV3Sepolia.POOL,
@@ -38,7 +38,7 @@ export const MARKETS: Record<string, MarketDataType> = {
   AaveV3Polygon: {
     marketTitle: "Aave V3 Polygon",
     chainId: polygon.id,
-    subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-polygon",
+    // subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-polygon",
     addresses: {
       LENDING_POOL_ADDRESS_PROVIDER: AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
       LENDING_POOL: AaveV3Polygon.POOL,
@@ -47,7 +47,7 @@ export const MARKETS: Record<string, MarketDataType> = {
   AaveV3Arbitrum: {
     marketTitle: "Aave V3 Arbitrum",
     chainId: arbitrum.id,
-    subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-arbitrum",
+    // subgraphUrl: "https://api.thegraph.com/subgraphs/name/aave/protocol-v3-arbitrum",
     addresses: {
       LENDING_POOL_ADDRESS_PROVIDER: AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER,
       LENDING_POOL: AaveV3Arbitrum.POOL,
