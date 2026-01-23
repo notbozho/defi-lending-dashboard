@@ -29,8 +29,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts",
-    "src/app/(market)/reserve/[assetAddress]/components/AprChart.tsx"
+    "**/*.mts"
   ],
   "exclude": ["node_modules"]
 }

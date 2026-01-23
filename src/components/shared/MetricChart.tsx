@@ -118,7 +118,7 @@ export function MetricChart<T extends MetricDataPoint>({
         animate={{ opacity: hasData ? 1 : 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <ChartContainer config={chartConfig} className="relative aspect-auto h-[250px] w-full">
+        <ChartContainer config={chartConfig} className="relative aspect-auto h-62.5 w-full">
           <AreaChart data={data ?? []} margin={{ left: -14, top: 20, right: 4 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">

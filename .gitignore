@@ -11,6 +11,15 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
+/blob-report
+.vitest
+.vitest-ui
+.jest-cache
+*.debug.*
+screenshots/
+videos/
 
 # next.js
 /.next/
