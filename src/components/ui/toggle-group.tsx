@@ -6,9 +6,6 @@ import { AnimatePresence, motion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
-// -----------------------------
-// Variants
-// -----------------------------
 const toggleVariants = cva(
   "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out " +
     "hover:bg-muted/40 hover:text-muted-foreground disabled:pointer-events-none cursor-pointer disabled:opacity-50 " +
@@ -67,7 +64,7 @@ export function ToggleGroup({
       className={cn(
         "relative flex w-fit items-center gap-0.5 rounded-lg p-0.5",
         variant === "outline" && "border shadow-xs",
-        variant === "muted" && "bg-muted",
+        variant === "muted" && "bg-background",
         className
       )}
     >
@@ -121,7 +118,7 @@ export function Toggle({
             exit={{ opacity: 0 }}
             className={cn(
               "absolute inset-0 z-0 rounded-md",
-              variant === "muted" ? "bg-background shadow-sm" : "bg-accent"
+              variant === "muted" ? "bg-muted shadow-sm" : "bg-accent"
             )}
           />
         )}

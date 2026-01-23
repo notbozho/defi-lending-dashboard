@@ -2,15 +2,13 @@
 
 import { useState } from "react";
 import { useChainId } from "wagmi";
-import { useShallow } from "zustand/shallow";
 
 import FadeInOut from "@/components/animations/FadeInOut";
 import { MetricChart } from "@/components/shared/MetricChart";
-import { Toggle, ToggleGroup } from "@/components/shared/ToggleGroup";
 import type { ChartConfig } from "@/components/ui/chart";
+import { Toggle, ToggleGroup } from "@/components/ui/toggle-group";
 import { useAPRHistory } from "@/hooks";
 import { TimeWindowMap } from "@/lib/aave/constants";
-import { useMarketStore } from "@/stores/useMarketStore";
 
 type AprChartType = "supply" | "borrow";
 

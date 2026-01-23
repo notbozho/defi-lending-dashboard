@@ -20,10 +20,10 @@ import { MARKETS } from "@/config";
 import { NETWORK_BY_CHAIN_ID, type NetworkConfig } from "@/config/networks";
 import { useMarket } from "@/hooks";
 
-import ReserveActions from "./components/ReserveActions";
 import ReserveCharts from "./components/ReserveCharts";
 import ReserveHeader from "./components/ReserveHeader";
 import ReserveStats from "./components/ReserveStats";
+import ReserveActions from "./reserve-actions/ReserveActions";
 
 export default function ReserveView({
   assetAddress,

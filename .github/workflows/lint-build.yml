@@ -22,5 +22,5 @@ jobs:
         with:
           node-version: 22.19
       - run: npm install
-      - run: npm run lint
+      - run: npm run check
       - run: npm run build
