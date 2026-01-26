@@ -104,7 +104,7 @@ export default function ReserveActions({ reserve, isLoading }: ReserveActionsPro
             <span>Supply Collateral {reserve?.symbol}</span>
           </div>
 
-          <InputGroup className="py-8">
+          <InputGroup className="bg-muted! py-8">
             <motion.div
               className="relative flex flex-1 flex-col"
               initial={false}
@@ -171,8 +171,10 @@ export default function ReserveActions({ reserve, isLoading }: ReserveActionsPro
             </InputGroupAddon>
           </InputGroup>
 
-          <span className="text-muted-foreground">Transaction Overview</span>
-          <div className="bg-muted text-muted-foreground flex flex-col justify-between gap-2 rounded-md px-3 py-3 text-xs">
+          <div className="via-muted h-px bg-linear-to-r from-transparent to-transparent" />
+
+          <span className="text-muted-foreground text-sm">Transaction Overview</span>
+          <div className="text-muted-foreground flex flex-col justify-between gap-2 rounded-md px-1 py-2 text-sm">
             <span className="flex items-center justify-between gap-2">
               <span>Supplied</span>
               <div className="flex items-center">

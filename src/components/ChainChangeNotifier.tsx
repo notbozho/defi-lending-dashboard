@@ -2,7 +2,6 @@
 
 import { ReactNode, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useAaveChains } from "@aave/react";
 import { toast } from "sonner";
 import { useAccount, useChainId } from "wagmi";
 

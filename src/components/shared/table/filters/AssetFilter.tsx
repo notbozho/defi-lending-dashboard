@@ -30,6 +30,8 @@ export default function AssetFilter<TData>({ column, assets }: AssetFilterProps<
 
   const active = Array.isArray(raw) ? raw : raw ? [raw] : [];
 
+  const isMuted = active.length === 0 || active.length === assets.length;
+
   const toggle = (asset: string) => {
     const next = active.includes(asset) ? active.filter((v) => v !== asset) : [...active, asset];
 
@@ -58,10 +60,17 @@ export default function AssetFilter<TData>({ column, assets }: AssetFilterProps<
           <Button
             variant="ghost"
             size="sm"
-            className="w-fit max-w-[200px] justify-start gap-1 font-normal"
+            className="w-fit max-w-50 justify-start gap-1 font-normal"
           >
-            <BsFilter className="size-4 shrink-0" />
-            <span className="truncate">{label}</span>
+            <BsFilter
+              className={cn(
+                "size-4 shrink-0",
+                isMuted ? "text-muted-foreground" : "text-foreground"
+              )}
+            />
+            <span className={cn("truncate", isMuted ? "text-muted-foreground" : "text-foreground")}>
+              {label}
+            </span>
           </Button>
         </DropdownMenuTrigger>
 

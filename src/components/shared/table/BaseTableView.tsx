@@ -53,7 +53,7 @@ export default function BaseTableView<TData>({
     >
       <Table className="w-full min-w-max">
         {!hideHeader && (
-          <TableHeader className="bg-card sticky top-0 z-10">
+          <TableHeader className="sticky top-0 z-20">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

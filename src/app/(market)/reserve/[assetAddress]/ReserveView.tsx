@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { TbHomeFilled } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Slash } from "lucide-react";
+import { motion } from "motion/react";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 
 import ReserveNotFound from "@/app/(market)/reserve/[assetAddress]/components/ReserveNotFound";
@@ -19,6 +20,7 @@ import {
 import { MARKETS } from "@/config";
 import { NETWORK_BY_CHAIN_ID, type NetworkConfig } from "@/config/networks";
 import { useMarket } from "@/hooks";
+import { cardEntranceVariants } from "@/lib/motion/variants";
 
 import ReserveCharts from "./components/ReserveCharts";
 import ReserveHeader from "./components/ReserveHeader";
@@ -125,21 +127,25 @@ export default function ReserveView({
         </BreadcrumbList>
       </Breadcrumb>
 
-      <ReserveHeader
-        asset={reserve}
-        chain={currentChain}
-        goBackButton={goBackButton}
-        isLoading={isLoading}
-      />
+      <motion.div variants={cardEntranceVariants}>
+        <ReserveHeader
+          asset={reserve}
+          chain={currentChain}
+          goBackButton={goBackButton}
+          isLoading={isLoading}
+        />
+      </motion.div>
 
-      <Card className="justify-between">
-        <ReserveStats asset={reserve} isLoading={isLoading} />
-      </Card>
+      <motion.div variants={cardEntranceVariants}>
+        <Card className="justify-between">
+          <ReserveStats asset={reserve} isLoading={isLoading} />
+        </Card>
+      </motion.div>
 
-      <div className="flex gap-x-6">
+      <motion.div variants={cardEntranceVariants} className="flex gap-x-6">
         <ReserveActions reserve={reserve!} isLoading={isLoading} />
         <ReserveCharts reserve={reserve!} isLoading={isLoading} />
-      </div>
+      </motion.div>
     </div>
   );
 }

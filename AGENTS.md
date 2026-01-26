@@ -13,6 +13,7 @@ npm run lint # to lint the codebase
 - You _must_ use aave-sdk to interact with Aave protocol
 - You _must_ use wagmi or viem to interact with other than aave on-chain data
 - You _must_ use tanstack/react-query for data fetching and caching
+- You _must_ try to use the shadcn/ui components where possible instead of vanilla html elements
 
 ### TypeScript
 

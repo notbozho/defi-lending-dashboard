@@ -2,8 +2,8 @@
 
 import { TbHomeFilled } from "react-icons/tb";
 import Image from "next/image";
-import { Market } from "@aave/react";
 import { Slash } from "lucide-react";
+import { motion } from "motion/react";
 import { useAccount, useChainId } from "wagmi";
 
 import { MarketMetrics } from "@/app/(market)/reserves/components/MarketMetrics";
@@ -20,6 +20,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { MARKETS } from "@/config";
 import { useMarket } from "@/hooks";
+import { cardEntranceVariants } from "@/lib/motion/variants";
 
 export function MarketReservesView() {
   const cid = useChainId();
@@ -33,8 +34,6 @@ export function MarketReservesView() {
     cid,
     accountAddress: account.address,
   });
-
-  const isEmpty = !isLoading && !marketData?.market;
   if (isError)
     return <div className="flex h-full items-center justify-center">Error loading reserves</div>;
 
@@ -63,38 +62,43 @@ export function MarketReservesView() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Card>
-        <CardHeader className="flex items-center gap-4">
-          {isLoading || !marketData ? (
-            <Skeleton className="size-12" />
-          ) : (
-            <Image
-              src={marketData?.market!.icon}
-              alt={marketData?.market!.name || "market logo"}
-              className="size-12 rounded-full"
-              width={40}
-              height={40}
-            />
-          )}
-          <div className="flex flex-col">
-            {isLoading ? (
-              <Skeleton className="h-6 w-32" />
+
+      <motion.div variants={cardEntranceVariants}>
+        <Card>
+          <CardHeader className="flex items-center gap-4">
+            {isLoading || !marketData ? (
+              <Skeleton className="size-12" />
             ) : (
-              <span className="text-3xl font-medium">{marketConfig?.marketTitle}</span>
+              <Image
+                src={marketData?.market!.icon}
+                alt={marketData?.market!.name || "market logo"}
+                className="size-12 rounded-full"
+                width={40}
+                height={40}
+              />
             )}
-          </div>
-        </CardHeader>
-        <MarketMetrics
-          market={marketData?.market}
-          supplyReserves={Object.values(marketData?.supplyReserves || {})}
+            <div className="flex flex-col">
+              {isLoading ? (
+                <Skeleton className="h-6 w-32" />
+              ) : (
+                <span className="text-3xl font-medium">{marketConfig?.marketTitle}</span>
+              )}
+            </div>
+          </CardHeader>
+          <MarketMetrics
+            market={marketData?.market}
+            supplyReserves={Object.values(marketData?.supplyReserves || {})}
+            loading={isLoading}
+          />
+        </Card>
+      </motion.div>
+
+      <motion.div variants={cardEntranceVariants}>
+        <MarketReservesTable
+          reserves={Object.values(marketData?.supplyReserves || {})}
           loading={isLoading}
         />
-      </Card>
-
-      <MarketReservesTable
-        reserves={Object.values(marketData?.supplyReserves || {})}
-        loading={isLoading}
-      />
+      </motion.div>
     </div>
   );
 }

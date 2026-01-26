@@ -5,12 +5,14 @@ import { AaveProvider } from "@aave/react";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { MotionConfig } from "motion/react";
 import { WagmiProvider } from "wagmi";
 
 import { Toaster } from "@/components/ui/sonner";
 import { Web3Provider } from "@/context/Web3Context";
 import { aaveClient } from "@/lib/aave/aaveClient";
 import { queryClient } from "@/lib/queryClient";
+import { ReducedMotionListener } from "@/stores/useUiStore";
 
 import { config } from "./web3/wagmi";
 
@@ -29,8 +31,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                 enableSystem={false}
                 disableTransitionOnChange
               >
-                {children}
-                <Toaster position="top-center" />
+                <MotionConfig reducedMotion="user">
+                  <ReducedMotionListener />
+                  {children}
+
+                  <Toaster position="top-center" />
+                </MotionConfig>
               </ThemeProvider>
             </Web3Provider>
           </AaveProvider>

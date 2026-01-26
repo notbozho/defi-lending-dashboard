@@ -146,9 +146,11 @@ export default function DataTable<TData>({
       )}
 
       <motion.div
+        layout
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ type: "spring", stiffness: 260, damping: 30 }}
         className="relative flex-1 overflow-hidden"
       >
         {state === "empty" ? (

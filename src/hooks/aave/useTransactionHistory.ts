@@ -25,8 +25,6 @@ export function useTransactionHistory({
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const transactionsSet = useRef<Set<string>>(new Set());
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [fetchingAllPages, setFetchingAllPages] = useState(true);
   const [loadedInitialPage, setLoadedInitialPage] = useState(false);
 
   const validAccount = Boolean(accountAddress) && accountAddress.length > 0;
@@ -63,7 +61,6 @@ export function useTransactionHistory({
       setAaveCursor(null);
       setTransactions([]);
       transactionsSet.current.clear();
-      setFetchingAllPages(true);
       setLoadedInitialPage(false);
     })();
   }, [accountAddress, cid, marketAddress]);
@@ -72,7 +69,6 @@ export function useTransactionHistory({
     (() => {
       if (!data?.items.length) {
         if (!isLoading && !data?.pageInfo?.next) {
-          setFetchingAllPages(false);
           if (!loadedInitialPage) {
             setLoadedInitialPage(true);
           }
@@ -100,20 +96,16 @@ export function useTransactionHistory({
   useEffect(() => {
     (() => {
       if (isLoading) {
-        setFetchingAllPages(true);
         return;
       }
 
       const nextCursor = data?.pageInfo?.next || null;
       if (nextCursor && nextCursor !== aaveCursor) {
-        setFetchingAllPages(true);
         setAaveCursor(nextCursor);
         return;
       }
 
-      if (!nextCursor) {
-        setFetchingAllPages(false);
-      }
+      if (!nextCursor) return;
     })();
   }, [data?.pageInfo?.next, isLoading, aaveCursor]);
 
@@ -121,7 +113,6 @@ export function useTransactionHistory({
     (() => {
       if (error && !loadedInitialPage) {
         setLoadedInitialPage(true);
-        setFetchingAllPages(false);
       }
     })();
   }, [error, loadedInitialPage]);

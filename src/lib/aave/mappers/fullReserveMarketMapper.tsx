@@ -1,7 +1,6 @@
 import { Market } from "@aave/react";
 
 import { TimeWindowMap } from "@/lib/aave/constants";
-import { fetchAPRHistory } from "@/lib/aave/queries/fetchAprHistory";
 import { fetchMarket } from "@/lib/aave/queries/fetchMarket";
 import { transformMarketReserves } from "@/lib/aave/transformers/marketReserveTransformer";
 
@@ -18,14 +17,8 @@ export async function fullReserveMarketMapper({
   cid,
   marketAddress,
   accountAddress,
-  assetAddress,
-  period,
-  borrow,
 }: FullReserveMarketFetchParams) {
-  const [marketData, aprHistory] = await Promise.all([
-    fetchMarket({ cid, marketAddress, accountAddress }),
-    fetchAPRHistory({ cid, marketAddress, assetAddress, period, borrow }),
-  ]);
+  const marketData = await fetchMarket({ cid, marketAddress, accountAddress });
 
   return {
     market: marketData as Market,

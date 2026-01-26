@@ -22,6 +22,8 @@ export default function EnumFilter<TData>({ column, values }: EnumFilterProps<TD
 
   const active = (column.getFilterValue() as string[]) ?? [];
 
+  const isMuted = active.length === 0 || active.length === values.length;
+
   const toggle = (value: string) => {
     const next = active.includes(value) ? active.filter((v) => v !== value) : [...active, value];
 
@@ -47,14 +49,26 @@ export default function EnumFilter<TData>({ column, values }: EnumFilterProps<TD
           <Button
             variant="ghost"
             size="sm"
-            className="w-fit max-w-[180px] justify-start gap-1 font-normal"
+            className="w-fit max-w-45 justify-start gap-1 font-normal"
           >
-            <BsFilter className="size-4 shrink-0" />
-            <span className="truncate capitalize">{label}</span>
+            <BsFilter
+              className={cn(
+                "size-4 shrink-0",
+                isMuted ? "text-muted-foreground" : "text-foreground"
+              )}
+            />
+            <span
+              className={cn(
+                "truncate capitalize",
+                isMuted ? "text-muted-foreground" : "text-foreground"
+              )}
+            >
+              {label}
+            </span>
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="center" className="bg-popover w-max min-w-[180px] p-1">
+        <DropdownMenuContent align="center" className="bg-popover w-max min-w-45 p-1">
           {values.map((value) => {
             const checked = active.includes(value);
 

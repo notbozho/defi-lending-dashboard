@@ -3,6 +3,7 @@ import { Space_Grotesk, Space_Mono } from "next/font/google";
 
 import { ChainChangeNotifier } from "@/components/ChainChangeNotifier";
 import { Header } from "@/components/layout/Header";
+import { PageTransition } from "@/components/layout/PageTransition";
 import Providers from "@/lib/Providers";
 
 import "@/styles/globals.css";
@@ -30,10 +31,11 @@ export default function RootLayout(props: LayoutProps<"/">) {
         className={`${spaceGrotesk.variable} ${spaceMono.variable} from-background dark:from-primary/10 dark:via-background dark:to-primary/5 via-primary/20 to-background min-h-dvh bg-linear-to-tr font-sans antialiased`}
       >
         <Providers>
-          <Header />
-          <ChainChangeNotifier>
-            <main className="flex-1">{props.children}</main>
-          </ChainChangeNotifier>
+          <PageTransition header={<Header />}>
+            <ChainChangeNotifier>
+              <main className="flex-1">{props.children}</main>
+            </ChainChangeNotifier>
+          </PageTransition>
         </Providers>
       </body>
     </html>

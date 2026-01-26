@@ -5,8 +5,7 @@ import { FaCoins, FaMoneyCheck } from "react-icons/fa6";
 import { MarketUserReserveBorrowPosition, MarketUserReserveSupplyPosition } from "@aave/react";
 import BigNumber from "bignumber.js";
 import { motion } from "motion/react";
-import { Address } from "viem";
-import { useAccount, useChainId } from "wagmi";
+import { useChainId } from "wagmi";
 
 import HealthFactorCard from "@/app/components/HealthFactorGauge";
 import MyWalletCard from "@/app/components/MyWalletCard";
@@ -17,21 +16,18 @@ import { getUserSuppliesColumns } from "@/app/lib/getUserSuppliesColumns";
 import { userBorrowColumns } from "@/app/lib/userBorrowsColumns";
 import { useTransactionHistory } from "@/hooks/aave/useTransactionHistory";
 import { useUserMarket } from "@/hooks/aave/useUserMarket";
-import { useBalancesOf } from "@/hooks/web3/useBalancesOf";
-import { ZERO_ADDRESS } from "@/utils/constants";
+import { cardEntranceVariants } from "@/lib/motion/variants";
 
 export default function DashboardView() {
   // const { isLoading, market, supplyReserves, userSupplyPositions, userBorrowPositions } =
   //   useLoadMarketData();
 
   const chainId = useChainId();
-  const { address } = useAccount();
 
-  const {
-    data: userMarketData,
-    isLoading: userMarketLoading,
-    error: userMarketError,
-  } = useUserMarket({ cid: chainId, accountAddress: "0xfed5f381870ccf1539a42b473893c7683242914b" });
+  const { data: userMarketData, isLoading: userMarketLoading } = useUserMarket({
+    cid: chainId,
+    accountAddress: "0xfed5f381870ccf1539a42b473893c7683242914b",
+  });
   // } = useUserMarket({ cid: chainId, accountAddress: address });
 
   const {
@@ -55,11 +51,6 @@ export default function DashboardView() {
     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": new BigNumber("100000000"),
   };
 
-  const { data: walletBalances } = useBalancesOf({
-    accountAddress: address ?? ZERO_ADDRESS,
-    tokenAddresses: Object.keys(userMarketData?.supplyReserves ?? {}) as Address[],
-  });
-
   const userSuppliesColumns = useMemo(
     () =>
       getUserSuppliesColumns((address: string, enabled: boolean) => {
@@ -77,41 +68,76 @@ export default function DashboardView() {
   );
 
   return (
-    <div className="container mx-auto flex gap-x-6 px-2 py-6">
-      <div className="flex basis-9/12 flex-col gap-y-6">
-        <PositionsTable<MarketUserReserveSupplyPosition>
-          columns={userSuppliesColumns}
-          loading={userMarketLoading}
-          positions={userMarketData?.userSupplies || []}
-          title="Supply Positions"
-          icon={<FaCoins />}
-        />
+    <div className="relative w-full overflow-hidden">
+      <div className="relative z-10 container mx-auto flex gap-x-6 px-2 py-6">
+        <div className="flex basis-9/12 flex-col gap-y-6">
+          <motion.div
+            variants={cardEntranceVariants}
+            layout
+            transition={{ type: "spring", stiffness: 260, damping: 30 }}
+          >
+            <PositionsTable<MarketUserReserveSupplyPosition>
+              columns={userSuppliesColumns}
+              loading={userMarketLoading}
+              positions={userMarketData?.userSupplies || []}
+              title="Supply Positions"
+              icon={<FaCoins />}
+            />
+          </motion.div>
 
-        <PositionsTable<MarketUserReserveBorrowPosition>
-          columns={userBorrowColumns}
-          loading={userMarketLoading}
-          positions={userMarketData?.userBorrows || []}
-          title="Borrow Positions"
-          icon={<FaMoneyCheck />}
-        />
-        <TransactionHistoryTable
-          transactions={transactions}
-          columns={transactionHistoryColumns}
-          loading={isTransactionHistoryLoading}
-        />
+          <motion.div
+            variants={cardEntranceVariants}
+            layout
+            transition={{ type: "spring", stiffness: 260, damping: 30 }}
+          >
+            <PositionsTable<MarketUserReserveBorrowPosition>
+              columns={userBorrowColumns}
+              loading={userMarketLoading}
+              positions={userMarketData?.userBorrows || []}
+              title="Borrow Positions"
+              icon={<FaMoneyCheck />}
+            />
+          </motion.div>
+          <motion.div
+            variants={cardEntranceVariants}
+            layout
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <TransactionHistoryTable
+              transactions={transactions}
+              columns={transactionHistoryColumns}
+              loading={isTransactionHistoryLoading}
+            />
+          </motion.div>
+        </div>
+        <motion.div
+          variants={cardEntranceVariants}
+          layout
+          transition={{ type: "spring", stiffness: 120, damping: 20 }}
+          className="flex basis-3/12 flex-col gap-y-6"
+        >
+          <motion.div
+            variants={cardEntranceVariants}
+            layout
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <MyWalletCard
+              balances={MOCK_BALANCES}
+              reserves={userMarketData?.supplyReserves || []}
+              loading={userMarketLoading}
+            />
+          </motion.div>
+          <motion.div
+            variants={cardEntranceVariants}
+            layout
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <HealthFactorCard
+              value={Number(userMarketData?.market?.userState?.healthFactor) || 2.42}
+            />
+          </motion.div>
+        </motion.div>
       </div>
-      <motion.div
-        layout
-        transition={{ type: "spring", stiffness: 120, damping: 20 }}
-        className="flex basis-3/12 flex-col gap-y-6"
-      >
-        <MyWalletCard
-          balances={MOCK_BALANCES}
-          reserves={userMarketData?.supplyReserves || []}
-          loading={userMarketLoading}
-        />
-        <HealthFactorCard value={Number(userMarketData?.market?.userState?.healthFactor) || 0} />
-      </motion.div>
     </div>
   );
 }
