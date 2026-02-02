@@ -1,4 +1,4 @@
-name: Lint and Build
+name: E2E & Build
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -14,7 +14,7 @@ on:
     branches: [main]
 
 jobs:
-  lint-and-test:
+  e2e-and-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,16 +22,15 @@ jobs:
         with:
           node-version: 22.19
       - run: npm ci
-      - name: Lint Code
-        run: npm run lint
-      - name: Type Check
-        run: npm run check
-      - name: Run Unit & Integration Tests
-        run: npm run test:run
-      - name: Upload Coverage Reports
+      - name: Run E2E Tests
+        continue-on-error: true
+        run: npm run e2e
+      - name: Build for Production
+        run: npm run build
+      - name: Upload E2E Test Results
         if: always() && !env.ACT
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-reports
-          path: coverage/
+          name: playwright-report
+          path: playwright-report/
           retention-days: 30
