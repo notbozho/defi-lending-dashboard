@@ -2,6 +2,17 @@
 
 A modern, production-ready DeFi lending dashboard for monitoring and analyzing Aave V3 markets across multiple chains. Built with Next.js 16, this application provides real-time insights into lending pools, reserve data, user positions, and market analytics with a polished UI/UX.
 
+## 📸 Preview
+
+![Dashboard](/preview/dashboard.png)
+_Main dashboard view showing market overview_
+
+![Reserves](/preview/reserves.png)
+_Reserve list with detailed metrics_
+
+![Reserve Overview](/preview/reserve_overview.png)
+_Individual reserve analytics_
+
 ## ✨ Features
 
 - **Multi-Chain Support**: Ethereum, Polygon, Arbitrum, and Sepolia testnet
@@ -243,14 +254,3 @@ All commits must follow conventional commits format.
 - [Aave Protocol](https://aave.com/) - Decentralized lending protocol
 - [shadcn/ui](https://ui.shadcn.com/) - Beautiful component library
 - [Vercel](https://vercel.com/) - Hosting and deployment platform
-
-## 📸 Preview
-
-![Dashboard](/preview/dashboard.png)
-_Main dashboard view showing market overview_
-
-![Reserves](/preview/reserves.png)
-_Reserve list with detailed metrics_
-
-![Reserve Overview](/preview/reserve_overview.png)
-_Individual reserve analytics_
