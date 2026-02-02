@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: 22.19
       - run: npm ci
+      - name: Generate Next.js Types
+        run: npx next typegen
       - name: Lint Code
         run: npm run lint
       - name: Type Check
